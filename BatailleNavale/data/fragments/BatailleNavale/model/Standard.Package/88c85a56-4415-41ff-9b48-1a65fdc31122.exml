@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="miage.bataille" version="4">
+  <OBJECT>
+    <ID name="miage.bataille" mc="Standard.Package" uid="88c85a56-4415-41ff-9b48-1a65fdc31122"/>
+    <PID name="bataille" mc="Standard.Package" uid="84739d0a-1a78-4610-a633-74bcb8498568"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[miage.bataille]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="Partie" mc="Standard.Class" uid="df73f8f0-8de5-486c-802d-307ecfe68b1b"/>
+        <COMPID name="ZoneContigue" mc="Standard.Class" uid="2e8da21e-beba-42d5-bf0e-19b344dad88e"/>
+        <COMPID name="Cellule" mc="Standard.Class" uid="75ca9bcd-11cc-4d06-9e09-568386daf11f"/>
+        <COMPID name="Obstacle" mc="Standard.Class" uid="51d60614-5c30-45a9-9d85-cced39152d6b"/>
+        <COMPID name="Batiment" mc="Standard.Class" uid="fa9e0afe-a153-45ea-b905-ad7b9b1283fb"/>
+      </COMP>
+      <LINK relation="Extension">
+        <FOREIGNID name="JavaPackage" mc="Infrastructure.Stereotype" uid="01ec23a8-0000-0126-0000-000000000000"/>
+      </LINK>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

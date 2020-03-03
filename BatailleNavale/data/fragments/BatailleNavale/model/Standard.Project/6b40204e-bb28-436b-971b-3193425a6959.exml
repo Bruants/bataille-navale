@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="BatailleNavale" version="4">
+  <OBJECT>
+    <ID name="BatailleNavale" mc="Standard.Project" uid="6b40204e-bb28-436b-971b-3193425a6959"/>
+    <ATTRIBUTES>
+      <ATT name="ProjectContext"></ATT>
+      <ATT name="ProjectDescr"></ATT>
+      <ATT name="Name"><![CDATA[BatailleNavale]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Model">
+        <COMPID name="bataillenavale" mc="Standard.Package" uid="84739d0a-1a78-4610-a633-74bcb8498568"/>
+      </COMP>
+      <COMP relation="DiagramRoot">
+        <COMPID name="BatailleNavale" mc="Infrastructure.DiagramSet" uid="79dbe197-be1a-4627-aa51-1d50bdf99170"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>
