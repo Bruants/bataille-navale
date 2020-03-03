@@ -878,6 +878,10 @@
         <parent fragment="Archimate" name="ExternalActiveStructureElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
       </metaclass>
+      <metaclass name="ApplicationInternalActiveStructureElement" version="0.0.00" fake="true">
+        <parent fragment="Archimate" name="InternalActiveStructureElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
       <metaclass name="ApplicationInternalBehaviorElement" version="0.0.00" cmsNode="true" fake="true">
         <parent fragment="Archimate" name="InternalBehaviorElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
@@ -929,6 +933,7 @@
       <metaclass name="Association" version="0.0.00" fake="true">
         <parent fragment="Archimate" name="OtherRelationship"/>
         <attribute name="Name" type="java.lang.String"></attribute>
+        <attribute name="Directed" type="java.lang.String"></attribute>
       </metaclass>
       <metaclass name="BehaviorElement" version="0.0.00" fake="true">
         <parent fragment="Archimate" name="Element"/>
@@ -1299,6 +1304,10 @@
         <parent fragment="Archimate" name="ActiveStructureElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
       </metaclass>
+      <metaclass name="StrategyBehaviorElement" version="0.0.00" cmsNode="true" fake="true">
+        <parent fragment="Archimate" name="BehaviorElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
       <metaclass name="StrategyFolder" version="0.0.00" cmsNode="true" fake="true">
         <parent fragment="Archimate" name="Folder"/>
         <attribute name="Name" type="java.lang.String"></attribute>
@@ -1321,6 +1330,10 @@
       </metaclass>
       <metaclass name="SystemSoftware" version="0.0.00" cmsNode="true" fake="true">
         <parent fragment="Archimate" name="Node"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
+      <metaclass name="TechnologyActiveStructureElement" version="0.0.00" fake="true">
+        <parent fragment="Archimate" name="ActiveStructureElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
       </metaclass>
       <metaclass name="TechnologyCollaboration" version="0.0.00" cmsNode="true" fake="true">
@@ -1355,6 +1368,10 @@
         <parent fragment="Archimate" name="ExternalActiveStructureElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
       </metaclass>
+      <metaclass name="TechnologyInternalActiveStructureElement" version="0.0.00" fake="true">
+        <parent fragment="Archimate" name="TechnologyActiveStructureElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
       <metaclass name="TechnologyInternalBehaviorElement" version="0.0.00" fake="true">
         <parent fragment="Archimate" name="InternalBehaviorElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
@@ -1377,6 +1394,10 @@
       </metaclass>
       <metaclass name="Value" version="0.0.00" cmsNode="true" fake="true">
         <parent fragment="Archimate" name="MotivationElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
+      <metaclass name="ValueStream" version="0.0.00" cmsNode="true" fake="true">
+        <parent fragment="Archimate" name="StrategyBehaviorElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
       </metaclass>
       <metaclass name="ViewPoint" version="0.0.00" cmsNode="true" fake="true">
@@ -1511,6 +1532,7 @@
       <metaclass name="Association" version="0.0.00" fake="true">
         <parent fragment="Archimate" name="OtherRelationship"/>
         <attribute name="Name" type="java.lang.String"></attribute>
+        <attribute name="Directed" type="java.lang.String"></attribute>
       </metaclass>
       <metaclass name="BehaviorElement" version="0.0.00" fake="true">
         <parent fragment="Archimate" name="Element"/>
@@ -1987,6 +2009,26 @@
       </metaclass>
       <metaclass name="WorkPackage" version="0.0.00" cmsNode="true" fake="true">
         <parent fragment="Archimate" name="BehaviorElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
+      <metaclass name="ApplicationInternalActiveStructureElement" version="0.0.00" fake="true">
+        <parent fragment="Archimate" name="InternalActiveStructureElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
+      <metaclass name="StrategyBehaviorElement" version="0.0.00" cmsNode="true" fake="true">
+        <parent fragment="Archimate" name="BehaviorElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
+      <metaclass name="TechnologyActiveStructureElement" version="0.0.00" fake="true">
+        <parent fragment="Archimate" name="ActiveStructureElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
+      <metaclass name="TechnologyInternalActiveStructureElement" version="0.0.00" fake="true">
+        <parent fragment="Archimate" name="TechnologyActiveStructureElement"/>
+        <attribute name="Name" type="java.lang.String"></attribute>
+      </metaclass>
+      <metaclass name="ValueStream" version="0.0.00" cmsNode="true" fake="true">
+        <parent fragment="Archimate" name="StrategyBehaviorElement"/>
         <attribute name="Name" type="java.lang.String"></attribute>
       </metaclass>
     </metaclasses>

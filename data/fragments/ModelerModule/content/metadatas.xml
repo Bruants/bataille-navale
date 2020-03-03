@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<ram-component manifest-version="2.0.02" name="ModelerModule" version="9" release="0" clevel="7" modelioVersion="3.8.01" provider="Module ModelerModule">
+<ram-component manifest-version="2.0.02" name="ModelerModule" version="9" release="1" clevel="0" modelioVersion="4.0.01" provider="Module ModelerModule">
   <description><![CDATA[]]></description>
   <dependencies></dependencies>
   <contributors></contributors>
