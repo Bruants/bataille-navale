@@ -48,8 +48,11 @@ public class Partie {
     @objid ("ce21b39e-cd8e-47d8-89ae-fe405c9c39ae")
     private void enregistrerCoup(Cellule celluleTiree) {
     }
-    
-    public ArrayList<Cellule> getCelluleTouche(){
+  
+    /**
+     * @return La liste de toutes les cellules tirées
+     */
+    public ArrayList<Cellule> getCellulesTirees(){
         return coups;
     }
 
