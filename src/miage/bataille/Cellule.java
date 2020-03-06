@@ -40,6 +40,9 @@ public class Cellule {
      */
     @objid ("c4c1176f-4893-431b-9fed-fbc8bd56f3eb")
     public Cellule(int coordX, int coordY) {
+    	this.coordX = coordX;
+    	this.coordY = coordY;
+    	touche = false;
     }
 
     /**
@@ -47,6 +50,7 @@ public class Cellule {
      */
     @objid ("20346ad2-a476-41ce-9ad7-240d5891111c")
     public void aEteTouche() {
+    	touche = true;
     }
 
 }
