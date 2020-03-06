@@ -52,5 +52,29 @@ public class Cellule {
     public void aEteTouche() {
     	touche = true;
     }
+    
+    /**
+     * Vérifie si la cellule est touchée ou non
+     * @return true si la cellule a été touchée 
+     *         false sinon
+     */
+    public boolean getTouche() {
+    	return touche;
+    }
+    
+    /**
+     * Renvoie la coordonnée X du plan de la cellule
+     * @return la coordonnée X
+     */
+    public int getCoordX() {
+    	return coordX;
+    }
 
+    /**
+     * Renvoie la coordonnée Y du plan de la cellule
+     * @return la coordonnée Y
+     */
+    public int getCoordY() {
+    	return coordY;
+    }
 }

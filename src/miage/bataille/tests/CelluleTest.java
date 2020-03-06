@@ -22,8 +22,7 @@ class CelluleTest {
 	 */
 	@Test
 	void testCellule() {
-		//assert (new Cellule(-1, -1)) != null;
-		fail("Not yet implemented");
+		assert (new Cellule(0, 0)) != null;
 	}
 
 	/**

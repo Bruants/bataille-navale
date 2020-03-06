@@ -52,14 +52,27 @@ public class ZoneContigue {
     }
 
     /** 
-     * Permet de recuperer la Cellule qui correspond aux coordonées x y correspond à la Zone Contigue this
-     * @param x La coordonnée x de la Cellule tirée
-     * @param y La coordonnée x de la Cellule tirée
-     * @return
+     * Permet de recuperer la Cellule qui correspond aux coordonnées x y correspond à la Zone Contigue this
+     * @param coordX La coordonnée x de la Cellule tirée
+     * @param coordY La coordonnée x de la Cellule tirée
+     * @return la cellule qui correspond aux coordonnées x y
      */
     @objid ("200c06b7-f732-4284-88f8-0d62881dc8e2")
-    public Cellule getCellule(int x, int y) {
-        return null;
+    public Cellule getCellule(int coordX, int coordY) {
+    	int placement;
+    	
+    	/* Recherche la cellule en question parmis celles de la zone */
+    	for (placement = 0 ; placement < possede.size() 
+    			             && (possede.get(placement).getCoordX() != coordX
+    			                 || possede.get(placement).getCoordY() != coordY); placement++);
+    	
+    	/* 
+    	 * Vérifie que la cellule a bien été trouvée. si getCoordX != x ou getCoordY != y,
+    	 * la cellule n'existe pas.
+    	 */
+        return possede.get(placement).getCoordX() == coordX 
+        	   && possede.get(placement).getCoordY() == coordY ? possede.get(placement) : null;
+        /* TODO : vérifier si on vérife que la cellule existe ou si elle existe forcément */ 
     }
 
     /**
@@ -69,26 +82,48 @@ public class ZoneContigue {
      */
     @objid ("6f46b07f-cacb-4f9c-8864-8f87265fa3f7")
     public boolean existe(int coordX, int coordY) {
-        return false;
+    	int placement;
+    	
+    	/* Recherche la cellule en question parmis celles de la zone */
+    	for (placement = 0 ; placement < possede.size() 
+    			             && (possede.get(placement).getCoordX() != coordX
+    			                 || possede.get(placement).getCoordY() != coordY); placement++);
+    	
+        return possede.get(placement).getCoordX() == coordX 
+        	   && possede.get(placement).getCoordY() == coordY;
     }
     
     /**
-     * Definit si la zone contigue est coulee, elle est coulee si toutes les cellules
+     * Defini si la zone contigue est coulée, elle est coulée si toutes les cellules
      * qui la compose sont touchees.
+     * @return true si toutes les cellules sont coulées
+     *         false sinon
      */
     @objid ("1e8fd3d2-552b-4844-8a32-acab6a84fb9e")
     public boolean estCoule() {
-    	return false; //stub
+    	int placement;
+    	
+    	/* 
+    	 * Recherche la cellule en question parmis celles de la zone et vérifie si
+    	 * elles sont touchées ou non.
+    	 */
+    	for (placement = 0 ; placement < possede.size() 
+    			             && possede.get(placement).getTouche(); placement++);
+    	
+    	return possede.get(placement).getTouche();
     }
     
     /** 
-     * Permet de recuperer la Cellule qui correspond aux coordonées x y correspond à la Zone Contigue this
+     * Permet de recuperer la Cellule qui correspond aux coordonées x y correspond à la 
+     * Zone Contigue this
      * @param x La coordonnée x de la Cellule tirée
      * @param y La coordonnée x de la Cellule tirée
-     * @return Vrai si le batiment a été coulé sinon faux
+     * @return true si le batiment a été coulé
+     *         false sinon
      */
     @objid ("200c06b7-f732-4284-88f8-0d62881dc8e2")
     public boolean tir(Cellule cel) {
+    	/* TODO */
         return false;
     }
     
