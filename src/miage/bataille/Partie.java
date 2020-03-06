@@ -27,9 +27,8 @@ public class Partie {
     		
     		celluleTiree = new Cellule(x, y);
     		
-    	} else {
-    		
-    		celluleTiree.aEteTouche();
+	    } else {
+	    		//TODO
     	}
     }
     
