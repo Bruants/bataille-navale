@@ -24,3 +24,6 @@ hs_err_pid*
 
 # classpath : editer personellement pour importer javadesigner.jar
 .classpath
+
+# dossier .class
+/bin/
