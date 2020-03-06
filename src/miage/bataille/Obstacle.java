@@ -25,4 +25,12 @@ public abstract class Obstacle {
     @objid ("afb441a8-5412-4ab1-8773-5e1cdb696159")
     protected boolean touchable;
 
+    /* non-javadoc
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Obstacle de longueur : " + tailleLgr + '\n' + "largeur : " + tailleLgr;
+    }
+    
 }
