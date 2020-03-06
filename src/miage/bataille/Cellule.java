@@ -7,6 +7,8 @@ package miage.bataille;
 import com.modeliosoft.modelio.javadesigner.annotations.objid;
 
 /**
+ * Represente une cellule de la mer de taille 1*1
+ * Elle est presente dans les Zone Contigue et peut appartenir à un Obstacle
  * Zone de taille 1*1 du plan
  * @author Damien Avetta-Raymond
  */
@@ -24,13 +26,18 @@ public class Cellule {
      * <p>Etat de la Cellule</p>
      * 
      * <ul>
-     * 	<li>true : Cellule touchée comportant une partie de batiment</li>
+     * 	<li>true : Cellule touchee comportant une partie de batiment</li>
      * 	<li>false : Cellule pas touchée, à l'eau</li>
      * </ul>
      */
     @objid ("b4ca99a7-ebe1-425c-a5a2-6b57126835d0")
     private boolean touche;
 
+    /**
+     * Initialise une celulle avec ses coordonnées
+     * @param coordX La coordonee x de la Cellule
+     * @param coordY La coordonee x de la Cellule
+     */
     @objid ("c4c1176f-4893-431b-9fed-fbc8bd56f3eb")
     public Cellule(int coordX, int coordY) {
     }
