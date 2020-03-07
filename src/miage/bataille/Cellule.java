@@ -77,4 +77,12 @@ public class Cellule {
     public int getCoordY() {
     	return coordY;
     }
+    
+    /**
+     * 
+     */
+    @Override
+    public String toString() {
+    	return "[" + coordX + ";" + coordY + "]" + (touche ? " touché" : " non touché");
+    }
 }
