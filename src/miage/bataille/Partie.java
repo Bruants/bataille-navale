@@ -29,6 +29,24 @@ public class Partie {
     	coups = new ArrayList<Cellule>();
     }
     
+    /**
+     * Ajoute la zone contigue à la partie si elle n'empiete sur aucune autre zone
+     * @param aAjouter
+     * @throws Exception TODO
+     */
+    public void ajouterZoneContigue(ZoneContigue aAjouter) throws Exception {
+    	boolean valide = true;
+    	for(int i = 0 ; i < aAjouter.getPossede().size() && valide; i++) {
+    		for(int j = 0 ; j < compose.size() && valide; j++) {
+    			valide = !compose.get(j).existe(aAjouter.getPossede().get(i).getCoordX(),aAjouter.getPossede().get(i).getCoordY());
+    		}
+    	}
+    	
+    	if (!valide) {
+    		throw new Exception("TODO"); //TODO
+    	} // else
+    	compose.add(aAjouter);
+    }
     
     /**
      * Initialise une nouelle partie
@@ -112,7 +130,6 @@ public class Partie {
     	
         return coups;
     }
-
 
 	public ArrayList<ZoneContigue> getCompose() {
 		return compose;
