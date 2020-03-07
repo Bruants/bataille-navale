@@ -7,12 +7,16 @@ import com.modeliosoft.modelio.javadesigner.annotations.objid;
  * Une Zone Contigue est definie par une Cellule de début et une Cellule de fin
  * Les cellules présentes entre les cellules de début/fin font parties de la Zone Contigue
  * Une zone contigue peut être coulée si toutes les cellules présentes sont touchées
+ * Une cellule peut avoir deux orientations
+ *  - Horizontale : 0 degré (de gauche à droite)
+ *  - Verticale : 90 degré (de base en haut)
  * Elle est definie par un type (Obstacle)
  * @author kevin.sannac
+ * @version 0.1.0
  */
 @objid ("2e8da21e-beba-42d5-bf0e-19b344dad88e")
 public class ZoneContigue {
-
+	
     /**
      * Définit le type de l'Obstacle (Batiment,Terre,...)
      */
@@ -25,37 +29,75 @@ public class ZoneContigue {
     @objid ("af33c602-1450-47fe-8dbd-c541d5b9105d")
     private ArrayList<Cellule> possede = new ArrayList<Cellule> ();
 
+    public static ArrayList<Cellule> cellulesAAjouter(Obstacle type, int xDeb, int yDeb, int xFin, int yFin) {
+    	ArrayList<Cellule> aAjouter = new ArrayList<Cellule> ();
+    	int parcoursEnLargeur = xFin - xDeb + 1; // Détermine le nombre de case à parcourir en largeur, dépend de l'orientation
+    	int parcoursEnHauteur = yFin - yDeb + 1; // Détermine le nombre de case à parcourir en longueur, dépend de l'orientation
+
+    	// Création de toutes les cellules
+    	for(int i = 0; i < parcoursEnLargeur ; i++) {
+        	for(int j = 0; j < parcoursEnHauteur ; j++) {
+        		aAjouter.add(new Cellule(xDeb + i, yDeb + j));
+        	}
+    	}
+    	return aAjouter;
+    }
+    
     /**
      * Crée une zone contigue en précisant son type d'Obstacle et avec une cellule de départ et une cellule de fin
+     * @param partie La partie mere de la zone courante
      * @param type Le type d'Obstacle de la Zone Contigue
      * @param xDeb La coordonnée x du début de la zone 
      * @param yDeb La coordonnée y de la fin de la zone
      * @param xFin La coordonnée x du debut de la zone
      * @param yFin La coordonnée y de la fin de la zone
-     * @throws IllegalArgumentException Si les coordonées sont incorrectes
+     * @throws IllegalArgumentException En cas de coordonnees invalides
      */
     @objid ("1e4b1448-5f98-4465-9b41-780042ccf61c")
     public ZoneContigue(Obstacle type, int xDeb, int yDeb, int xFin, int yFin) throws IllegalArgumentException {
+    	obstacle = type;
+    	if(!coordonneesValides(xDeb, yDeb, xFin, yFin)) {
+    		throw new IllegalArgumentException("Coordonnees invalides");
+    	}
+    	ArrayList<Cellule> aAjouter = cellulesAAjouter(type, xDeb, yDeb, xFin, yFin); // Toutes les cellules que l'on veut ajouer 
+
+    	possede = aAjouter;	
+    }
+    
+    /**
+     * Vérifie que les coordonnees sont valides et sont en adéquation avec les dimensions de l'obstacle
+     * Calcule l'orientation de la zone
+     * @param type Le type d'Obstacle de la Zone Contigue
+     * @param xDeb La coordonnée x du début de la zone 
+     * @param yDeb La coordonnée y de la fin de la zone
+     * @param xFin La coordonnée x du debut de la zone
+     * @param yFin La coordonnée y de la fin de la zone
+     * @return True si les coordonnees sont valides sont bonnes, sinosn false
+     */
+    private boolean coordonneesValides(int xDeb, int yDeb, int xFin, int yFin) {
     	/* On vérifie les coordonees */
     	// Coordonnees hors de la carte
     	if (xDeb < 0 || yDeb < 0 || xFin < 0 || yFin < 0) {
-    		throw new IllegalArgumentException("Coordonées hors de la carte");    	
+    		return false;
     	}
 //		TODO
 //    	if (xDeb > TAILLE_CARTE || yDeb > TAILLE_CARTE || xFin > TAILLE_CARTE || yFin > TAILLE_CARTE) {
-//    		throw new IllegalArgumentException("Coordonées hors de la carte");
+//    		return false;
 //    	}
     	// Coordonnees non alignées / ne correspondent pas aux caractéristiques de l'obstacle
-    	if (xDeb + obstacle.tailleHaut != xFin || xDeb + obstacle.tailleHaut != xFin) {
-    		// TODO
+    	if (!(xDeb + obstacle.tailleLgr - 1 == xFin && yDeb + obstacle.tailleHaut - 1 == yFin) // obstacle de gauche à droite
+    			&& !(xDeb + obstacle.tailleHaut - 1 == xFin && yDeb + obstacle.tailleLgr - 1 == yFin)) { // obstacle de haut en bas
+    		return false;    	
     	}
+    	
+    	return true;
     }
 
     /** 
-     * Permet de recuperer la Cellule qui correspond aux coordonnées x y correspond à la Zone Contigue this
+     * Permet de recuperer la Cellule qui correspond aux coordonnées x y correspondants à la Zone Contigue this
      * @param coordX La coordonnée x de la Cellule tirée
      * @param coordY La coordonnée x de la Cellule tirée
-     * @return la cellule qui correspond aux coordonnées x y
+     * @return la cellule qui correspond aux coordonnées x y, si elle n'existe pas null
      */
     @objid ("200c06b7-f732-4284-88f8-0d62881dc8e2")
     public Cellule getCellule(int coordX, int coordY) {
@@ -72,7 +114,6 @@ public class ZoneContigue {
     	 */
         return possede.get(placement).getCoordX() == coordX 
         	   && possede.get(placement).getCoordY() == coordY ? possede.get(placement) : null;
-        /* TODO : vérifier si on vérife que la cellule existe ou si elle existe forcément */ 
     }
 
     /**
@@ -82,15 +123,7 @@ public class ZoneContigue {
      */
     @objid ("6f46b07f-cacb-4f9c-8864-8f87265fa3f7")
     public boolean existe(int coordX, int coordY) {
-    	int placement;
-    	
-    	/* Recherche la cellule en question parmis celles de la zone */
-    	for (placement = 0 ; placement < possede.size() 
-    			             && (possede.get(placement).getCoordX() != coordX
-    			                 || possede.get(placement).getCoordY() != coordY); placement++);
-    	
-        return possede.get(placement).getCoordX() == coordX 
-        	   && possede.get(placement).getCoordY() == coordY;
+    	return possede.contains(new Cellule(coordX, coordY));
     }
     
     /**
@@ -101,30 +134,14 @@ public class ZoneContigue {
      */
     @objid ("1e8fd3d2-552b-4844-8a32-acab6a84fb9e")
     public boolean estCoule() {
-    	int placement;
-    	
-    	/* 
-    	 * Recherche la cellule en question parmis celles de la zone et vérifie si
-    	 * elles sont touchées ou non.
-    	 */
-    	for (placement = 0 ; placement < possede.size() 
-    			             && possede.get(placement).getTouche(); placement++);
-    	
-    	return possede.get(placement).getTouche();
-    }
-    
-    /** 
-     * Permet de recuperer la Cellule qui correspond aux coordonées x y correspond à la 
-     * Zone Contigue this
-     * @param x La coordonnée x de la Cellule tirée
-     * @param y La coordonnée x de la Cellule tirée
-     * @return true si le batiment a été coulé
-     *         false sinon
-     */
-    @objid ("200c06b7-f732-4284-88f8-0d62881dc8e2")
-    public boolean tir(Cellule cel) {
-    	/* TODO */
-        return false;
+    	boolean coule = true;
+    	/* On vérifie que toutes les cellules sont touchées */
+    	for(int i = 0; i < possede.size() && coule == true ; i++) {
+    		if(!possede.get(i).getTouche()) {
+    			coule = false;
+    		}
+    	}
+    	return coule;
     }
     
     /**
@@ -134,5 +151,11 @@ public class ZoneContigue {
     public boolean estTouchable() {
     	return obstacle.touchable;
     }
+
+	public ArrayList<Cellule> getPossede() {
+		return possede;
+	}
+    
+    
 
 }
