@@ -113,4 +113,9 @@ public class Partie {
         return coups;
     }
 
+
+	public ArrayList<ZoneContigue> getCompose() {
+		return compose;
+	}
+
 }
