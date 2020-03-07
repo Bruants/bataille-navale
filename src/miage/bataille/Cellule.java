@@ -85,4 +85,23 @@ public class Cellule {
     public String toString() {
     	return "[" + coordX + ";" + coordY + "]" + (touche ? " touché" : " non touché");
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) { 
+            return true; 
+        } 
+  
+        if (!(o instanceof Cellule)) { 
+            return false; 
+        }
+        
+        // Si ils ont les mêmes coordonnées
+        if ((((Cellule) o).getCoordX() != this.getCoordX()) || ((Cellule) o).getCoordY() != this.getCoordY()) {
+        	return false;
+        }
+        
+        // else
+    	return true;
+    }
 }
