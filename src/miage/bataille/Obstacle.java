@@ -20,7 +20,7 @@ public abstract class Obstacle {
     protected int tailleHaut;
 
     /**
-     * @return la largeur en cellules de l'obstacle
+     * @return la longueur en cellules de l'obstacle
      */
     public int getTailleLgr() {
 		return tailleLgr;
