@@ -1,6 +1,14 @@
 package miage.bataille;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Correspond à une configuration de la partie
@@ -13,23 +21,31 @@ public class Configuration {
 
 	/** Longueur maximale de la carte définit sur X */
 	private int longueurCarte;
-	
+
 	/** Hauteur de la carte définit */
 	private int hauteurCarte;
-	
+
 	/** Stocke la flotte */
 	private ArrayList<Batiment> flotte;
 	
+	/** Le nom de la config */
+	private String nom;
+	
+	/** Toutes les configurations chargées */
+	private static ArrayList<Configuration> listeDeConfigs = chargerConfig("./src/configs.json");
+
 	/** 
 	 * Création d'une configuration de base
 	 */
 	public Configuration() {
-		
+
 		flotte = new ArrayList<Batiment>();
+
+		nom = "Défaut";
 		
 		longueurCarte = 12;
 		hauteurCarte = 12;
-		
+
 		flotte.add(new Batiment(4, "porte-avion"));
 		flotte.add(new Batiment(3, "croiseur"));
 		flotte.add(new Batiment(3, "croiseur"));
@@ -40,6 +56,19 @@ public class Configuration {
 		flotte.add(new Batiment(1, "vedette"));
 		flotte.add(new Batiment(1, "vedette"));
 		flotte.add(new Batiment(1, "vedette"));
+		
+	}
+
+	/**
+	 * Crée une configuration definit par la longueur, la hauteur et 
+	 * les batiments definissant les flottes 
+	 * @param longueurCarte longueur x de la carte
+	 * @param hauteurCarte hauteur y de la carte
+	 * @param nom Le nom de la configuration
+	 * @param batFlotte batiments à ajouter a la flotte
+	 */
+	public Configuration(int longueurCarte, int hauteurCarte, String nom, Batiment...batFlotte) {
+		//TODO
 	}
 	
 	/**
@@ -47,10 +76,14 @@ public class Configuration {
 	 * les batiments definissant les flottes 
 	 * @param longueurCarte longueur x de la carte
 	 * @param hauteurCarte hauteur y de la carte
+	 * @param nom Le nom de la configuration
 	 * @param batFlotte batiments à ajouter a la flotte
 	 */
-	public Configuration(int longueurCarte, int hauteurCarte, Batiment...batFlotte) {
-		//TODO
+	public Configuration(int longueurCarte, int hauteurCarte, String nom, ArrayList<Batiment> batFlotte) {
+		this.longueurCarte = longueurCarte;
+		this.hauteurCarte = hauteurCarte;
+		this.nom = nom;
+		this.flotte = batFlotte;
 	}
 
 	/**
@@ -96,5 +129,101 @@ public class Configuration {
 	 */
 	public void setFlotte(ArrayList<Batiment> flotte) {
 		this.flotte = flotte;
+	}
+
+	/**
+	 * Récupère les configurations stockees dans le fichier chemin
+	 * Chaque configuration possède les informations suivantes :
+	 * 	- nom (String)
+	 *  - carte (Object)
+	 *  	- longueurCarte (int)
+	 *  	- largeurCarte (int)
+	 *  - flotte (Array of Object)
+	 *  	- taille (int)
+	 *  	- nom (String)
+	 * Au format suivant :
+	 * {
+	 *	    "config" : [
+	 *	        {
+	 *	            "nom" : "Config1",
+	 *	            "carte" : { 
+	 *	                "longueurCarte":40,
+	 *	                "largeurCarte":30
+	 *	            },
+	 *				"flotte" : [
+	 *	                {"taille": 4, "nom": "porte-avion"},
+	 *	                {"taille": 3, "nom": "croiseur"},
+	 *	                ...
+	 *	            ]
+	 *	        },
+	 *	        {
+	 *	            "nom" : "Config2",
+	 *	            "carte" : { 
+	 *	                "longueurCarte":10,
+	 *	                "largeurCarte":20
+	 *	            },
+	 *	            "flotte" : [
+	 *	                {"taille": 9, "nom": "porte-croiseur"},
+	 *	                {"taille": 3, "nom": "croiseur"},
+	 *	                ...
+	 *	            ]
+	 *	        }
+	 *	    ]
+	 *	}
+	 * @param chemin Le path vers le fichier de configuration
+	 * @return Une liste qui contient toutes les configurations du fichier
+	 */
+	public static ArrayList<Configuration> chargerConfig(String chemin) {
+		ArrayList<Configuration> aCharger = new ArrayList<Configuration>();
+		
+		JSONParser parser = new JSONParser();
+		try {
+			FileReader reader = new FileReader(chemin); // Lecture du fichier
+			JSONObject jsonObject = (JSONObject) parser.parse(reader); // Parse en JSONObject
+			JSONArray array = (JSONArray) jsonObject.get("config"); // On récupère les différentes configs
+			// On parcourt toutes les configs
+			for (Object elt : array) {
+				long largeurCarte;
+				long longueurCarte;
+				String nom;
+				ArrayList<Batiment> flotte = new ArrayList<Batiment>();
+				JSONObject config = (JSONObject) elt; // Parse en json
+				// Récupère les informations
+				nom = (String)config.get("nom");
+				largeurCarte = (long)((JSONObject)config.get("carte")).get("largeurCarte");
+				longueurCarte = (long)((JSONObject)config.get("carte")).get("longueurCarte");
+				// On créee tous les bateaux
+				for(Object bateau : (JSONArray)config.get("flotte")) {
+					JSONObject bateauJSON = (JSONObject) bateau; // Le JSON du bateau
+					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); // Ajout à la flotte
+				}
+				aCharger.add(new Configuration((int)longueurCarte,(int)largeurCarte, nom, flotte));
+			}
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return aCharger;
+	}
+	
+	/**
+	 * Ajoute la configuration aux liste de configuration
+	 * @param aAjouter La configuration qui sera ajoutée
+	 */
+	public void ajouterConfig(Configuration aAjouter) {
+		listeDeConfigs.add(aAjouter);
+	}
+	
+	
+	/**
+	 * Parcours la liste listeDeConfigs et dit si la config est présente ou non
+	 */
+	public boolean configEstPresente() {
+		return false;
 	}
 }
