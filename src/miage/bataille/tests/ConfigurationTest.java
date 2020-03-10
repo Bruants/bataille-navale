@@ -30,7 +30,7 @@ class ConfigurationTest {
 
 	@Test
 	void testConfigurationIntIntBatimentArray() {
-		fixture = new Configuration(15, 15, new Batiment(1, "Coco"), new Batiment(2, "Blublu"));
+		fixture = new Configuration(15, 15, "COnfig 1", new Batiment(1, "Coco"), new Batiment(2, "Blublu"));
 		assertEquals(fixture.getFlotte().get(0).getNom(), "Coco");
 		assertEquals(fixture.getFlotte().get(0).getTailleLgr(), 1);
 		assertEquals(fixture.getFlotte().get(0).getTailleHaut(), 1);
