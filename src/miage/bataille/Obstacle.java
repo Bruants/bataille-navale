@@ -20,6 +20,20 @@ public abstract class Obstacle {
     protected int tailleHaut;
 
     /**
+     * @return la largeur en cellules de l'obstacle
+     */
+    public int getTailleLgr() {
+		return tailleLgr;
+	}
+
+    /**
+     * @return la hauteur en cellules de l'obstacle
+     */
+	public int getTailleHaut() {
+		return tailleHaut;
+	}
+
+	/**
      * Definit si l'obstacle sera touchable, puis coulable.
      */
     @objid ("afb441a8-5412-4ab1-8773-5e1cdb696159")
