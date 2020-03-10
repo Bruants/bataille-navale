@@ -6,6 +6,11 @@ import com.modeliosoft.modelio.javadesigner.annotations.objid;
 @objid ("df73f8f0-8de5-486c-802d-307ecfe68b1b")
 public class Partie {
 	
+	/**
+	 * Configuration de la partie courante
+	 */
+	private Configuration config;
+	
     /**
      * Zones contigues représentant la flotte de la partie
      */
@@ -22,9 +27,17 @@ public class Partie {
     /**
      * Initialise une nouvelle partie par défaut.
      */
-    //TODO: Problème -> aucun bâtiments initialisés
-    public Partie() {
-    	
+    public Partie() {	
+    	this(new Configuration());
+    }
+    
+    /**
+     * Initialise la partie avec une configuration
+     * @param conf
+     */
+    public Partie(Configuration confPartie) {
+    	config = confPartie;
+
     	compose = new ArrayList<ZoneContigue>();
     	coups = new ArrayList<Cellule>();
     }
@@ -36,7 +49,9 @@ public class Partie {
      */
     public void ajouterZoneContigue(ZoneContigue aAjouter) throws Exception {
     	boolean valide = true;
+    	/* Parcours des cellules de la zone en paramétre */
     	for(int i = 0 ; i < aAjouter.getPossede().size() && valide; i++) {
+    		/* Verifie si la cellule est disponible */
     		for(int j = 0 ; j < compose.size() && valide; j++) {
     			valide = !compose.get(j).existe(aAjouter.getPossede().get(i).getCoordX(),aAjouter.getPossede().get(i).getCoordY());
     		}
