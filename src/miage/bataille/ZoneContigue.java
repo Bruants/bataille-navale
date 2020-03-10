@@ -112,8 +112,7 @@ public class ZoneContigue {
     	 * Vérifie que la cellule a bien été trouvée. si getCoordX != x ou getCoordY != y,
     	 * la cellule n'existe pas.
     	 */
-        return possede.get(placement).getCoordX() == coordX 
-        	   && possede.get(placement).getCoordY() == coordY ? possede.get(placement) : null;
+        return possede.size() > placement ? possede.get(placement) : null;
     }
 
     /**
@@ -155,7 +154,4 @@ public class ZoneContigue {
 	public ArrayList<Cellule> getPossede() {
 		return possede;
 	}
-    
-    
-
 }

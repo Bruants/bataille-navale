@@ -3,6 +3,7 @@
  */
 package miage.bataille.tests;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import org.junit.jupiter.api.Test;
 
 import miage.bataille.Batiment;
+import miage.bataille.Cellule;
 import miage.bataille.Partie;
 import miage.bataille.ZoneContigue;
 
@@ -33,6 +35,8 @@ class ZoneContigueTest {
 			new ZoneContigue(batiments[2],1,1,1,1),
 			new ZoneContigue(batiments[0],0,3,0,8) // Superposiition sur un bateau existant
 	};
+	
+	Partie partie = new Partie();
 
 	/**
 	 * Test method for {@link miage.bataille.ZoneContigue#cellulesAAjouter(miage.bataille.Obstacle, int, int, int, int)}.
@@ -48,8 +52,6 @@ class ZoneContigueTest {
 	 */
 	@Test
 	void testZoneContigue() {
-		Partie partie = new Partie();
-
 		try {
 			ZoneContigue premierBateau = zones[0];
 			partie.ajouterZoneContigue(premierBateau);
@@ -68,11 +70,7 @@ class ZoneContigueTest {
 			assertEquals(3, partie.getCompose().size());
 
 
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -83,7 +81,31 @@ class ZoneContigueTest {
 	 */
 	@Test
 	void testGetCellule() {
-		fail("Not yet implemented");
+		Cellule estPresent;
+		
+		// Valid
+		estPresent = zones[0].getCellule(0, 0);
+		if(estPresent.getCoordX() != 0 || estPresent.getCoordY() != 0 || estPresent.getTouche() == true) {
+			fail("Cellule inexistante [0,0]");
+		}
+		estPresent = zones[0].getCellule(0, 1);
+		if(estPresent.getCoordX() != 0 || estPresent.getCoordY() != 1 || estPresent.getTouche() == true) {
+			fail("Cellule inexistante [0,1]");
+		}
+		
+		// Invalid
+		estPresent = zones[0].getCellule(1, 1);
+		if(estPresent != null) {
+			fail("Cellule existante [1,1]");
+		}
+		estPresent = zones[0].getCellule(-1, -1);
+		if(estPresent != null) {
+			fail("Cellule existante [-1,-1]");
+		}
+		estPresent = zones[2].getCellule(2, 2);
+		if(estPresent != null) {
+			fail("Cellule existante [2,2]");
+		}
 	}
 
 	/**
@@ -91,7 +113,27 @@ class ZoneContigueTest {
 	 */
 	@Test
 	void testExiste() {
-		fail("Not yet implemented");
+		// Coord Négatives
+		assertFalse(zones[0].existe(-1, -1));
+		assertFalse(zones[0].existe(-1, 0));
+		assertFalse(zones[0].existe(0, -1));
+		
+		// Coord existantes
+		assertTrue(zones[0].existe(0, 0));
+		assertTrue(zones[0].existe(0, 1));
+		assertTrue(zones[0].existe(0, 2));
+		assertTrue(zones[0].existe(0, 3));
+		assertTrue(zones[0].existe(0, 4));
+		assertTrue(zones[0].existe(0, 5));
+		
+		assertTrue(zones[2].existe(1, 2));
+		
+		//Coord inexistantes
+		assertFalse(zones[0].existe(1, 0));
+		assertFalse(zones[0].existe(0, 6));
+		assertFalse(zones[0].existe(5, 4));
+		assertFalse(zones[2].existe(1, 1));
+		
 	}
 
 	/**
@@ -99,7 +141,21 @@ class ZoneContigueTest {
 	 */
 	@Test
 	void testEstCoule() {
-		fail("Not yet implemented");
+		try {
+			partie.ajouterZoneContigue(zones[3]); // bateau de 1 case en 1,1
+			assertFalse(zones[3].estCoule());
+			partie.tirer(1, 1);
+			assertTrue(zones[3].estCoule());
+			partie.ajouterZoneContigue(zones[1]); // bateau de 3 cases en 2,1 2,2 2,3
+			partie.tirer(2, 1);
+			assertFalse(zones[1].estCoule());
+			partie.tirer(2, 2);
+			assertFalse(zones[1].estCoule());
+			partie.tirer(2, 3);
+			assertTrue(zones[1].estCoule());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -107,7 +163,8 @@ class ZoneContigueTest {
 	 */
 	@Test
 	void testEstTouchable() {
-		fail("Not yet implemented");
+		assertTrue(zones[0].estTouchable());
+//		fail("Not yet implemented");
 	}
 
 }
