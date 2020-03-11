@@ -45,21 +45,20 @@ public class Partie {
     /**
      * Ajoute la zone contigue à la partie si elle n'empiete sur aucune autre zone
      * @param aAjouter
-     * @throws Exception TODO
+     * @throws IllegalArgumentException La zone contigue empietre sur une cellule déja utilisé
      */
-    public void ajouterZoneContigue(ZoneContigue aAjouter) throws Exception {
+    public void ajouterZoneContigue(ZoneContigue aAjouter) throws IllegalArgumentException {
     	boolean valide = true;
     	/* Parcours des cellules de la zone en paramétre */
     	for(int i = 0 ; i < aAjouter.getPossede().size() && valide; i++) {
     		/* Verifie si la cellule est disponible */
     		for(int j = 0 ; j < compose.size() && valide; j++) {
-    			valide = !compose.get(j).existe(aAjouter.getPossede().get(i).getCoordX(),aAjouter.getPossede().get(i).getCoordY());
+    			if(!compose.get(j).existe(aAjouter.getPossede().get(i).getCoordX(),aAjouter.getPossede().get(i).getCoordY())){
+    	    		throw new IllegalArgumentException("La cellule " + (i+1) + ';' +(j+1) + " empiete une déja existante");
+    			}
+    		
     		}
     	}
-    	
-    	if (!valide) {
-    		throw new Exception("TODO"); //TODO
-    	} // else
     	compose.add(aAjouter);
     }
     
