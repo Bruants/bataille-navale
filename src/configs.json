@@ -3,8 +3,8 @@
         {
             "nom" : "Config1",
             "carte" : { 
-                "longueurCarte":40,
-                "largeurCarte":30
+                "longueurCarte":12,
+                "largeurCarte":8
             },
 			"flotte" : [
                 {"taille": 4, "nom": "porte-avion"},
@@ -17,8 +17,8 @@
         {
             "nom" : "Config2",
             "carte" : { 
-                "longueurCarte":10,
-                "largeurCarte":20
+                "longueurCarte":26,
+                "largeurCarte":26
             },
             "flotte" : [
                 {"taille": 9, "nom": "porte-croiseur"},
