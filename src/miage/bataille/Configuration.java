@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.IllegalFormatWidthException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,6 +21,16 @@ import org.json.simple.parser.ParseException;
  */
 public class Configuration {
 
+	/**
+	 * Définit la longueur maximale de la mer
+	 */
+	private static final int LONGUEUR_MAX = 26;
+	
+	/**
+	 * Definit la hauteur maximale de la mer
+	 */
+	private static final int HAUTEUR_MAX = 26;
+	
 	/** Longueur maximale de la carte définit sur X */
 	private int longueurCarte;
 
@@ -38,13 +50,7 @@ public class Configuration {
 	 * Création d'une configuration de base
 	 */
 	public Configuration() {
-
-		flotte = new ArrayList<Batiment>();
-
-		nom = "Défaut";
-		
-		longueurCarte = 12;
-		hauteurCarte = 12;
+		this(12, 12, "Défaut", new ArrayList<Batiment>());
 
 		flotte.add(new Batiment(4, "porte-avion"));
 		flotte.add(new Batiment(3, "croiseur"));
@@ -65,10 +71,10 @@ public class Configuration {
 	 * @param longueurCarte longueur x de la carte
 	 * @param hauteurCarte hauteur y de la carte
 	 * @param nom Le nom de la configuration
-	 * @param batFlotte batiments à ajouter a la flotte
+	 * @param batFlotte batiments à ajouter a la flotte sous forme de tableau
 	 */
 	public Configuration(int longueurCarte, int hauteurCarte, String nom, Batiment...batFlotte) {
-		//TODO
+		this( longueurCarte, hauteurCarte, nom, new ArrayList<Batiment>(Arrays.asList(batFlotte)) );	
 	}
 	
 	/**
@@ -77,9 +83,18 @@ public class Configuration {
 	 * @param longueurCarte longueur x de la carte
 	 * @param hauteurCarte hauteur y de la carte
 	 * @param nom Le nom de la configuration
-	 * @param batFlotte batiments à ajouter a la flotte
+	 * @param batFlotte batiments à ajouter a la flotte sous forme de liste
+	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur innatendu
 	 */
-	public Configuration(int longueurCarte, int hauteurCarte, String nom, ArrayList<Batiment> batFlotte) {
+	public Configuration(int longueurCarte, int hauteurCarte, String nom, ArrayList<Batiment> batFlotte) throws IllegalFormatWidthException{
+		/* Tests si les paramétres donnés sont dans les intervalles */
+		if (longueurCarte > LONGUEUR_MAX || longueurCarte <= 0) {
+			throw new IllegalFormatWidthException(longueurCarte);
+		}
+		if(hauteurCarte > HAUTEUR_MAX || hauteurCarte <= 0) {
+			throw new IllegalFormatWidthException(hauteurCarte);
+		}
+		
 		this.longueurCarte = longueurCarte;
 		this.hauteurCarte = hauteurCarte;
 		this.nom = nom;

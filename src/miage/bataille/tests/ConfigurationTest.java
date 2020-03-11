@@ -3,6 +3,7 @@ package miage.bataille.tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatWidthException;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class ConfigurationTest {
 	/**
 	 * Fixture de test
 	 */
-	private Configuration fixture;
+	private Configuration fixture = new Configuration(15, 15, "COnfig 1", new Batiment(1, "Coco"), new Batiment(2, "Blublu"));
 	
 	@Test
 	void testConfiguration() {
@@ -30,7 +31,7 @@ class ConfigurationTest {
 
 	@Test
 	void testConfigurationIntIntBatimentArray() {
-		fixture = new Configuration(15, 15, "COnfig 1", new Batiment(1, "Coco"), new Batiment(2, "Blublu"));
+
 		assertEquals(fixture.getFlotte().get(0).getNom(), "Coco");
 		assertEquals(fixture.getFlotte().get(0).getTailleLgr(), 1);
 		assertEquals(fixture.getFlotte().get(0).getTailleHaut(), 1);
@@ -39,6 +40,10 @@ class ConfigurationTest {
 		assertEquals(fixture.getFlotte().get(1).getTailleHaut(), 1);
 		assertEquals(fixture.getHauteurCarte(), 15);
 		assertEquals(fixture.getLongueurCarte(), 15);
+		
+		assertThrows(IllegalFormatWidthException.class, 
+				() -> new Configuration(-2, -2, "impo", new Batiment(2, "coco")));
+		
 	}
 
 	@Test
