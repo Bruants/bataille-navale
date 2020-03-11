@@ -3,6 +3,7 @@ package miage.bataille.tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.IllegalFormatWidthException;
 
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,20 @@ class ConfigurationTest {
 				() -> new Configuration(-2, -2, "impo", new Batiment(2, "coco")));
 		assertThrows(IllegalFormatWidthException.class, 
 				() -> new Configuration(27, -27, "impo", new Batiment(2, "coco")));
+		
+	}
+	
+	@Test
+	void testChargerConfig() {
+		HashMap<String,Configuration> configs = Configuration.chargerConfig("./tests/configs.json");
+		// Test de la 1ere config
+		
+	}
+	
+	@Test
+	void testEnregistrerConfig() {
+		Configuration.enregistrerConfig("./tests/configs_enregistrer.json");
+		// Test de la 1ere config
 		
 	}
 

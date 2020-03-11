@@ -1,0 +1,32 @@
+{
+    "config" : [
+        {
+            "nom" : "Config1",
+            "carte" : { 
+                "longueurCarte":12,
+                "largeurCarte":8
+            },
+			"flotte" : [
+                {"taille": 4, "nom": "porte-avion"},
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 1, "nom": "vedette"},
+                {"taille": 1, "nom": "vedette"}
+            ]
+        },
+        {
+            "nom" : "Config2",
+            "carte" : { 
+                "longueurCarte":26,
+                "largeurCarte":26
+            },
+            "flotte" : [
+                {"taille": 9, "nom": "porte-croiseur"},
+                {"taille": 9, "nom": "porte-croiseur"},
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 1, "nom": "vedette"},
+                {"taille": 1, "nom": "vedette"}
+            ]
+        }
+    ]
+}

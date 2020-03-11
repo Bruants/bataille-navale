@@ -2,10 +2,14 @@ package miage.bataille;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.IllegalFormatWidthException;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -44,7 +48,7 @@ public class Configuration {
 	private String nom;
 	
 	/** Toutes les configurations chargées */
-	private static ArrayList<Configuration> listeDeConfigs = chargerConfig("./src/configs.json");
+	private static HashMap<String,Configuration> listeDeConfigs = chargerConfig("./src/configs.json");
 
 	/** 
 	 * Création d'une configuration de base
@@ -188,8 +192,8 @@ public class Configuration {
 	 * @param chemin Le path vers le fichier de configuration
 	 * @return Une liste qui contient toutes les configurations du fichier
 	 */
-	public static ArrayList<Configuration> chargerConfig(String chemin) {
-		ArrayList<Configuration> aCharger = new ArrayList<Configuration>();
+	public static HashMap<String,Configuration> chargerConfig(String chemin) {
+		HashMap<String,Configuration> aCharger = new HashMap<String,Configuration>();
 		
 		JSONParser parser = new JSONParser();
 		try {
@@ -212,7 +216,7 @@ public class Configuration {
 					JSONObject bateauJSON = (JSONObject) bateau; // Le JSON du bateau
 					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); // Ajout à la flotte
 				}
-				aCharger.add(new Configuration((int)longueurCarte,(int)largeurCarte, nom, flotte));
+				aCharger.put(nom,new Configuration((int)longueurCarte,(int)largeurCarte, nom, flotte));
 			}
 
 		} catch (ParseException e) {
@@ -227,11 +231,93 @@ public class Configuration {
 	}
 	
 	/**
+	 * Enregistre listeDeConfigs dans le path passé en paramètre 
+	 * Chaque configuration possède les informations suivantes :
+	 * 	- nom (String)
+	 *  - carte (Object)
+	 *  	- longueurCarte (int)
+	 *  	- largeurCarte (int)
+	 *  - flotte (Array of Object)
+	 *  	- taille (int)
+	 *  	- nom (String)
+	 * Au format suivant :
+	 * {
+	 *	    "config" : [
+	 *	        {
+	 *	            "nom" : "Config1",
+	 *	            "carte" : { 
+	 *	                "longueurCarte":40,
+	 *	                "largeurCarte":30
+	 *	            },
+	 *				"flotte" : [
+	 *	                {"taille": 4, "nom": "porte-avion"},
+	 *	                {"taille": 3, "nom": "croiseur"},
+	 *	                ...
+	 *	            ]
+	 *	        },
+	 *	        {
+	 *	            "nom" : "Config2",
+	 *	            "carte" : { 
+	 *	                "longueurCarte":10,
+	 *	                "largeurCarte":20
+	 *	            },
+	 *	            "flotte" : [
+	 *	                {"taille": 9, "nom": "porte-croiseur"},
+	 *	                {"taille": 3, "nom": "croiseur"},
+	 *	                ...
+	 *	            ]
+	 *	        }
+	 *	    ]
+	 *	}
+	 * @param chemin Le path vers le fichier de configuration
+	 */
+	public static void enregistrerConfig(String chemin) {		
+		JSONArray configs = new JSONArray();
+		Set cles = listeDeConfigs.keySet();
+		Iterator i = cles.iterator();
+
+		try {
+			// On parcourt toutes les configs
+			while (i.hasNext()) {
+				Configuration elt = listeDeConfigs.get(i.next());
+				
+				JSONObject config = new JSONObject(); // Contient la config en cours
+				// Enregistre les feuilles de premier niveau (nom, longueurCarte, largeurCarte)
+				config.put("nom", elt.nom);
+				config.put("longueurCarte", elt.longueurCarte);
+				config.put("largeurCarte", elt.hauteurCarte);
+
+				// Enregistre les batiments
+				JSONArray flotteArray = new JSONArray();
+				for(Batiment bateau : elt.flotte) {
+					// Crée l'objet bateau
+					JSONObject bateauObj = new JSONObject();
+					bateauObj.put("taille",bateau.tailleLgr);
+					bateauObj.put("nom",bateau.nom);
+					flotteArray.add(bateauObj); // Enregistre le bateau
+				}
+				config.put("flotte", flotteArray);
+				
+				// Enregsitre la config
+				configs.add(config);
+			}
+			// Ecriture de toutes les configs
+			FileWriter writer = new FileWriter(chemin);
+			writer.write(configs.toJSONString());
+			writer.flush();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Ajoute la configuration aux liste de configuration
 	 * @param aAjouter La configuration qui sera ajoutée
 	 */
 	public void ajouterConfig(Configuration aAjouter) {
-		listeDeConfigs.add(aAjouter);
+		listeDeConfigs.put(aAjouter.nom,aAjouter);
 	}
 	
 	
