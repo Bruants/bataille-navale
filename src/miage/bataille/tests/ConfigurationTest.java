@@ -43,6 +43,8 @@ class ConfigurationTest {
 		
 		assertThrows(IllegalFormatWidthException.class, 
 				() -> new Configuration(-2, -2, "impo", new Batiment(2, "coco")));
+		assertThrows(IllegalFormatWidthException.class, 
+				() -> new Configuration(27, -27, "impo", new Batiment(2, "coco")));
 		
 	}
 
