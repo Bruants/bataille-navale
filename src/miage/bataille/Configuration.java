@@ -230,6 +230,24 @@ public class Configuration {
 		return aCharger;
 	}
 	
+    /**
+     * Recupère la config passée en paramètre
+     * @param config La config que l'on veut récupérer
+     * @return L'objet configuration que l'on veut
+     */
+    public Configuration recupererConfig(String config) {
+    	return listeDeConfigs.get(config);
+    }
+    
+    /**
+     * Recupère toutes les configs passées en paramètre
+     * @param config La config que l'on veut récupérer
+     * @return Toutes les configurations enregsitrées
+     */
+    public HashMap<String,Configuration> recupererTooutesLesConfigs() {
+    	return listeDeConfigs;
+    }
+	
 	/**
 	 * Enregistre listeDeConfigs dans le path passé en paramètre 
 	 * Chaque configuration possède les informations suivantes :
