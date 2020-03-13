@@ -273,8 +273,8 @@ public class Configuration {
 	 */
 	public static void enregistrerConfig(String chemin) {		
 		JSONArray configs = new JSONArray();
-		Set cles = listeDeConfigs.keySet();
-		Iterator i = cles.iterator();
+		Set<String> cles = listeDeConfigs.keySet();
+		Iterator<String> i = cles.iterator();
 
 		try {
 			// On parcourt toutes les configs
