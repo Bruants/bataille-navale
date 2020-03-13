@@ -100,5 +100,14 @@ class PartieTest {
 		
 		//TODO: Tester les cas ou l'on dépasse la taille de la carte
 	}
+	
+	/**
+	 * Test method for {@link miage.bataille.Partie#placementBatimentAuto()}
+	 */
+	@Test
+	void testPlacementBatimentAuto() {
+		
+	}
+	
 
 }
