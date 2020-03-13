@@ -1,10 +1,6 @@
-#Wed Mar 11 23:43:07 CET 2020
-org.modelio.module.propertytab.JavaDesigner\ v3.8.01\ GModule\ @file\:///C\:/Users/damien.avetta-raymon/.modelio/3.8/modules/JavaDesigner_3.8.01/JavaDesigner_3.8.01.jmdac\ runtime\ module_.org.modelio.app.ui.model.perspective.parentId=org.modelio.app.bottom.parts
-org.modelio.module.propertytab.JavaDesigner\ v3.9.00\ GModule\ @null\ runtime\ module_.org.modelio.app.ui.model.perspective.parentId=org.modelio.app.bottom.parts
-org.modelio.module.propertytab.JavaDesigner\ v3.8.01\ GModule\ @file\:///C\:/Users/damien.avetta-raymon/.modelio/3.8/modules/JavaDesigner_3.8.01/JavaDesigner_3.8.01.jmdac\ runtime\ module_.org.modelio.full.perspective.parentId=app.ui.ext_com.partstack.bottom
-org.modelio.module.propertytab.JavaDesigner\ v3.9.00\ GModule\ @null\ runtime\ module_.org.modelio.full.perspective.parentId=app.ui.ext_com.partstack.bottom
-org.modelio.module.propertytab.JavaDesigner\ v3.9.00\ GModule\ @null\ runtime\ module_.org.modelio.development.perspective.parentId=app.ui.ext_com.partstack.bottom
-org.modelio.module.propertytab.JavaDesigner\ v3.9.00\ GModule\ @null\ runtime\ module_.org.modelio.diagram.perspective.parentId=app.ui.ext_com.partstack.right
-org.modelio.diagram.editor.OpenedDiagrams0='BatailleNavale' {8337990c-6565-4638-ad32-6d23ff84c082} Standard.ClassDiagram
+#Tue Mar 03 19:57:52 CET 2020
 org.modelio.module.propertytab.JavaDesigner\ v3.8.01\ GModule\ @file\:///C\:/Users/damien.avetta-raymon/.modelio/3.8/modules/JavaDesigner_3.8.01/JavaDesigner_3.8.01.jmdac\ runtime\ module_.org.modelio.diagram.perspective.parentId=app.ui.ext_com.partstack.right
+org.modelio.module.propertytab.JavaDesigner\ v3.8.01\ GModule\ @file\:///C\:/Users/damien.avetta-raymon/.modelio/3.8/modules/JavaDesigner_3.8.01/JavaDesigner_3.8.01.jmdac\ runtime\ module_.org.modelio.full.perspective.parentId=app.ui.ext_com.partstack.bottom
+org.modelio.module.propertytab.JavaDesigner\ v3.8.01\ GModule\ @file\:///C\:/Users/damien.avetta-raymon/.modelio/3.8/modules/JavaDesigner_3.8.01/JavaDesigner_3.8.01.jmdac\ runtime\ module_.org.modelio.app.ui.model.perspective.parentId=org.modelio.app.bottom.parts
+org.modelio.diagram.editor.OpenedDiagrams0='BatailleNavale' {8337990c-6565-4638-ad32-6d23ff84c082} Standard.ClassDiagram
 org.modelio.module.propertytab.JavaDesigner\ v3.8.01\ GModule\ @file\:///C\:/Users/damien.avetta-raymon/.modelio/3.8/modules/JavaDesigner_3.8.01/JavaDesigner_3.8.01.jmdac\ runtime\ module_.org.modelio.development.perspective.parentId=app.ui.ext_com.partstack.bottom
