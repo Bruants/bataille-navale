@@ -165,6 +165,7 @@ public class DeroulementPartie {
 		String coordonnee;
 		String resultat; // Le résultat d'un tir
 
+		int coordonneeX, coordonneeY;
 
 		/* Phase 1 : initialisation de la partie */
 		initialisation();
@@ -172,8 +173,29 @@ public class DeroulementPartie {
 		/* Phase 2 : Déroulement d'un tour */
 		for (int nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
 			System.out.print("Coup " + nbTour + " > ");
+			
+			// Récupération des coordonnées saisies
 			coordonnee = saisieTir();	
-			resultat = partie.tirer(coordonnee.charAt(1) - 1, coordonnee.charAt(0) - 65);
+			
+			// Conversion des coordonnées saisies pour pouvoir tirer
+			coordonneeX = Integer.parseInt(coordonnee.substring(1));
+			coordonneeX -= 1;
+			
+			coordonneeY = coordonnee.charAt(0);
+			coordonneeY -= 65;
+			
+			// Tir sur la carte
+			resultat = partie.tirer(coordonneeX, coordonneeY);
+			
+//			int y = coordonnee.charAt(0);
+//			y -= 65;
+//			
+//			int x = Integer.parseInt(coordonnee.substring(1));
+//			x -= 1;
+//			System.out.println("X : " + x);
+//			System.out.println("Y : " + y);
+			//resultat = partie.tirer(Integer.parseInt(coordonnee.substring(1)),
+			//		Integer.parseInt(Character.toString(coordonnee.charAt(0))));
 			
 			if (resultat.equals("plouf")) {
 				carte.put(coordonnee, "  o  ");
