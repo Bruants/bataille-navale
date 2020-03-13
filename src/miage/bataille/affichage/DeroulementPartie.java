@@ -13,12 +13,17 @@ import miage.bataille.Partie;
  * @author Audric POUZELGUES, Damien AVETTA-RAYMOND
  */
 public class DeroulementPartie {
-
+	
+	
+	private final static String MESSAGE_ERREUR_DE_SAISIE = "Les coordonnées saisies sont incorrectes. \n\n"
+			+ "Veuillez saisir des coordonnées du type LETTRE + CHIFFRE : 'A1' par exemple\n"
+			+ "et faisant partit de la carte.\n";
+ 
 	/** 
 	 * Liste contenant la situation des différentes cellules 
 	 * - : pas de coup
 	 * * : touché
-	 * o : coup à l'eau
+	 * o : plouf
 	 */
 	private static HashMap<String, String> carte = new HashMap<String, String>();
 
@@ -102,8 +107,13 @@ public class DeroulementPartie {
 			
 			// Vérification de la taille de la chaine 
 			valide = coordonnee.length() == 2 
-					 && coordonnee.charAt(0) >= 65 && coordonnee.charAt(0) < 65 + tailleLongueur
+					 && coordonnee.toUpperCase().charAt(0) >= 65 && coordonnee.charAt(0) < 65 + tailleLongueur
 					 && coordonnee.charAt(1) >= 49 && coordonnee.charAt(1) <= 49 + tailleHauteur;
+			
+			// Message d'erreur si non valide
+			if (!valide) {
+				System.out.println(MESSAGE_ERREUR_DE_SAISIE);
+			}
 			
 		} while (!valide);
 		
@@ -123,11 +133,11 @@ public class DeroulementPartie {
 		/* Phase 1 : initialisation de la partie */
 		initialisation();
 		/* Phase 2 : Déroulement d'un tour */
-		for (int nbTour = 1 ; partie.getNbBatiments() > 0 ; nbTour++) {
+		for (int nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
 			System.out.print("Coup " + nbTour + " > ");
 			coordonnee = saisieTir();	
 			resultat = partie.tirer(coordonnee.charAt(1) - 1, coordonnee.charAt(0) - 65);
-			if (resultat.equals("coup à l'eau")) {
+			if (resultat.equals("plouf")) {
 				carte.put(coordonnee, " o ");
 			} else {
 				carte.put(coordonnee, " * ");
