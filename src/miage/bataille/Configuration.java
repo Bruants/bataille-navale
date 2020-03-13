@@ -244,7 +244,7 @@ public class Configuration {
      * @param config La config que l'on veut récupérer
      * @return Toutes les configurations enregsitrées
      */
-    public HashMap<String,Configuration> recupererTooutesLesConfigs() {
+    public HashMap<String,Configuration> recupererToutesLesConfigs() {
     	return listeDeConfigs;
     }
 	
