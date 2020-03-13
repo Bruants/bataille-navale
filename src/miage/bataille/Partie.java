@@ -20,23 +20,23 @@ public class Partie {
 	private Configuration config;
 	
 	/**
-	 * Nombre de batiments non coulés
+	 * Nombre de batiments non coulï¿½s
 	 */
 	private int nbBatiments;
 	
     /**
-     * Zones contigues représentant la flotte de la partie
+     * Zones contigues reprï¿½sentant la flotte de la partie
      */
     private ArrayList<ZoneContigue> compose;
 
     /**
-     * Liste des coups réalisés durant la partie
+     * Liste des coups rï¿½alisï¿½s durant la partie
      */
     public ArrayList<Cellule> coups;
     
     
     /**
-     * Initialise une nouvelle partie par défaut.
+     * Initialise une nouvelle partie par dï¿½faut.
      */
     public Partie() {	
     	this(new Configuration());
@@ -64,8 +64,8 @@ public class Partie {
     }
     
     /**
-     * Permet de placer un batiment sur la mer de maniére pseudo-aléatoire
-     * et minimiser les chances que les batiments doit cote à cote avec
+     * Permet de placer un batiment sur la mer de maniere pseudo-aleatoire
+     * et minimiser les chances que les batiments soient cote a cote avec
      * un autre batiment
      * @param aPLacer Batiment a placer sur la mer
      */
@@ -87,7 +87,7 @@ public class Partie {
     	}
     	
 
-    	// Test si la zone n'en empietre pas une autre
+    	// Test si la zone n'empiete pas sur une autre
     	try {
 	    	//Ajoute le batiment comme zone dans les zones de la mer
 	    	zoneAAjouter =  new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 
@@ -99,31 +99,31 @@ public class Partie {
     		return placementBatimentAuto(aPLacer);
     	}
     	
-    	//TODO: Test que le batiment ne soit pas à coté d'un déja en jeu
+    	//TODO: Test que le batiment ne soit pas ï¿½ cotï¿½ d'un dï¿½ja en jeu
 //    	for(int indiceZone = 0; indiceZone < compose.size() && valide; indiceZone++) {
 //    		if(compose.get(indiceZone).existe(xAPlacer, yAPLacer) ){
 //    			return placementBatimentAuto(aPLacer);
 //    		}
 //    	}
     	
-    	//Ajout de la zone correctement déroulé
+    	//Ajout de la zone correctement dï¿½roulï¿½
     	ajouterZoneContigue(zoneAAjouter);
     	return true;
     }
     
     /**
-     * Ajoute la zone contigue à la partie si elle n'empiete sur aucune autre zone
+     * Ajoute la zone contigue ï¿½ la partie si elle n'empiete sur aucune autre zone
      * @param aAjouter
-     * @throws IllegalArgumentException La zone contigue empietre sur une cellule déja utilisé
+     * @throws IllegalArgumentException La zone contigue empietre sur une cellule dï¿½ja utilisï¿½
      */
     public void ajouterZoneContigue(ZoneContigue aAjouter) throws IllegalArgumentException {
     	boolean valide = true;
-    	/* Parcours des cellules de la zone en paramétre */
+    	/* Parcours des cellules de la zone en paramï¿½tre */
     	for (int i = 0 ; i < aAjouter.getPossede().size() && valide; i++) {
     		/* Verifie si la cellule est disponible */
     		for (int j = 0 ; j < compose.size() && valide; j++) {
     			if (!compose.get(j).existe(aAjouter.getPossede().get(i).getCoordX(),aAjouter.getPossede().get(i).getCoordY())){
-    	    		throw new IllegalArgumentException("La cellule " + (i+1) + ';' +(j+1) + " empiete une déja existante");
+    	    		throw new IllegalArgumentException("La cellule " + (i+1) + ';' +(j+1) + " empiete une dï¿½ja existante");
     			}
     		
     		}
@@ -136,7 +136,7 @@ public class Partie {
     
     /**
      * Initialise une nouvelle partie
-     * @param listeBatiments -> Liste des bâtiments à placer
+     * @param listeBatiments -> Liste des bï¿½timents ï¿½ placer
      * 							dans la partie.
      */
     public Partie(ArrayList<ZoneContigue> listeBatiments) {
@@ -145,25 +145,25 @@ public class Partie {
     }
     
     /**
-     * Tire sur une cellule aux coordonnées x et y
-     * Vérifie si une zone contigue contenant des bateaux a été touché
-     * Sauvegarde le coup tiré
-     * @param x -> Coordonnée en abcisses de la cellule tirée
-     * @param y -> Coordonnée en ordonnée de la cellule tirée
-     * @return le résultat du tir : Coup à l'eau / touché ou coulé
+     * Tire sur une cellule aux coordonnï¿½es x et y
+     * Vï¿½rifie si une zone contigue contenant des bateaux a ï¿½tï¿½ touchï¿½
+     * Sauvegarde le coup tirï¿½
+     * @param x -> Coordonnï¿½e en abcisses de la cellule tirï¿½e
+     * @param y -> Coordonnï¿½e en ordonnï¿½e de la cellule tirï¿½e
+     * @return le rï¿½sultat du tir : Coup ï¿½ l'eau / touchï¿½ ou coulï¿½
      */
     public String tirer(int x, int y) { 
-    	String resultat; // Résultat du tir si un batiment est touché (et coulé) ou non
+    	String resultat; // Rï¿½sultat du tir si un batiment est touchï¿½ (et coulï¿½) ou non
     	ZoneContigue zoneVisee;
-        Cellule celluleTiree; // Cellule tirée
+        Cellule celluleTiree; // Cellule tirï¿½e
         
-	    // Vérifie si la cellule choisie à touché un batiment ou non
+	    // Vï¿½rifie si la cellule choisie ï¿½ touchï¿½ un batiment ou non
 	  	if ((zoneVisee = rechercheZone(x, y)) == null) {	
-	  		// Bâtiment non trouvé
+	  		// Bï¿½timent non trouvï¿½
 	  		celluleTiree = new Cellule(x, y);
 	  		resultat = "plouf";
 		} else {
-			// Bâtiment trouvé
+			// Bï¿½timent trouvï¿½
 			celluleTiree = zoneVisee.getCellule(x, y);
 		    celluleTiree.aEteTouche();	 
 		 // Enregistrement du coup dans la liste des coups
@@ -180,9 +180,9 @@ public class Partie {
     
 
     /**
-     * Recherche à quelle zone appartient une cellule. Renvoie null si la cellule spécifiée
-     * par les coordonnées n'appartient à aucune zone
-     * @return ZoneContigue - renvois la zone contiguë où se trouve la cellule
+     * Recherche ï¿½ quelle zone appartient une cellule. Renvoie null si la cellule spï¿½cifiï¿½e
+     * par les coordonnï¿½es n'appartient ï¿½ aucune zone
+     * @return ZoneContigue - renvois la zone contiguï¿½ oï¿½ se trouve la cellule
      *                      - si aucune zone existe, renvoie null
      */
     private ZoneContigue rechercheZone(int x, int y) {
@@ -203,15 +203,15 @@ public class Partie {
 
     /**
      * Enregistre le coup pour la posterite
-     * Ajoute la cellule tirée à la liste des coups
-     * @param celulle tirée
+     * Ajoute la cellule tirï¿½e ï¿½ la liste des coups
+     * @param celulle tirï¿½e
      */
     private void enregistrerCoup(Cellule celluleTiree) {
     	coups.add(celluleTiree);
     }
   
     /**
-     * @return La liste de toutes les cellules tirées
+     * @return La liste de toutes les cellules tirï¿½es
      */
     public ArrayList<Cellule> getCellulesTirees() {
         return coups;
@@ -222,7 +222,7 @@ public class Partie {
 	}
 	
 	/**
-	 * @return le nombre de bâtiments encore en jeu
+	 * @return le nombre de bï¿½timents encore en jeu
 	 */
 	public int getNbBatiments() {
 		return nbBatiments;
