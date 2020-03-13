@@ -1,7 +1,6 @@
 package miage.bataille;
 
 import java.util.ArrayList;
-import com.modeliosoft.modelio.javadesigner.annotations.objid;
 /**
  * Represente une Zone Contigue
  * Une Zone Contigue est definie par une Cellule de début et une Cellule de fin
@@ -14,19 +13,16 @@ import com.modeliosoft.modelio.javadesigner.annotations.objid;
  * @author kevin.sannac
  * @version 0.1.0
  */
-@objid ("2e8da21e-beba-42d5-bf0e-19b344dad88e")
 public class ZoneContigue {
 	
     /**
      * Définit le type de l'Obstacle (Batiment,Terre,...)
      */
-    @objid ("2132ae47-3a82-4d9a-89ad-83899fefb346")
     private Obstacle obstacle;
 
     /**
      * Toutes les cellules de la Zone Contigue
      */
-    @objid ("af33c602-1450-47fe-8dbd-c541d5b9105d")
     private ArrayList<Cellule> possede = new ArrayList<Cellule> ();
 
     public static ArrayList<Cellule> cellulesAAjouter(Obstacle type, int xDeb, int yDeb, int xFin, int yFin) {
@@ -53,7 +49,6 @@ public class ZoneContigue {
      * @param yFin La coordonnée y de la fin de la zone
      * @throws IllegalArgumentException En cas de coordonnees invalides
      */
-    @objid ("1e4b1448-5f98-4465-9b41-780042ccf61c")
     public ZoneContigue(Obstacle type, int xDeb, int yDeb, int xFin, int yFin) throws IllegalArgumentException {
     	obstacle = type;
     	if(!coordonneesValides(xDeb, yDeb, xFin, yFin)) {
@@ -99,7 +94,6 @@ public class ZoneContigue {
      * @param coordY La coordonnée x de la Cellule tirée
      * @return la cellule qui correspond aux coordonnées x y, si elle n'existe pas null
      */
-    @objid ("200c06b7-f732-4284-88f8-0d62881dc8e2")
     public Cellule getCellule(int coordX, int coordY) {
     	int placement;
     	
@@ -120,7 +114,6 @@ public class ZoneContigue {
      * @param x La coordonnée x de la Cellule
      * @param y La coordonnée x de la Cellule     
      */
-    @objid ("6f46b07f-cacb-4f9c-8864-8f87265fa3f7")
     public boolean existe(int coordX, int coordY) {
     	return possede.contains(new Cellule(coordX, coordY));
     }
@@ -131,7 +124,6 @@ public class ZoneContigue {
      * @return true si toutes les cellules sont coulées
      *         false sinon
      */
-    @objid ("1e8fd3d2-552b-4844-8a32-acab6a84fb9e")
     public boolean estCoule() {
     	boolean coule = true;
     	/* On vérifie que toutes les cellules sont touchées */

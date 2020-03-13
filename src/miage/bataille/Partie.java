@@ -5,9 +5,7 @@
 package miage.bataille;
 
 import java.util.ArrayList;
-import com.modeliosoft.modelio.javadesigner.annotations.objid;
 
-@objid ("df73f8f0-8de5-486c-802d-307ecfe68b1b")
 /**
  * 
  * @author Damien Avetta
@@ -28,13 +26,11 @@ public class Partie {
     /**
      * Zones contigues représentant la flotte de la partie
      */
-    @objid ("22a7e834-949f-4ee9-ba2a-48ddd79efc94")
     private ArrayList<ZoneContigue> compose;
 
     /**
      * Liste des coups réalisés durant la partie
      */
-    @objid ("0b60c20d-3aa2-41ea-b085-67752fed6387")
     public ArrayList<Cellule> coups;
     
     
@@ -98,7 +94,6 @@ public class Partie {
      * @param y -> Coordonnée en ordonnée de la cellule tirée
      * @return le résultat du tir : Coup à l'eau / touché ou coulé
      */
-    @objid ("56659bde-06ae-44a1-abe1-82902d3b39cc")
     public String tirer(int x, int y) { 
     	String resultat; // Résultat du tir si un batiment est touché (et coulé) ou non
     	ZoneContigue zoneVisee;
@@ -134,7 +129,6 @@ public class Partie {
      * @return ZoneContigue - renvois la zone contiguë où se trouve la cellule
      *                      - si aucune zone existe, renvoie null
      */
-    @objid ("2ef7390a-0dbf-41c9-b8d0-5f83c1742a80")
     private ZoneContigue rechercheZone(int x, int y) {
         
         ZoneContigue trouve = null; // Cellule trouve dans une zone contigue
@@ -156,7 +150,6 @@ public class Partie {
      * Ajoute la cellule tirée à la liste des coups
      * @param celulle tirée
      */
-    @objid ("ce21b39e-cd8e-47d8-89ae-fe405c9c39ae")
     private void enregistrerCoup(Cellule celluleTiree) {
     	coups.add(celluleTiree);
     }
