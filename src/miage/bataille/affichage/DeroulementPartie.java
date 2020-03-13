@@ -118,9 +118,11 @@ public class DeroulementPartie {
 		
 		// Vérification de la taille et du contenu de la chaine 
 		try {
+			
 			valide = coordonnee.charAt(0) >= 65 && coordonnee.charAt(0) < 65 + tailleHauteur
 					&& Integer.parseInt(coordonnee.substring(1)) > 0 
 					&& Integer.parseInt(coordonnee.substring(1)) <= tailleLongueur;
+					
 		} catch (NumberFormatException e) {
 			valide = false;
 		}
@@ -143,6 +145,7 @@ public class DeroulementPartie {
 			System.out.print("Saisir une coordonnée : ");
 			coordonnee = entree.next() + entree.nextLine();
 			
+			coordonnee = coordonnee.toUpperCase();
 			
 			// Message d'erreur si les coordonnées sont non valides
 			if (!verifierSaisie(coordonnee)) {
@@ -161,15 +164,17 @@ public class DeroulementPartie {
 	public static void main(String[] args) {
 		String coordonnee;
 		String resultat; // Le résultat d'un tir
-		int nbTour;
-		
+
+
 		/* Phase 1 : initialisation de la partie */
 		initialisation();
+		
 		/* Phase 2 : Déroulement d'un tour */
-		for (nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
+		for (int nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
 			System.out.print("Coup " + nbTour + " > ");
 			coordonnee = saisieTir();	
 			resultat = partie.tirer(coordonnee.charAt(1) - 1, coordonnee.charAt(0) - 65);
+			
 			if (resultat.equals("plouf")) {
 				carte.put(coordonnee, "  o  ");
 			} else {
@@ -179,8 +184,7 @@ public class DeroulementPartie {
 			afficherCarte();
 		}
 		/* Phase 3 : Fin de la partie */
-		System.out.println("\nFin de partie !");
-		System.out.println("Nombre de coups : " + nbTour);
+		//TODO
 	}
 
 }
