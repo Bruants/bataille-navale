@@ -161,15 +161,12 @@ public class DeroulementPartie {
 	public static void main(String[] args) {
 		String coordonnee;
 		String resultat; // Le résultat d'un tir
+		int nbTour;
 		
-		creerCarte();
-		afficherCarte();
-
 		/* Phase 1 : initialisation de la partie */
 		initialisation();
-		
 		/* Phase 2 : Déroulement d'un tour */
-		for (int nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
+		for (nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
 			System.out.print("Coup " + nbTour + " > ");
 			coordonnee = saisieTir();	
 			resultat = partie.tirer(coordonnee.charAt(1) - 1, coordonnee.charAt(0) - 65);
@@ -182,7 +179,8 @@ public class DeroulementPartie {
 			afficherCarte();
 		}
 		/* Phase 3 : Fin de la partie */
-		//TODO
+		System.out.println("\nFin de partie !");
+		System.out.println("Nombre de coups : " + nbTour);
 	}
 
 }
