@@ -72,8 +72,8 @@ public class Partie {
      */
     private boolean placementBatimentAuto(Batiment aPLacer) {
     	
-    	int xAPlacer = config.getLongueurCarte() + (int)(Math.random() * (config.getLongueurCarte()));
-    	int yAPLacer = config.getHauteurCarte() + (int)(Math.random() * (config.getHauteurCarte()));
+    	int xAPlacer = (int)(Math.random() * (config.getLongueurCarte())) + 1;
+    	int yAPLacer = (int)(Math.random() * (config.getHauteurCarte())) + 1;
 
     	boolean valide = false;
     	boolean vertical = (Math.random() < 0.5);
@@ -90,17 +90,20 @@ public class Partie {
 
     	// Test si la zone n'empiete pas sur une autre
     	try {
+//    		System.out.println(!vertical?( xAPlacer + aPLacer.getTailleLgr() - 1 ):xAPlacer);
+//    		System.out.println(vertical?( yAPLacer+ aPLacer.getTailleLgr() - 1 ):yAPLacer );
 	    	//Ajoute le batiment comme zone dans les zones de la mer
-	    	zoneAAjouter =  new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 
+	    	ajouterZoneContigue( new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 
 	    			//Si horizontal alors ajouter la taille du batiment au x
-	    			!vertical?( xAPlacer + aPLacer.getTailleLgr() ):xAPlacer, 	
+	    			!vertical?( xAPlacer + aPLacer.getTailleLgr() - 1 ):xAPlacer, 	
 	    			//Si vertical alors ajoute la taille du batiment au y
-	    			vertical?( yAPLacer+ aPLacer.getTailleHaut() ):yAPLacer );
+	    			vertical?( yAPLacer+ aPLacer.getTailleLgr() - 1 ):yAPLacer ));
+	    	
     	} catch(IllegalArgumentException e) {
     		return placementBatimentAuto(aPLacer);
     	}
     	
-    	//TODO: Test que le batiment ne soit pas � cot� d'un d�ja en jeu
+    	//TODO: Test que le batiment ne soit pas a cote d'un deja en jeu
 //    	for(int indiceZone = 0; indiceZone < compose.size() && valide; indiceZone++) {
 //    		if(compose.get(indiceZone).existe(xAPlacer, yAPLacer) ){
 //    			return placementBatimentAuto(aPLacer);
@@ -108,7 +111,6 @@ public class Partie {
 //    	}
     	
     	//Ajout de la zone correctement d�roul�
-    	ajouterZoneContigue(zoneAAjouter);
     	return true;
     }
     
@@ -163,6 +165,7 @@ public class Partie {
 	  		// B�timent non trouv�
 	  		celluleTiree = new Cellule(x, y);
 	  		resultat = "plouf";
+		    enregistrerCoup(celluleTiree);
 		} else {
 			// B�timent trouv�
 			celluleTiree = zoneVisee.getCellule(x, y);
