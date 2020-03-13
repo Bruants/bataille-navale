@@ -5,9 +5,13 @@ package miage.bataille.tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 
+import miage.bataille.Batiment;
 import miage.bataille.Cellule;
+import miage.bataille.Configuration;
 import miage.bataille.Partie;
 
 /**
@@ -32,26 +36,26 @@ class PartieTest {
 		fixture[0].tirer(0, 0);
 		boolean tire = false;
 		
-		// Le cas ou aucun bâtiment n'a été touché
+		// Le cas ou aucun bï¿½timent n'a ï¿½tï¿½ touchï¿½
 		for (Cellule cellule : fixture[0].getCellulesTirees()) {
 			
-			// Vérifie si la cellule aux coordonnés x y est dans la liste
+			// Vï¿½rifie si la cellule aux coordonnï¿½s x y est dans la liste
 			if (cellule.getCoordX() == 0 && cellule.getCoordY() == 0) {
 				tire = true;
 			}
 		}
 		assertTrue(tire);
 		
-		//TODO: Le cas ou un bâtiment est touché
+		//TODO: Le cas ou un bï¿½timent est touchï¿½
 		
 		
-		// Le cas ou les coordonnées sont invalides
+		// Le cas ou les coordonnï¿½es sont invalides
 		fixture[0].tirer(-1, 5);
 		tire = false;
-		// Parcours de la liste des cellules déjà tirées
+		// Parcours de la liste des cellules dï¿½jï¿½ tirï¿½es
 		for (Cellule cellule : fixture[0].getCellulesTirees()) {
 			
-			// Vérifie si la cellule aux coordonnés x y est dans la liste
+			// Vï¿½rifie si la cellule aux coordonnï¿½s x y est dans la liste
 			if (cellule.getCoordX() == -1 && cellule.getCoordY() == 5) {
 				tire = true;
 			}
@@ -66,7 +70,7 @@ class PartieTest {
 	@Test
 	void testRechercheZone() {
 		
-		//TODO: Attendre d'avoir terminé la classe ZoneContigue
+		//TODO: Attendre d'avoir terminï¿½ la classe ZoneContigue
 		fail("Not yey implemented");
 	}
 	
@@ -98,16 +102,18 @@ class PartieTest {
 			assertTrue(cellule.getCoordX() >= 0);
 		}
 		
-		//TODO: Tester les cas ou l'on dépasse la taille de la carte
+		//TODO: Tester les cas ou l'on dï¿½passe la taille de la carte
 	}
 	
 	/**
 	 * Test method for {@link miage.bataille.Partie#placementBatimentAuto()}
 	 */
 	@Test
-	void testPlacementBatimentAuto() {
-		
+	void testPlacementBatimentAuto(Batiment aPLacer) {
+		//TODO: vÃ©rifier que le batiment n'est pas placÃ© hors de la mer
+		ArrayList<Batiment> flotte = new ArrayList<Batiment>();
+		flotte.add(new Batiment(3, "test"));
+		Configuration cfg = fixture[0].getConfiguration();
+		fixture[0].placementFlotteAuto(flotte);
 	}
-	
-
 }
