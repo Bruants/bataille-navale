@@ -135,10 +135,8 @@ public class ZoneContigue {
     public boolean estCoule() {
     	boolean coule = true;
     	/* On vérifie que toutes les cellules sont touchées */
-    	for(int i = 0; i < possede.size() && coule == true ; i++) {
-    		if(!possede.get(i).getTouche()) {
-    			coule = false;
-    		}
+    	for (int i = 0 ; i < possede.size() && coule ; i++) {
+    		coule = possede.get(i).getTouche();
     	}
     	return coule;
     }

@@ -1,15 +1,29 @@
+/*
+ * 
+ */
+
 package miage.bataille;
 
 import java.util.ArrayList;
 import com.modeliosoft.modelio.javadesigner.annotations.objid;
 
 @objid ("df73f8f0-8de5-486c-802d-307ecfe68b1b")
+/**
+ * 
+ * @author Damien Avetta
+ *
+ */
 public class Partie {
 	
 	/**
 	 * Configuration de la partie courante
 	 */
 	private Configuration config;
+	
+	/**
+	 * Nombre de batiments non coulés
+	 */
+	private int nbBatiments;
 	
     /**
      * Zones contigues représentant la flotte de la partie
@@ -40,6 +54,7 @@ public class Partie {
 
     	compose = new ArrayList<ZoneContigue>();
     	coups = new ArrayList<Cellule>();
+    	nbBatiments = compose.size();
     }
     
     /**
@@ -50,25 +65,27 @@ public class Partie {
     public void ajouterZoneContigue(ZoneContigue aAjouter) throws IllegalArgumentException {
     	boolean valide = true;
     	/* Parcours des cellules de la zone en paramétre */
-    	for(int i = 0 ; i < aAjouter.getPossede().size() && valide; i++) {
+    	for (int i = 0 ; i < aAjouter.getPossede().size() && valide; i++) {
     		/* Verifie si la cellule est disponible */
-    		for(int j = 0 ; j < compose.size() && valide; j++) {
-    			if(!compose.get(j).existe(aAjouter.getPossede().get(i).getCoordX(),aAjouter.getPossede().get(i).getCoordY())){
+    		for (int j = 0 ; j < compose.size() && valide; j++) {
+    			if (!compose.get(j).existe(aAjouter.getPossede().get(i).getCoordX(),aAjouter.getPossede().get(i).getCoordY())){
     	    		throw new IllegalArgumentException("La cellule " + (i+1) + ';' +(j+1) + " empiete une déja existante");
     			}
     		
     		}
     	}
     	compose.add(aAjouter);
+    	if (aAjouter.estTouchable()) {
+    		nbBatiments++;
+    	}
     }
     
     /**
-     * Initialise une nouelle partie
+     * Initialise une nouvelle partie
      * @param listeBatiments -> Liste des bâtiments à placer
      * 							dans la partie.
      */
     public Partie(ArrayList<ZoneContigue> listeBatiments) {
-    	
     	compose = listeBatiments;
     	coups = new ArrayList<Cellule>();
     }
@@ -79,47 +96,55 @@ public class Partie {
      * Sauvegarde le coup tiré
      * @param x -> Coordonnée en abcisses de la cellule tirée
      * @param y -> Coordonnée en ordonnée de la cellule tirée
+     * @return le résultat du tir : Coup à l'eau / touché ou coulé
      */
     @objid ("56659bde-06ae-44a1-abe1-82902d3b39cc")
-    public void tirer(int x, int y) {
+    public String tirer(int x, int y) { 
+    	String resultat; // Résultat du tir si un batiment est touché (et coulé) ou non
+    	ZoneContigue zoneVisee;
         Cellule celluleTiree; // Cellule tirée
         
-        // TODO: Vérifier si les coordonnées ne dépassent pas la taille de la carte.
-        if (x >= 0 && y >= 0) {
+        System.out.println(x  + "" + y);
 
-	        // Vérifie si la cellule choisie à touché un batiment ou non
-	    	if ((celluleTiree = rechercheZone(x, y)) == null) {
-	    		
-	    		// Bâtiment non trouvé
-	    		celluleTiree = new Cellule(x, y);
-	    		
+	    // Vérifie si la cellule choisie à touché un batiment ou non
+	  	if ((zoneVisee = rechercheZone(x, y)) == null) {	
+	  		// Bâtiment non trouvé
+	  		celluleTiree = new Cellule(x, y);
+	  		resultat = "plouf";
+		} else {
+			// Bâtiment trouvé
+			celluleTiree = zoneVisee.getCellule(x, y);
+		    celluleTiree.aEteTouche();	 
+		 // Enregistrement du coup dans la liste des coups
+		    enregistrerCoup(celluleTiree);
+		    if (zoneVisee.estCoule()) {
+		    	nbBatiments--;
+		    	resultat = "coule";
 		    } else {
-		    	// Bâtiment trouvé
-		    	celluleTiree.aEteTouche();	    	
-	    	}
-	    	
-	    	// Enregistrement du coup dans la liste des coups
-	    	enregistrerCoup(celluleTiree);
-        }
+		    	resultat = celluleTiree.getTouche() ? "touche" : "plouf";
+		    }
+	    }
+	    return resultat;  //TODO: renvoyer un autre type que string.
     }
     
 
     /**
-     * Renvoie la Cellule recherchee, sinon renvois null
-     * @return Cellule  - renvois la cellule de coordonée
-     *                  definit si elle est une zonecontigue
-     *                  - sinon renvois null, si aucunes cellule n'est trouve
+     * Recherche à quelle zone appartient une cellule. Renvoie null si la cellule spécifiée
+     * par les coordonnées n'appartient à aucune zone
+     * @return ZoneContigue - renvois la zone contiguë où se trouve la cellule
+     *                      - si aucune zone existe, renvoie null
      */
     @objid ("2ef7390a-0dbf-41c9-b8d0-5f83c1742a80")
-    private Cellule rechercheZone(int x, int y) {
+    private ZoneContigue rechercheZone(int x, int y) {
         
-        Cellule trouve = null; // Cellule trouve dans une zone contigue
+        ZoneContigue trouve = null; // Cellule trouve dans une zone contigue
         
         // Parcours de toutes les zones de la mer
-        for(int indiceRecherche = 0; indiceRecherche < compose.size(); indiceRecherche++) {
+        for (int indiceRecherche = 0; indiceRecherche < compose.size() && trouve == null ; 
+             indiceRecherche++) {
         	
-            if( compose.get(indiceRecherche).existe(x, y)) {
-            	trouve = compose.get(indiceRecherche).getCellule(x, y);
+            if (compose.get(indiceRecherche).existe(x, y)) {
+            	trouve = compose.get(indiceRecherche);
             }
         }
 
@@ -133,20 +158,32 @@ public class Partie {
      */
     @objid ("ce21b39e-cd8e-47d8-89ae-fe405c9c39ae")
     private void enregistrerCoup(Cellule celluleTiree) {
-    	
     	coups.add(celluleTiree);
     }
   
     /**
      * @return La liste de toutes les cellules tirées
      */
-    public ArrayList<Cellule> getCellulesTirees(){
-    	
+    public ArrayList<Cellule> getCellulesTirees() {
         return coups;
     }
 
 	public ArrayList<ZoneContigue> getCompose() {
 		return compose;
 	}
-
+	
+	/**
+	 * @return le nombre de bâtiments encore en jeu
+	 */
+	public int getNbBatiments() {
+		return nbBatiments;
+	}
+	
+	/**
+	 * @return la configuration courante de la partie
+	 * @return
+	 */
+	public Configuration getConfiguration() {
+		return config;
+	}
 }
