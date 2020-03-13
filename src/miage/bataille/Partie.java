@@ -51,6 +51,7 @@ public class Partie {
 
     	compose = new ArrayList<ZoneContigue>();
     	coups = new ArrayList<Cellule>();
+    	placementFlotteAuto(config.getFlotte());
     	nbBatiments = compose.size();
     }
     
