@@ -5,6 +5,7 @@
 package miage.bataille;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * 
@@ -54,6 +55,63 @@ public class Partie {
     }
     
     /**
+     * Permet de mettre en place la flotte d'un joueur
+     */
+    public void placementFlotteAuto(ArrayList<Batiment> flotte) {
+    	for(Batiment bat:flotte) {
+    		placementBatimentAuto(bat);
+    	}
+    }
+    
+    /**
+     * Permet de placer un batiment sur la mer de maniére pseudo-aléatoire
+     * et minimiser les chances que les batiments doit cote à cote avec
+     * un autre batiment
+     * @param aPLacer Batiment a placer sur la mer
+     */
+    private boolean placementBatimentAuto(Batiment aPLacer) {
+    	
+    	int xAPlacer = config.getLongueurCarte() + (int)(Math.random() * (config.getLongueurCarte()));
+    	int yAPLacer = config.getHauteurCarte() + (int)(Math.random() * (config.getHauteurCarte()));
+
+    	boolean valide = false;
+    	boolean vertical = (Math.random() < 0.5);
+    	
+    	ZoneContigue zoneAAjouter;
+    	
+    	//Tests si sa ne sort pas de la mer
+    	if( (!vertical && xAPlacer + aPLacer.tailleLgr > config.getLongueurCarte())
+    			|| (vertical && yAPLacer + aPLacer.getTailleHaut() > config.getHauteurCarte())) {
+    		//Hors de la mer: relance du placement
+    		return placementBatimentAuto(aPLacer);
+    	}
+    	
+
+    	// Test si la zone n'en empietre pas une autre
+    	try {
+	    	//Ajoute le batiment comme zone dans les zones de la mer
+	    	zoneAAjouter =  new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 
+	    			//Si horizontal alors ajouter la taille du batiment au x
+	    			!vertical?( xAPlacer + aPLacer.getTailleLgr() ):xAPlacer, 	
+	    			//Si vertical alors ajoute la taille du batiment au y
+	    			vertical?( yAPLacer+ aPLacer.getTailleHaut() ):yAPLacer );
+    	} catch(IllegalArgumentException e) {
+    		return placementBatimentAuto(aPLacer);
+    	}
+    	
+    	//TODO: Test que le batiment ne soit pas à coté d'un déja en jeu
+//    	for(int indiceZone = 0; indiceZone < compose.size() && valide; indiceZone++) {
+//    		if(compose.get(indiceZone).existe(xAPlacer, yAPLacer) ){
+//    			return placementBatimentAuto(aPLacer);
+//    		}
+//    	}
+    	
+    	//Ajout de la zone correctement déroulé
+    	ajouterZoneContigue(zoneAAjouter);
+    	return true;
+    }
+    
+    /**
      * Ajoute la zone contigue à la partie si elle n'empiete sur aucune autre zone
      * @param aAjouter
      * @throws IllegalArgumentException La zone contigue empietre sur une cellule déja utilisé
@@ -99,8 +157,6 @@ public class Partie {
     	ZoneContigue zoneVisee;
         Cellule celluleTiree; // Cellule tirée
         
-        System.out.println(x  + "" + y);
-
 	    // Vérifie si la cellule choisie à touché un batiment ou non
 	  	if ((zoneVisee = rechercheZone(x, y)) == null) {	
 	  		// Bâtiment non trouvé
