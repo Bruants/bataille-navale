@@ -13,6 +13,7 @@ import miage.bataille.Batiment;
 import miage.bataille.Cellule;
 import miage.bataille.Configuration;
 import miage.bataille.Partie;
+import miage.bataille.ZoneContigue;
 
 /**
  * @author Audric
@@ -109,11 +110,27 @@ class PartieTest {
 	 * Test method for {@link miage.bataille.Partie#placementBatimentAuto()}
 	 */
 	@Test
-	void testPlacementBatimentAuto(Batiment aPLacer) {
-		//TODO: vérifier que le batiment n'est pas placé hors de la mer
-		ArrayList<Batiment> flotte = new ArrayList<Batiment>();
-		flotte.add(new Batiment(3, "test"));
-		Configuration cfg = fixture[0].getConfiguration();
-		fixture[0].placementFlotteAuto(flotte);
+	void testPlacementFlotteAuto(ArrayList<Batiment> flotteAPlacer) {
+		//TODO: vérifier que le batiment n'est pas placé hors de la mer : à terminer
+		int nbBatiments, nbZones, i, j;
+		Configuration cfg = new Configuration(12, 12, "cfgTest", new Batiment(3, "zoyzoy"));
+		fixture[0].placementFlotteAuto(flotteAPlacer);
+		
+		ArrayList<ZoneContigue> zonesFlottePlacee = fixture[0].getCompose();
+		nbBatiments = zonesFlottePlacee.size();
+		
+		for(i = 0; i < nbBatiments; i++) {
+			ZoneContigue zone = zonesFlottePlacee.get(i);
+			ArrayList<Cellule> cellulesZone = zone.getPossede();
+			nbZones = cellulesZone.size();
+			
+			for(j = 0; j < nbZones; j++) {
+				Cellule cellule = cellulesZone.get(j);
+				// tester (en abscisses) si une cellule de la zone a été placée en dehors de la mer
+				assertTrue(cellule.getCoordX() < 12 && cellule.getCoordX() >= 0);
+				// tester (en ordonnées) si une cellule de la zone a été placée en dehors de la mer
+				assertTrue(cellule.getCoordY() < 12 && cellule.getCoordY() >= 0);
+			}
+		}
 	}
 }
