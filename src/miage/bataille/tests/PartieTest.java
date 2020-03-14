@@ -13,6 +13,7 @@ import miage.bataille.Batiment;
 import miage.bataille.Cellule;
 import miage.bataille.Configuration;
 import miage.bataille.Partie;
+import miage.bataille.ZoneContigue;
 
 /**
  * @author Audric
@@ -36,27 +37,30 @@ class PartieTest {
 		fixture[0].tirer(0, 0);
 		boolean tire = false;
 		
-		// Le cas ou aucun b�timent n'a �t� touch�
-		for (Cellule cellule : fixture[0].getCellulesTirees()) {
+		// Le cas ou aucun batiment n'a ete touche
+		for (int i = 0; i < fixture[0].getCellulesTirees().size() && !tire; i++) {
 			
-			// V�rifie si la cellule aux coordonn�s x y est dans la liste
-			if (cellule.getCoordX() == 0 && cellule.getCoordY() == 0) {
+			// Verifie si la cellule aux coordonnees x y est dans la liste
+			if (fixture[0].getCellulesTirees().get(i).getCoordX() == 0 
+					&& fixture[0].getCellulesTirees().get(i).getCoordY() == 0) {
 				tire = true;
+				assertTrue(tire);
 			}
 		}
-		assertTrue(tire);
 		
-		//TODO: Le cas ou un b�timent est touch�
+		//TODO: Le cas ou un batiment est touche
 		
 		
-		// Le cas ou les coordonn�es sont invalides
-		fixture[0].tirer(-1, 5);
+		// Le cas ou les coordonnees sont invalides
+		assertThrows(IllegalArgumentException.class, () -> fixture[0].tirer(-1, 5));
+
 		tire = false;
 		// Parcours de la liste des cellules d�j� tir�es
-		for (Cellule cellule : fixture[0].getCellulesTirees()) {
+		for (int i = 0; i < fixture[0].getCellulesTirees().size() && !tire; i++) {
 			
-			// V�rifie si la cellule aux coordonn�s x y est dans la liste
-			if (cellule.getCoordX() == -1 && cellule.getCoordY() == 5) {
+			// Verifie si la cellule aux coordonnees x y est dans la liste
+			if (fixture[0].getCellulesTirees().get(i).getCoordX() == -1 
+					&& fixture[0].getCellulesTirees().get(i).getCoordY() == 5) {
 				tire = true;
 			}
 		}
@@ -83,7 +87,7 @@ class PartieTest {
 		
 		assertEquals(0, fixture[0].getCellulesTirees().size());
 		
-		fixture[0].tirer(-1, 0);
+		assertThrows(IllegalArgumentException.class, () -> fixture[0].tirer(-1, 0));
 		assertEquals(0, fixture[0].getCellulesTirees().size());
 		
 		fixture[0].tirer(0, 0);
@@ -107,13 +111,30 @@ class PartieTest {
 	
 	/**
 	 * Test method for {@link miage.bataille.Partie#placementBatimentAuto()}
+	 * vérifie que les batiments ne sont pas placés hors de la mer
 	 */
 	@Test
-	void testPlacementBatimentAuto(Batiment aPLacer) {
-		//TODO: vérifier que le batiment n'est pas placé hors de la mer
-		ArrayList<Batiment> flotte = new ArrayList<Batiment>();
-		flotte.add(new Batiment(3, "test"));
-		Configuration cfg = fixture[0].getConfiguration();
-		fixture[0].placementFlotteAuto(flotte);
+	void testPlacementFlotteAuto() {
+		// créer une carte de 12x12 avec une flotte constituée d'un seul bateau
+		Configuration cfg = new Configuration(12, 12, "cfgTest", new Batiment(3, "zoyzoy"));
+		ArrayList<Batiment> flotteAPlacer = cfg.getFlotte();
+		// utiliser cette nouvelle flotte pour le test
+		fixture[0].placementFlotteAuto(flotteAPlacer);
+		
+		// récupérer les zones contigues de chaque batiment de la flotte placee
+		ArrayList<ZoneContigue> zonesFlottePlacee = fixture[0].getCompose();
+		
+		// pour chaque zone occupée par un batiment
+		for(ZoneContigue zone:zonesFlottePlacee) {
+			ArrayList<Cellule> cellulesZone = zone.getPossede();
+			
+			// pour chaque cellule de la zone contigue occupee par un batiment
+			for(Cellule cellule:cellulesZone) {
+				// tester (en abscisses) si une cellule de la zone est bien placée dans la mer
+				assertTrue(cellule.getCoordX() < cfg.getLongueurCarte() && cellule.getCoordX() >= 0);
+				// pareil en ordonnées
+				assertTrue(cellule.getCoordY() < cfg.getHauteurCarte() && cellule.getCoordY() >= 0);
+			}
+		}
 	}
 }
