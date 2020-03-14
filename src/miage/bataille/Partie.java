@@ -104,11 +104,11 @@ public class Partie {
     	}
     	
     	//TODO: Test que le batiment ne soit pas a cote d'un deja en jeu
-//    	for(int indiceZone = 0; indiceZone < compose.size() && valide; indiceZone++) {
-//    		if(compose.get(indiceZone).existe(xAPlacer, yAPLacer) ){
-//    			return placementBatimentAuto(aPLacer);
-//    		}
-//    	}
+    	for(int indiceZone = 0; indiceZone < compose.size() && valide; indiceZone++) {
+    		if(compose.get(indiceZone).existe(xAPlacer, yAPLacer) ){
+    			return placementBatimentAuto(aPLacer);
+    		}
+    	}
     	
     	//Ajout de la zone correctement dï¿½roulï¿½
     	return true;
@@ -155,10 +155,14 @@ public class Partie {
      * @param y -> Coordonnï¿½e en ordonnï¿½e de la cellule tirï¿½e
      * @return le rï¿½sultat du tir : Coup ï¿½ l'eau / touchï¿½ ou coulï¿½
      */
-    public String tirer(int x, int y) { 
+    public String tirer(int x, int y) throws IllegalArgumentException { 
     	String resultat; // Rï¿½sultat du tir si un batiment est touchï¿½ (et coulï¿½) ou non
     	ZoneContigue zoneVisee;
         Cellule celluleTiree; // Cellule tirï¿½e
+        
+        if(x < 0 || y < 0 ) {
+        	throw new IllegalArgumentException("Coordonée négatixe x:" + x + " y:" + y);
+        }
         
 	    // Vï¿½rifie si la cellule choisie ï¿½ touchï¿½ un batiment ou non
 	  	if ((zoneVisee = rechercheZone(x, y)) == null) {	

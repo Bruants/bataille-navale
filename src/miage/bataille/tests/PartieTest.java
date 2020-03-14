@@ -37,27 +37,30 @@ class PartieTest {
 		fixture[0].tirer(0, 0);
 		boolean tire = false;
 		
-		// Le cas ou aucun b�timent n'a �t� touch�
-		for (Cellule cellule : fixture[0].getCellulesTirees()) {
+		// Le cas ou aucun batiment n'a ete touche
+		for (int i = 0; i < fixture[0].getCellulesTirees().size() && !tire; i++) {
 			
-			// V�rifie si la cellule aux coordonn�s x y est dans la liste
-			if (cellule.getCoordX() == 0 && cellule.getCoordY() == 0) {
+			// Verifie si la cellule aux coordonnees x y est dans la liste
+			if (fixture[0].getCellulesTirees().get(i).getCoordX() == 0 
+					&& fixture[0].getCellulesTirees().get(i).getCoordY() == 0) {
 				tire = true;
+				assertTrue(tire);
 			}
 		}
-		assertTrue(tire);
 		
-		//TODO: Le cas ou un b�timent est touch�
+		//TODO: Le cas ou un batiment est touche
 		
 		
-		// Le cas ou les coordonn�es sont invalides
-		fixture[0].tirer(-1, 5);
+		// Le cas ou les coordonnees sont invalides
+		assertThrows(IllegalArgumentException.class, () -> fixture[0].tirer(-1, 5));
+
 		tire = false;
 		// Parcours de la liste des cellules d�j� tir�es
-		for (Cellule cellule : fixture[0].getCellulesTirees()) {
+		for (int i = 0; i < fixture[0].getCellulesTirees().size() && !tire; i++) {
 			
-			// V�rifie si la cellule aux coordonn�s x y est dans la liste
-			if (cellule.getCoordX() == -1 && cellule.getCoordY() == 5) {
+			// Verifie si la cellule aux coordonnees x y est dans la liste
+			if (fixture[0].getCellulesTirees().get(i).getCoordX() == -1 
+					&& fixture[0].getCellulesTirees().get(i).getCoordY() == 5) {
 				tire = true;
 			}
 		}
@@ -84,7 +87,7 @@ class PartieTest {
 		
 		assertEquals(0, fixture[0].getCellulesTirees().size());
 		
-		fixture[0].tirer(-1, 0);
+		assertThrows(IllegalArgumentException.class, () -> fixture[0].tirer(-1, 0));
 		assertEquals(0, fixture[0].getCellulesTirees().size());
 		
 		fixture[0].tirer(0, 0);
