@@ -149,37 +149,6 @@ public class DeroulementPartie {
 	}
 
 	/**
-	 * Initialise la carte  à afficher à partir d'une sauvegarde existante
-	 */
-	//TODO: A tester
-	public static void creerCarteAPartirDeSauvegarde() {
-		char lettre;
-		// Hash contenant toutes les cellules 
-		String celluleMap;
-
-
-		for (Cellule c : partie.coups) {
-
-			celluleMap = Character.toString((char)(c.getCoordY() + 65)) + c.getCoordX();
-
-			if (partie.getCompose().contains(c)) {
-				carte.put(celluleMap, "  *  ");
-			} else {
-				carte.put(celluleMap, "  o  ");
-			}
-		}
-		//		lettre = 'A';	
-		//		for (int i = 0 ; i < tailleLargeur ; i++, lettre++) {
-		//
-		//			for (int j = 1 ; j <= tailleHauteur ; j++) {
-		//				celluleMap = Character.toString(lettre) + j;
-		//				carte.put(celluleMap, "  -  ");
-		//			}
-		//		}
-	}
-
-
-	/**
 	 * Vérifie la saisie de l'utilisateur pour tirer
 	 * @return TRUE  -> Si : 
 	 * 					- la coordonnée en abcisses est un nombre compris entre
@@ -385,13 +354,13 @@ public class DeroulementPartie {
 		
 		/* Phase 1 : initialisation de la partie */
 		if (nbTour == 0) {
-			Configuration config = new Configuration().recupererConfig("Config1");
-			initialisationAvecUneConfiguration(config);
+			choisirConfiguration();
 		}
 		afficherCarte();
 
 		/* Phase 2 : Déroulement d'un tour */
 		for (; partie.getNbBatiments() > 0 && !finDePartieForcee; nbTour++) {
+			System.out.println("/!\\ Saisissez S pour Sauvegarder et Q pour quitter /!\\");
 			System.out.print("Coup " + nbTour + " => ");
 			// Récupération d'une réponse de saisie : coordonnées ou "Q" si l'utilisateur quitte la partie
 			reponse = saisieTour();	
@@ -415,6 +384,29 @@ public class DeroulementPartie {
 			/* Phase 3 : Fin de la partie */
 			//TODO
 		}
+	}
+	
+	/**
+	 * Demande à l'utilisateur de choisir une configuration parmi celles existantes.
+	 * Charge une configuration.
+	 */
+	public static void choisirConfiguration() {
+		Configuration config = new Configuration();
+		String reponse;
+		boolean valide;
+		
+		config.afficherConfig();
+		do {
+			System.out.print("Quelle configuration voulez-vous choisir ? : ");
+			reponse = entree.next() + entree.nextLine();
+			reponse = reponse.trim();
+			valide = config.configEstPresente(reponse);
+			if (!valide) {
+				System.out.println("La configuration que vous avez saisie n'existe pas");
+			}
+		} while	(!valide);
+		config = config.recupererConfig(reponse);
+		initialisationAvecUneConfiguration(config);
 	}
 
 	

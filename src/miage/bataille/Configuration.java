@@ -253,6 +253,18 @@ public class Configuration implements Serializable{
     public HashMap<String,Configuration> recupererToutesLesConfigs() {
     	return listeDeConfigs;
     }
+    
+    /**
+     * Affiche les noms de toutes les configurations existantes.
+     */
+    public void afficherConfig() {
+    	Object[] keys = listeDeConfigs.keySet().toArray();
+    	
+    	System.out.println("Liste des configurations disponibles :");
+    	for (int i = 0 ; i < listeDeConfigs.size() ; i++) {
+    		System.out.println(listeDeConfigs.get(keys[i]).nom);
+    	}
+    }
 	
 	/**
 	 * Enregistre listeDeConfigs dans le path passé en paramètre 
@@ -347,8 +359,16 @@ public class Configuration implements Serializable{
 	
 	/**
 	 * Parcours la liste listeDeConfigs et dit si la config est présente ou non
+	 * @param nom le nom de la config recherchée
+	 * @return true si la config existe
+	 *         false sinon
 	 */
-	public boolean configEstPresente() {
-		return false;
+	public boolean configEstPresente(String nom) {
+		int i;
+		Object[] keys = listeDeConfigs.keySet().toArray();
+		
+		for (i = 0 ; i < listeDeConfigs.size() && !listeDeConfigs.get(keys[i]).nom.equals(nom) ; i++);
+		
+		return listeDeConfigs.get(keys[i]).nom.equals(nom);
 	}
 }
