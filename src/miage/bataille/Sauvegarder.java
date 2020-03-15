@@ -95,8 +95,11 @@ public class Sauvegarder {
      *         false sinon
      */
     public static boolean verifierNbPartiesACharger() {
+    	File directory = new File("sauvegarde/parties/");
+    	
     	try {
-			return Files.list(Paths.get("sauvegarde/parties/")).filter(Files::isRegularFile).count() > 0;
+			return directory.exists() 
+				   && Files.list(Paths.get("sauvegarde/parties/")).filter(Files::isRegularFile).count() > 0;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
