@@ -18,30 +18,44 @@ import java.util.ArrayList;
  * @author k.sannac
  */
 public class Sauvegarder {
+	
+	private static final String MESSAGE_ERREUR_CREATION_DIR = "Impossible de créer les répertoires de sauvegarde.";
+	
+	private static final String MESSAGE_ERREUR_SAUVEGARDE = "La sauvegarde c'est mal effectuée";
 
     /**
      * Sauvegarde une partie dans le dossier suivant : 
      * sauvegarde/parties/
-     * avec pour extension : .partie
-     * @param partie La partie que l'on veut sauvegarder
+     * avec pour extension : .data
+     * @param nomSauvegarde le nom du fichier de sauvegarde
+     * @param aSauvegarder tous les éléments qui sont à sauvegarder
      */
-    public static String sauverPartie(Partie partie) {
+    public static void sauverPartie(String nomSauvegarde, Object... aSauvegarder) {
 
-        File fichier = new File ("sauvegarde/parties/" + System.currentTimeMillis() + ".partie");
-
-        try
-        {
-            ObjectOutputStream save = new ObjectOutputStream (new FileOutputStream (fichier));
-            save.writeObject (partie);
-            save.close();
-        }
-        catch (IOException exception)
-        {
-        	exception.printStackTrace();
-            System.out.println ("Erreur lors de l'écriture : " + exception.getMessage());
-        }
+        File fichier = new File("sauvegarde/parties/" + nomSauvegarde + ".data");
+        File directory = new File("sauvegarde/parties");
+        boolean repertoireExistant;
         
-        return "sauvegarde/parties/" + partie.toString() + ".partie";
+        repertoireExistant = directory.exists() || directory.mkdirs();
+        if (!repertoireExistant) {
+    		System.out.println(MESSAGE_ERREUR_CREATION_DIR);
+    	} else {
+	        try {
+	        	if (fichier.exists()) {
+	        		fichier.delete();
+	        	}
+	            ObjectOutputStream save = new ObjectOutputStream (new FileOutputStream (fichier));
+	            for (Object objet : aSauvegarder) {
+	            	save.writeObject (objet);
+	            }
+	            save.close();
+	            System.out.println("La sauvegarde c'est bien effectuée");
+	        }
+	        catch (IOException exception){
+	        	System.out.println(MESSAGE_ERREUR_SAUVEGARDE);
+	            System.out.println ("Erreur lors de l'écriture : " + exception.getMessage());
+	        }
+    	}
     }
 
 
@@ -60,14 +74,12 @@ public class Sauvegarder {
             try {
                 part = (Partie)save.readObject();
             } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             save.close();
         }
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -89,7 +101,6 @@ public class Sauvegarder {
                     
                 });
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 

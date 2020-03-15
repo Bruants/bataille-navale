@@ -16,12 +16,12 @@ import org.hamcrest.core.IsNull;
 import miage.bataille.Cellule;
 import miage.bataille.Configuration;
 import miage.bataille.Partie;
+import miage.bataille.Sauvegarder;
 
 /**
  * @author Audric POUZELGUES, Damien AVETTA-RAYMOND
  */
 public class DeroulementPartie {
-
 
 	private static final String MESSAGE_ERREUR_DE_SAISIE = "Les coordonnées "
 			+ "saisies sont incorrectes. Les coordonnées ne doivent pas "
@@ -34,10 +34,9 @@ public class DeroulementPartie {
 	private static final String MESSAGE_ERREUR_SAISIE_INITIALISATION_CONFIGURATION = "La"
 			+ "configuration choisie ne peut pas être null.";
 	
-	private static final String MESSAGE_ERREUR_SAUVEGARDE = "La sauvegarde n'a pas pu s'effectuer";
-	
-	private static final String MESSAGE_ANNULATION_SAUVEGARDE = "La sauvegarde ne s'est pas bien effectuée";
-
+	private static final String MESSAGE_ERREUR_NOM_FICHIER = "Le nom du fichier est incorrect. Les "
+			                                                 + "caractères suivans sont interdits : "
+			                                                 + "/\\\\:*?\\\"<>|";
 
 	private static String coordonnee;
 
@@ -253,7 +252,7 @@ public class DeroulementPartie {
 
 			// Message d'erreur si les coordonnées sont non valides
 			if (reponse.equals("S")) {
-				/* TODO appel sauvegarde */
+				effectuerSauvegarde();
 			} else {
 				valide = verifierSaisie(reponse);
 				if (!valide) {
@@ -263,6 +262,113 @@ public class DeroulementPartie {
 		} while (!valide);
 
 		return reponse;
+	}
+	
+	/**
+	 * Traitement de la sauvegarde :
+	 * 	- Saisie du nom de la sauvegarde, vérification et validation par l'utilisateur
+	 *  - Création de la sauvegarde
+	 */
+	public static void effectuerSauvegarde() {
+		String nomFichier;
+		String reponse;
+		File fichier;
+		boolean validationSauvegarde;
+		boolean confirmationSauvegarde;
+		
+		do {
+			/* Saisie du nom de la sauvegarde */
+			nomFichier = saisieSauvegarde();
+			/* Valide que le fichier peut etre créé */
+			validationSauvegarde = sauvegardePeutEtreCree(nomFichier);
+			/* Demande de confirmation pour sauvegarder */
+			if (validationSauvegarde) {
+				System.out.print("Confirmez-vous la sauvegarde ? (o/n) : ");
+				confirmationSauvegarde = reponseValide();
+			} else {
+				System.out.print("Souhaitez-vous toujours sauvegarder ? (o/n) : ");
+				validationSauvegarde = !reponseValide();
+				confirmationSauvegarde = !validationSauvegarde;
+			}
+		} while(!validationSauvegarde);
+		
+		/* Créé le fichier de sauvegarde si cette dernière est confirmée */
+		if (confirmationSauvegarde) {
+			Sauvegarder.sauverPartie(nomFichier, partie, carte);
+		}
+	}
+	
+	/**
+	 * Demande à l'utilisateur de saisir le nom de la sauvegarde.
+	 * Vérifie si le nom est correct
+	 * @return le nom de la sauvegarde
+	 */
+	public static String saisieSauvegarde() {
+		boolean valide;
+		String nomSauvegarde;
+		
+		do {
+			System.out.print("Quel nom voulez-vous donner à la sauvegarde ? : ");
+			nomSauvegarde = entree.next() + entree.nextLine();
+			valide = nomFichierCorrect(nomSauvegarde);
+			if (!valide) {
+				System.out.println(MESSAGE_ERREUR_NOM_FICHIER);
+			}
+		} while (!valide);
+		
+		return nomSauvegarde;
+	}
+	
+	/**
+	 * Détermine si le nom du fichier est correcte en vérifiant qu'il n'y ait pas de caractères spéciaux
+	 * @param nomFichier le nom de la sauvegarde
+	 * @return true si nomFichier ne contient aucun caractères spéciaux
+	 *         false sinon
+	 */
+	public static boolean nomFichierCorrect(String nomFichier) {
+		String caracteresSpeciaux = "/\\:*?\"<>|";
+		boolean valide = true;
+		
+		for (int i = 0 ; i < caracteresSpeciaux.length() && valide ; i++) {
+			valide = !nomFichier.contains(Character.toString(caracteresSpeciaux.charAt(i)));
+		}
+		
+		return valide;
+	}
+	
+	/**
+	 * Détermine si le fichier existe ou non.
+	 * Si le fichier existe : demande à l'utilisateur s'il souhaite l'écraser ou non
+	 * @param nomFichier le nom du fichier
+	 * @return true si le fichier n'existe pas où si l'utilisateur souhaite écraser la sauvegarde existante
+	 *         false sinon (la sauvegarde ne peut pas être créée)
+	 */
+	public static boolean sauvegardePeutEtreCree(String nomFichier) {
+		File fichier = new File("sauvegarde/parties/" + nomFichier + ".data");
+		String reponse;
+		boolean peutEtreCree;
+		
+		peutEtreCree = !fichier.exists();
+		if (!peutEtreCree) {
+			System.out.print("Le fichier existe déjà. Souhaitez-vous l'écraser ? (o/n) : ");
+			peutEtreCree = reponseValide();
+		}
+
+		return peutEtreCree;
+	}
+	
+	/**
+	 * Demande à l'utilisateur une réponse : oui ou non et détermine laquelle a été répondue.
+	 * Une réponse si oui si il s'agit de "o" ou "O". 
+	 * Sinon c'est non.
+	 * @return true si la réponse est oui
+	 *         false sinon
+	 */
+	public static boolean reponseValide() {
+		String reponse;
+		
+		reponse = entree.next() + entree.nextLine();
+		return reponse.toUpperCase().trim().equals("O");
 	}
 
 	/**
