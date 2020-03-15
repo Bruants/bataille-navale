@@ -75,6 +75,7 @@ public class Sauvegarder {
             	elementsPartie.add(save.readObject()); // Données de la partie
             	elementsPartie.add(save.readObject()); // Carte du jeu
             	elementsPartie.add(save.readObject()); // Nombre de tours ayant eu lieu
+            	elementsPartie.add(save.readObject()); // Historique des coups
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

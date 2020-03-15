@@ -51,7 +51,7 @@ public class DeroulementPartie {
 	private static Scanner entree = new Scanner(System.in);
 	
 	/** Liste des coups effectués */
-	private static ArrayList<String> coups;
+	private static ArrayList<String> coups = new ArrayList<String>();
 
 	/**
 	 * Débute une partie par défaut : 
@@ -62,7 +62,6 @@ public class DeroulementPartie {
 		Configuration configurationDeLaPartie;
 		System.out.println("Début du jeu\n");
 		partie = new Partie();
-		coups = new ArrayList<String>();
 		configurationDeLaPartie = partie.getConfiguration();
 		tailleHauteur = configurationDeLaPartie.getHauteurCarte();
 		tailleLargeur = configurationDeLaPartie.getLongueurCarte();
@@ -251,7 +250,7 @@ public class DeroulementPartie {
 		
 		/* Créé le fichier de sauvegarde si cette dernière est confirmée */
 		if (confirmationSauvegarde) {
-			Sauvegarder.sauverPartie(nomFichier, partie, carte, nbTour);
+			Sauvegarder.sauverPartie(nomFichier, partie, carte, nbTour, coups);
 		}
 	}
 	
@@ -425,6 +424,7 @@ public class DeroulementPartie {
 		partie = (Partie) chargement.get(0);
 		carte = (HashMap<String, String>) chargement.get(1);
 		nbTour = (int) chargement.get(2);
+		coups = (ArrayList<String>) chargement.get(3);
 		System.out.println("Partie chargée !");
 		lancerUnePartie();
 	}
