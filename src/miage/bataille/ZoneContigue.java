@@ -146,6 +146,13 @@ public class ZoneContigue implements Serializable{
     public boolean estTouchable() {
     	return obstacle.touchable;
     }
+    
+    /**
+     * @return l'obstacle correspondant à la zone contigue courante
+     */
+	public Obstacle getObstacle() {
+		return obstacle;
+	}
 
 	public ArrayList<Cellule> getPossede() {
 		return possede;

@@ -7,6 +7,11 @@ package miage.bataille;
 public abstract class Obstacle {
 	
 	/**
+	 * Nom du batiment courant
+	 */
+    public String nom;
+	
+	/**
 	 * Taille de l'obstacle en longueur
 	 */
     protected int tailleLgr;
@@ -34,6 +39,13 @@ public abstract class Obstacle {
      * Definit si l'obstacle sera touchable, puis coulable.
      */
     protected boolean touchable;
+    
+    /**
+     * @return nom du batiment courant
+     */
+	public String getNom() {
+		return nom;
+	}
 
     /* non-javadoc
      * @see java.lang.Object#toString()

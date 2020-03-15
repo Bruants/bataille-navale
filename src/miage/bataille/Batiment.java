@@ -11,10 +11,6 @@ public class Batiment extends Obstacle implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -25306178857876905L;
-	/**
-	 * Nom du batiment courant
-	 */
-    public String nom;
 
     /**
      * Definit un batiment de hauteur (ou largeur) 1, 
@@ -30,13 +26,6 @@ public class Batiment extends Obstacle implements Serializable {
     	
     	this.touchable = true;
     }
-    
-    /**
-     * @return nom du batiment courant
-     */
-	public String getNom() {
-		return nom;
-	}
 
     /* non-javadoc
      * @see java.lang.Object#toString()
