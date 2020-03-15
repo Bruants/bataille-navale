@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Sauvegarde les parties
@@ -34,6 +35,7 @@ public class Sauvegarder {
 
         File fichier = new File("sauvegarde/parties/" + nomSauvegarde + ".data");
         File directory = new File("sauvegarde/parties");
+        ObjectOutputStream save;
         boolean repertoireExistant;
         
         repertoireExistant = directory.exists() || directory.mkdirs();
@@ -44,14 +46,13 @@ public class Sauvegarder {
 	        	if (fichier.exists()) {
 	        		fichier.delete();
 	        	}
-	            ObjectOutputStream save = new ObjectOutputStream (new FileOutputStream (fichier));
+	            save = new ObjectOutputStream(new FileOutputStream (fichier));
 	            for (Object objet : aSauvegarder) {
 	            	save.writeObject (objet);
 	            }
 	            save.close();
-	            System.out.println("La sauvegarde c'est bien effectuée");
-	        }
-	        catch (IOException exception){
+	            System.out.println("La sauvegarde c'est bien effectuée !");
+	        } catch (IOException exception) {
 	        	System.out.println(MESSAGE_ERREUR_SAUVEGARDE);
 	            System.out.println ("Erreur lors de l'écriture : " + exception.getMessage());
 	        }
@@ -61,18 +62,19 @@ public class Sauvegarder {
 
     /**
      * Permet de récupérer une partie préalablement sauvegardée
-     * @param fichier Le chemin du fichier qui contient la partie
-     * @return La partie sauvegardée
+     * @param fichier Le chemin qui contient la partie à charger
+     * @return Les éléments de la partie sauvegardée.
      */
-    public static Partie recupererPartie(String fichier)  {
-
-        Partie part; // Contiendra la partie que l'on veut lancer
-        part = null; // Initialise, si partie retournée est null il n'y a aucune partie sauvegardï¿½e
+    public static ArrayList<Object> recupererPartie(String fichier)  {
+        ArrayList<Object> elementsPartie = new ArrayList<Object>();
+        
         try
         {
             ObjectInputStream save = new ObjectInputStream (new FileInputStream(fichier));
             try {
-                part = (Partie)save.readObject();
+            	elementsPartie.add(save.readObject()); // Données de la partie
+            	elementsPartie.add(save.readObject()); // Carte du jeu
+            	elementsPartie.add(save.readObject()); // Nombre de tours ayant eu lieu
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -83,28 +85,38 @@ public class Sauvegarder {
             e.printStackTrace();
         }
 
-        return part;
+        return elementsPartie;
+    }
+   
+    /**
+     * Vérifie qu'il existe bien des parties à charger
+     * @return true s'il existe au moins un fichier de sauvegarde à charger
+     *         false sinon
+     */
+    public static boolean verifierNbPartiesACharger() {
+    	try {
+			return Files.list(Paths.get("sauvegarde/parties/")).filter(Files::isRegularFile).count() > 0;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
     }
 
     /**
      * Liste toutes les parties sauvegardÃ©es dans le dossier sauvegarde/parties/
      * @return Toutes les parties contenues dans le dossier
      */
-    public static ArrayList<Partie> listerParties() {
-        ArrayList<Partie> partiesSauvegardees = new ArrayList<Partie>(); // Contiendra toutes les parties
-
-        /* Permet de lister toutes les parties sauvegardÃ©es */
-            try {
-                Files.list(Paths.get("sauvegarde/parties/")).filter(Files::isRegularFile)
-                .forEach(elt -> {
-                    partiesSauvegardees.add(recupererPartie(elt.toString()));
-                    
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        return partiesSauvegardees;
+    public static void listerParties() {
+        /* Permet de lister toutes les parties sauvegardées */
+    	System.out.println("Liste des parties :");
+        try {
+            Files.list(Paths.get("sauvegarde/parties/")).filter(Files::isRegularFile)
+            .forEach(elt -> {
+                System.out.println(elt.getFileName().toString());
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+       }
     }
 
 }

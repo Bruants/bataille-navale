@@ -4,10 +4,13 @@
 package miage.bataille.affichage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -37,23 +40,17 @@ public class DeroulementPartie {
 	private static final String MESSAGE_ERREUR_NOM_FICHIER = "Le nom du fichier est incorrect. Les "
 			                                                 + "caractères suivans sont interdits : "
 			                                                 + "/\\\\:*?\\\"<>|";
-
-	private static String coordonnee;
-
-	private static int coordonneeX;
-
-	private static int coordonneeY;
-
-	private static String resultat;
-
+	
+	private static final String MESSAGE_ERREUR_CHARGEMENT = "Erreur, le fichier que vous avez spécifié "
+			                                                + "n'existe pas.";
+	
 	/** 
 	 * Liste contenant la situation des différentes cellules 
 	 * - : pas de coup
 	 * * : touché
 	 * o : plouf
 	 */
-	private static HashMap<String, String> carte 
-	= new HashMap<String, String>();
+	private static HashMap<String, String> carte = new HashMap<String, String>();
 
 
 	private static Partie partie;
@@ -63,6 +60,9 @@ public class DeroulementPartie {
 
 	/** Hauteur de la carte */
 	private static int tailleHauteur;
+	
+	/** Nombre de tour (ou coup) réalisé pour la partie courante */
+	public static int nbTour = 0;
 	
 	/** Permet de faire des saisies */
 	private static Scanner entree = new Scanner(System.in);
@@ -98,26 +98,6 @@ public class DeroulementPartie {
 			tailleLargeur = configurationChoisie.getLongueurCarte();
 			partie = new Partie(configurationChoisie);
 			creerNouvelleCarte();
-		}
-	}
-
-	/**
-	 * Initialise l'affichage de la partie avec un sauvegarde existante
-	 * @param partieSauvegardee
-	 */
-	public static void initialisationAvecUneSauvegarde(Partie partieSauvegardee) {
-
-		Configuration configurationDePartie;
-
-		if (partieSauvegardee == null) {
-			initialisationParDefaut();
-		} else {
-			System.out.println("Début du jeu\n");
-			partie = partieSauvegardee;
-			configurationDePartie = partie.getConfiguration();
-			tailleHauteur = configurationDePartie.getHauteurCarte();
-			tailleLargeur = configurationDePartie.getLongueurCarte();
-			creerCarteAPartirDeSauvegarde();
 		}
 	}
 
@@ -215,7 +195,6 @@ public class DeroulementPartie {
 	 * 					  une lettre.
 	 */
 	public static boolean verifierSaisie(String coordonnee) {
-
 		boolean valide = false; 
 
 		// Vérification de la taille et du contenu de la chaine 
@@ -235,11 +214,12 @@ public class DeroulementPartie {
 
 
 	/**
-	 * Saisie d'un tir sur la carte
+	 * Saisie lors d'un tour : sauvegarde / quitter la partie ou tir sur la carte :
 	 * - Demande une lettre pour la colonne
 	 * - Demande un nombre entier positif pour la ligne
+	 * @return la réponse saisie : une coordonnée ou "Q" si l'utilisateur quitte la partie
 	 */
-	public static String saisieTir() {
+	public static String saisieTour() {
 		String reponse;
 		boolean valide = false;
 
@@ -248,11 +228,13 @@ public class DeroulementPartie {
 			System.out.print("Saisir une coordonnée : ");
 			reponse = entree.next() + entree.nextLine();
 
-			reponse = reponse.toUpperCase();
+			reponse = reponse.toUpperCase().trim();
 
 			// Message d'erreur si les coordonnées sont non valides
 			if (reponse.equals("S")) {
 				effectuerSauvegarde();
+			} else if (reponse.equals("Q")){
+				valide = quitterPartie();
 			} else {
 				valide = verifierSaisie(reponse);
 				if (!valide) {
@@ -265,20 +247,41 @@ public class DeroulementPartie {
 	}
 	
 	/**
+	 * Détermine si l'utilisateur souhaite vraiment quitter la partie.
+	 * Si l'utilisateur quitte la partie, une sauvegarde lui est proposée.
+	 * @return true si l'utilisateur quitte la partie
+	 *         false sinon
+	 */
+	public static boolean quitterPartie() {
+		boolean quitter;
+		
+		System.out.print("Voulez-vous vraiment quitter la partie ? (o/n) : ");
+		quitter = reponseValide();
+		if (quitter) {
+			System.out.print("Souhaitez-vous sauvegarder avant de quitter la partie ? (o/n) : ");
+			if (reponseValide()) {
+				effectuerSauvegarde();
+			} else {
+				System.out.println("Fin de partie");
+			}
+		}
+		
+		return quitter;
+	}
+	
+	/**
 	 * Traitement de la sauvegarde :
 	 * 	- Saisie du nom de la sauvegarde, vérification et validation par l'utilisateur
 	 *  - Création de la sauvegarde
 	 */
 	public static void effectuerSauvegarde() {
 		String nomFichier;
-		String reponse;
-		File fichier;
 		boolean validationSauvegarde;
 		boolean confirmationSauvegarde;
 		
 		do {
 			/* Saisie du nom de la sauvegarde */
-			nomFichier = saisieSauvegarde();
+			nomFichier = saisieNom("Quel nom voulez-vous donner à la sauvegarde ? : ");
 			/* Valide que le fichier peut etre créé */
 			validationSauvegarde = sauvegardePeutEtreCree(nomFichier);
 			/* Demande de confirmation pour sauvegarder */
@@ -294,29 +297,29 @@ public class DeroulementPartie {
 		
 		/* Créé le fichier de sauvegarde si cette dernière est confirmée */
 		if (confirmationSauvegarde) {
-			Sauvegarder.sauverPartie(nomFichier, partie, carte);
+			Sauvegarder.sauverPartie(nomFichier, partie, carte, nbTour);
 		}
 	}
 	
 	/**
-	 * Demande à l'utilisateur de saisir le nom de la sauvegarde.
-	 * Vérifie si le nom est correct
+	 * Demande à l'utilisateur de saisir un nom.
+	 * Vérifie si le nom est correct dans le format d'un fichier (sans caractères spéciaux).
 	 * @return le nom de la sauvegarde
 	 */
-	public static String saisieSauvegarde() {
+	public static String saisieNom(String question) {
 		boolean valide;
-		String nomSauvegarde;
+		String nom;
 		
 		do {
-			System.out.print("Quel nom voulez-vous donner à la sauvegarde ? : ");
-			nomSauvegarde = entree.next() + entree.nextLine();
-			valide = nomFichierCorrect(nomSauvegarde);
+			System.out.print(question);
+			nom = entree.next() + entree.nextLine();
+			valide = nomFichierCorrect(nom);
 			if (!valide) {
 				System.out.println(MESSAGE_ERREUR_NOM_FICHIER);
 			}
 		} while (!valide);
 		
-		return nomSauvegarde;
+		return nom;
 	}
 	
 	/**
@@ -345,7 +348,6 @@ public class DeroulementPartie {
 	 */
 	public static boolean sauvegardePeutEtreCree(String nomFichier) {
 		File fichier = new File("sauvegarde/parties/" + nomFichier + ".data");
-		String reponse;
 		boolean peutEtreCree;
 		
 		peutEtreCree = !fichier.exists();
@@ -377,99 +379,130 @@ public class DeroulementPartie {
 	 * Fait dérouler la partie en faisant jouer l'utilisateur.
 	 */
 	public static void lancerUnePartie() {
-
+		String reponse;
+		String resultat;
+		boolean finDePartieForcee = false;
+		
 		/* Phase 1 : initialisation de la partie */
-		Configuration config = new Configuration().recupererConfig("Config1");
-		initialisationAvecUneConfiguration(config);
-
+		if (nbTour == 0) {
+			Configuration config = new Configuration().recupererConfig("Config1");
+			initialisationAvecUneConfiguration(config);
+		}
 		afficherCarte();
 
 		/* Phase 2 : Déroulement d'un tour */
-		for (int nbTour = 0; partie.getNbBatiments() > 0; nbTour++) {
+		for (; partie.getNbBatiments() > 0 && !finDePartieForcee; nbTour++) {
 			System.out.print("Coup " + nbTour + " => ");
+			// Récupération d'une réponse de saisie : coordonnées ou "Q" si l'utilisateur quitte la partie
+			reponse = saisieTour();	
+			finDePartieForcee = reponse.equals("Q");
 
-			// Récupération des coordonnées saisies
-			coordonnee = saisieTir();	
-
-			// Conversion des coordonnées saisies pour pouvoir tirer
-			coordonneeX = Integer.parseInt(coordonnee.substring(1));
-			coordonneeX -= 1;	
-			coordonneeY = coordonnee.charAt(0);
-			coordonneeY -= 65;
-
-			// Tir sur la carte
-			System.out.println("coordonnée X : " + coordonneeX);
-			System.out.println("coordonnée Y : " + coordonneeY);
-			resultat = partie.tirer(coordonneeX, coordonneeY);
-
-			if (resultat.equals("plouf")) {
-				carte.put(coordonnee, "  o  ");
-			} else {
-				carte.put(coordonnee, "  *  ");
+			if (!finDePartieForcee) {
+				// Conversion des coordonnées saisies pour pouvoir tirer
+				resultat = partie.tirer(Integer.parseInt(reponse.substring(1)) - 1, reponse.charAt(0) - 65);
+	
+				if (resultat.equals("plouf")) {
+					carte.put(reponse, "  o  ");
+				} else {
+					carte.put(reponse, "  *  ");
+				}
+				System.out.println(resultat + " !");
+				afficherCarte();
 			}
-			System.out.println(resultat + " !");
-			afficherCarte();
-
+		}
+		
+		if (!finDePartieForcee) {
+			/* Phase 3 : Fin de la partie */
+			//TODO
 		}
 	}
 
-
+	
 	/**
-	 * Lance une partie sauvegardée et réalise l'affichage de celle-ci
-	 * à l'aide de sa liste de coups déjà tirés.
-	 * @param partieExistante -> sauvegarde de la partie qui est
-	 * 		  récupérée pour reprendre une partie.
+	 * Demande à l'utilisateur le nom de la partie qu'il souhaite charger.
+	 * Récupération des données.
+	 * Lancement de la partie à l'instant où elle était arrêtée.
 	 */
-	//TODO: à remplacer si cela ne convient pas...
-	public static void lancerUnePartie(Partie partieExistante) {
-		//TODO: Compléter le corps de cette méthode à l'aide
-		/* de ce qui a été écrit dans le main et en le modifiant
-			    pour afficher la carte à l'aide des coups déjà tirés */
-
-		/* Phase 1 : initialisation de la partie */
-		initialisationAvecUneSauvegarde(partieExistante);
-		afficherCarte();
-
-		/* Phase 2 : Déroulement d'un tour */
-		for (int nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
-			System.out.println("/!\\ Saisissez S pour sauvegarder /!\\");
-			System.out.print("Coup " + nbTour + " => ");
-
-			// Récupération des coordonnées saisies
-			coordonnee = saisieTir();	
-
-			// Conversion des coordonnées saisies pour pouvoir tirer
-			coordonneeX = Integer.parseInt(coordonnee.substring(1));
-			coordonneeX -= 1;	
-			coordonneeY = coordonnee.charAt(0);
-			coordonneeY -= 65;
-
-			// Tir sur la carte
-			resultat = partie.tirer(coordonneeX, coordonneeY);
-
-			if (resultat.equals("plouf")) {
-				carte.put(coordonnee, "  o  ");
+	public static void chargerUnePartie() {
+		File fichier;
+		ArrayList<Object> chargement;
+		
+		Sauvegarder.listerParties();
+		
+		fichier = rechercheFichier();
+		chargement = Sauvegarder.recupererPartie(fichier.getPath());
+		partie = (Partie) chargement.get(0);
+		carte = (HashMap<String, String>) chargement.get(1);
+		nbTour = (int) chargement.get(2);
+		System.out.println("Partie chargée !");
+		lancerUnePartie();
+	}
+	
+	/**
+	 * Demande à l'utilisateur le fichier qu'il souhaite charger.
+	 * Vérifie si le fichier existe selon plusieurs options : 
+	 * - Pas de spécification particulière
+	 * - Spécification du répertoire
+	 * - Spécification de l'extension
+	 * - Spécification du chemin (répertoire + extension)
+	 * @return le fichier à charger.
+	 */
+	public static File rechercheFichier() {
+		String nomFichier;
+		File fichier;
+		boolean fichierExiste;
+		
+		do {
+			nomFichier = saisieNom("Quelle partie vous souhaitez charger ? : ");
+			if (nomFichier.contains("sauvegarde/parties/")) {
+				fichier = new File(nomFichier + ".data");
+			} else if (nomFichier.contains(".data")) {
+				fichier = new File("sauvegarde/parties/" + nomFichier);
+			} else if (nomFichier.contains("sauvegarde/parties/") && nomFichier.contains(".data")) {
+				fichier = new File(nomFichier);
 			} else {
-				carte.put(coordonnee, "  *  ");
+				fichier = new File("sauvegarde/parties/" + nomFichier + ".data");
 			}
-			System.out.println(resultat + " !");
-			afficherCarte();
-
-		}
-
+			fichierExiste = fichier.exists();
+			if (!fichierExiste) {
+				System.out.println(MESSAGE_ERREUR_CHARGEMENT);
+			}
+		} while(!fichierExiste);
+		
+		return fichier;
 	}
 
-
 	/**
-	 * TODO: Créer une méthode LancerPartie() -> qui va réaliser ce que 
-	 * fait le main actuellement. Initialiser une partie, faire dérouler la partie
-	 * et la fin de la partie
+	 * Menu du jeu : 
+	 * - Lancer une partie (nouvelle partie)
+	 * - Charger une partie sauvegardée
+	 * - Quitter l'application
 	 * @param args non utilisé
 	 */
 	public static void main(String[] args) {
+		String reponse;
+		boolean quitter = false;
 		
-		lancerUnePartie();
-		/* Phase 3 : Fin de la partie */
-		//TODO
+		System.out.println("Bienvenue dans le jeu de la bataille navale !");
+		do {
+			System.out.println("\nQue voulez-vous faire ?\n"
+					           + "N : Lancer une nouvelle partie\n"
+					           + "C : Charger une nouvelle partie\n"
+					           + "Q : Quitter");
+			reponse = entree.next() + entree.nextLine();
+			reponse = reponse.toUpperCase().trim();
+			if (reponse.equals("N")) {
+				lancerUnePartie();
+			} else if (reponse.equals("C")) {
+				if (Sauvegarder.verifierNbPartiesACharger()) {
+					chargerUnePartie();
+				} else {
+					System.out.println("Il n'existe aucune partie à charger.");
+				}
+			} else if (!reponse.equals("Q")) {
+				System.out.println("Saisie incorrectez. Saisissez soit N, soit C, soit Q.");
+			}
+			quitter = reponse.equals("Q");
+		} while (!quitter);
 	}
 }
