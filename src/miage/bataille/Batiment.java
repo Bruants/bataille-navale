@@ -1,11 +1,16 @@
 package miage.bataille;
 
+import java.io.Serializable;
 
 /**
  * Batiment touchable, a deposer dans la mer.
  */
-public class Batiment extends Obstacle {
+public class Batiment extends Obstacle implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -25306178857876905L;
 	/**
 	 * Nom du batiment courant
 	 */

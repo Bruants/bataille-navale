@@ -1,5 +1,6 @@
 package miage.bataille;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 /**
  * Represente une Zone Contigue
@@ -13,9 +14,14 @@ import java.util.ArrayList;
  * @author kevin.sannac
  * @version 0.1.0
  */
-public class ZoneContigue {
+public class ZoneContigue implements Serializable{
 	
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7778499510396565812L;
+
+	/**
      * Définit le type de l'Obstacle (Batiment,Terre,...)
      */
     private Obstacle obstacle;

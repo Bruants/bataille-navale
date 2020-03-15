@@ -4,6 +4,7 @@
  */
 package miage.bataille;
 
+import java.io.Serializable;
 
 /**
  * Represente une cellule de la mer de taille 1*1
@@ -11,8 +12,13 @@ package miage.bataille;
  * Zone de taille 1*1 du plan
  * @author Damien Avetta-Raymond
  */
-public class Cellule {
+public class Cellule implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5936707995965872694L;
+
 	/** coordonnée X de la cellule dans le plan */
     private int coordX;
 

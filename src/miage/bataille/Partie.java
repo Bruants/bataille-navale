@@ -4,6 +4,7 @@
 
 package miage.bataille;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,7 +14,12 @@ import java.util.Random;
  * 			alexis vivier
  *
  */
-public class Partie {
+public class Partie implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5137745755361982976L;
 
 	/**
 	 * Configuration de la partie courante

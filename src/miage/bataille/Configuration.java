@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +24,12 @@ import org.json.simple.parser.ParseException;
  * @author alexis vivier
  *
  */
-public class Configuration {
+public class Configuration implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 973882853661990838L;
 
 	/**
 	 * Définit la longueur maximale de la mer
