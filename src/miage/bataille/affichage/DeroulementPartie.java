@@ -4,19 +4,10 @@
 package miage.bataille.affichage;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import org.hamcrest.core.IsNull;
-
-import miage.bataille.Cellule;
 import miage.bataille.Configuration;
 import miage.bataille.Partie;
 import miage.bataille.Sauvegarder;
@@ -29,13 +20,6 @@ public class DeroulementPartie {
 	private static final String MESSAGE_ERREUR_DE_SAISIE = "Les coordonnées "
 			+ "saisies sont incorrectes. Les coordonnées ne doivent pas "
 			+ "dépasser la surface délimitée par la carte.\n";
-
-	private static final String MESSAGE_INFORMATION_POUR_SAISIR_COORDONNEES = 
-			"Veuillez saisir des coordonnées du type LETTRE + CHIFFRE : "
-					+ "'A1' par exemple. \n";
-
-	private static final String MESSAGE_ERREUR_SAISIE_INITIALISATION_CONFIGURATION = "La"
-			+ "configuration choisie ne peut pas être null.";
 	
 	private static final String MESSAGE_ERREUR_NOM_FICHIER = "Le nom du fichier est incorrect. Les "
 			                                                 + "caractères suivans sont interdits : "
@@ -52,7 +36,6 @@ public class DeroulementPartie {
 	 */
 	private static HashMap<String, String> carte = new HashMap<String, String>();
 
-
 	private static Partie partie;
 
 	/** Largeur de la carte */
@@ -66,6 +49,9 @@ public class DeroulementPartie {
 	
 	/** Permet de faire des saisies */
 	private static Scanner entree = new Scanner(System.in);
+	
+	/** Liste des coups effectués */
+	private static ArrayList<String> coups;
 
 	/**
 	 * Débute une partie par défaut : 
@@ -76,6 +62,7 @@ public class DeroulementPartie {
 		Configuration configurationDeLaPartie;
 		System.out.println("Début du jeu\n");
 		partie = new Partie();
+		coups = new ArrayList<String>();
 		configurationDeLaPartie = partie.getConfiguration();
 		tailleHauteur = configurationDeLaPartie.getHauteurCarte();
 		tailleLargeur = configurationDeLaPartie.getLongueurCarte();
@@ -230,8 +217,6 @@ public class DeroulementPartie {
 			System.out.print("Souhaitez-vous sauvegarder avant de quitter la partie ? (o/n) : ");
 			if (reponseValide()) {
 				effectuerSauvegarde();
-			} else {
-				System.out.println("Fin de partie");
 			}
 		}
 		
@@ -369,7 +354,8 @@ public class DeroulementPartie {
 			if (!finDePartieForcee) {
 				// Conversion des coordonnées saisies pour pouvoir tirer
 				resultat = partie.tirer(Integer.parseInt(reponse.substring(1)) - 1, reponse.charAt(0) - 65);
-	
+				// Enregistrement des coups dans la liste
+				coups.add(reponse);
 				if (resultat.equals("plouf")) {
 					carte.put(reponse, "  o  ");
 				} else {
@@ -380,9 +366,22 @@ public class DeroulementPartie {
 			}
 		}
 		
+		/* Phase 3 : Fin de la partie */
+		System.out.println("Fin de partie");
 		if (!finDePartieForcee) {
-			/* Phase 3 : Fin de la partie */
-			//TODO
+			System.out.println("Résultat :\n"
+					           + "Nombre de coups : " + nbTour);
+			affichageListeCoups();
+		}
+	}
+	
+	/**
+	 * Affiche la liste des coups fait durant une partie
+	 */
+	public static void affichageListeCoups() {
+		System.out.println("Liste des coups :");
+		for (int i = 0 ; i < coups.size() ; i++) {
+			System.out.println("Coup " + i + " > " + coups.get(i));
 		}
 	}
 	
