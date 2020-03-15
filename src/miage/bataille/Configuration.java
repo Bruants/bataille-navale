@@ -60,16 +60,12 @@ public class Configuration implements Serializable{
 	 * Création d'une configuration de base
 	 */
 	public Configuration() {
+
 		this(12, 12, "Défaut", new ArrayList<Batiment>());
 
 		flotte.add(new Batiment(4, "porte-avion"));
 		flotte.add(new Batiment(3, "croiseur"));
-		flotte.add(new Batiment(3, "croiseur"));
 		flotte.add(new Batiment(2, "sous-marin"));
-		flotte.add(new Batiment(2, "sous-marin"));
-		flotte.add(new Batiment(2, "sous-marin"));
-		flotte.add(new Batiment(1, "vedette"));
-		flotte.add(new Batiment(1, "vedette"));
 		flotte.add(new Batiment(1, "vedette"));
 		flotte.add(new Batiment(1, "vedette"));
 		
@@ -82,8 +78,9 @@ public class Configuration implements Serializable{
 	 * @param hauteurCarte hauteur y de la carte
 	 * @param nom Le nom de la configuration
 	 * @param batFlotte batiments à ajouter a la flotte sous forme de tableau
+	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur innatendu
 	 */
-	public Configuration(int longueurCarte, int hauteurCarte, String nom, Batiment...batFlotte) {
+	public Configuration(int longueurCarte, int hauteurCarte, String nom, Batiment...batFlotte) throws IllegalArgumentException{
 		this( longueurCarte, hauteurCarte, nom, new ArrayList<Batiment>(Arrays.asList(batFlotte)) );	
 	}
 	
@@ -96,13 +93,24 @@ public class Configuration implements Serializable{
 	 * @param batFlotte batiments à ajouter a la flotte sous forme de liste
 	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur innatendu
 	 */
-	public Configuration(int longueurCarte, int hauteurCarte, String nom, ArrayList<Batiment> batFlotte) throws IllegalFormatWidthException{
+	public Configuration(int longueurCarte, int hauteurCarte, String nom, ArrayList<Batiment> batFlotte) throws IllegalArgumentException{
+		int tailleFlotte;
+		
 		/* Tests si les paramétres donnés sont dans les intervalles */
 		if (longueurCarte > LONGUEUR_MAX || longueurCarte <= 0) {
 			throw new IllegalFormatWidthException(longueurCarte);
 		}
 		if(hauteurCarte > HAUTEUR_MAX || hauteurCarte <= 0) {
 			throw new IllegalFormatWidthException(hauteurCarte);
+		}
+		
+		/* Tests si les bateaux soient tous posable */
+		tailleFlotte = 0;
+		for(Batiment bat:batFlotte) { tailleFlotte += bat.getTailleLgr(); }
+		
+		if(longueurCarte*hauteurCarte < tailleFlotte) {
+			throw new IllegalArgumentException("Taille disponible : " + longueurCarte*hauteurCarte 
+					+ " taille de la flotte : " + tailleFlotte);
 		}
 		
 		this.longueurCarte = longueurCarte;
@@ -222,7 +230,13 @@ public class Configuration implements Serializable{
 					JSONObject bateauJSON = (JSONObject) bateau; // Le JSON du bateau
 					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); // Ajout à la flotte
 				}
-				aCharger.put(nom,new Configuration((int)longueurCarte,(int)largeurCarte, nom, flotte));
+				try {
+					aCharger.put(nom,new Configuration((int)longueurCarte,(int)largeurCarte, nom, flotte));
+				} catch (IllegalFormatWidthException e) {
+					System.out.println("Probléme dans les tailles de la configuration " + e.getMessage());
+				} catch (IllegalArgumentException e) {
+					System.out.println(e.getMessage());
+				}
 			}
 
 		} catch (ParseException e) {
@@ -241,7 +255,7 @@ public class Configuration implements Serializable{
      * @param config La config que l'on veut récupérer
      * @return L'objet configuration que l'on veut
      */
-    public Configuration recupererConfig(String config) {
+    public static Configuration recupererConfig(String config) {
     	return listeDeConfigs.get(config);
     }
     
@@ -250,20 +264,21 @@ public class Configuration implements Serializable{
      * @param config La config que l'on veut récupérer
      * @return Toutes les configurations enregsitrées
      */
-    public HashMap<String,Configuration> recupererToutesLesConfigs() {
+    public static HashMap<String,Configuration> recupererToutesLesConfigs() {
     	return listeDeConfigs;
     }
     
     /**
      * Affiche les noms de toutes les configurations existantes.
      */
-    public void afficherConfig() {
+    public static String afficherConfig() {
+    	StringBuilder aRenvoyer = new StringBuilder();
     	Object[] keys = listeDeConfigs.keySet().toArray();
-    	
-    	System.out.println("Liste des configurations disponibles :");
+    	aRenvoyer.append("Liste des configurations disponibles :\n");
     	for (int i = 0 ; i < listeDeConfigs.size() ; i++) {
-    		System.out.println(listeDeConfigs.get(keys[i]).nom);
+    		aRenvoyer.append(listeDeConfigs.get(keys[i]).nom + '\n');
     	}
+    	return aRenvoyer.toString();
     }
 	
 	/**
@@ -352,7 +367,7 @@ public class Configuration implements Serializable{
 	 * Ajoute la configuration aux liste de configuration
 	 * @param aAjouter La configuration qui sera ajoutée
 	 */
-	public void ajouterConfig(Configuration aAjouter) {
+	public static void ajouterConfig(Configuration aAjouter) {
 		listeDeConfigs.put(aAjouter.nom,aAjouter);
 	}
 	
@@ -363,7 +378,7 @@ public class Configuration implements Serializable{
 	 * @return true si la config existe
 	 *         false sinon
 	 */
-	public boolean configEstPresente(String nom) {
+	public static boolean configEstPresente(String nom) {
 		int i;
 		Object[] keys = listeDeConfigs.keySet().toArray();
 		

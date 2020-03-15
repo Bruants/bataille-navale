@@ -389,21 +389,21 @@ public class DeroulementPartie {
 	 * Charge une configuration.
 	 */
 	public static void choisirConfiguration() {
-		Configuration config = new Configuration();
+		Configuration config;
 		String reponse;
 		boolean valide;
 		
-		config.afficherConfig();
+		System.out.println(Configuration.afficherConfig());
 		do {
 			System.out.print("Quelle configuration voulez-vous choisir ? : ");
 			reponse = entree.next() + entree.nextLine();
 			reponse = reponse.trim();
-			valide = config.configEstPresente(reponse);
+			valide = Configuration.configEstPresente(reponse);
 			if (!valide) {
 				System.out.println("La configuration que vous avez saisie n'existe pas");
 			}
 		} while	(!valide);
-		config = config.recupererConfig(reponse);
+		config = Configuration.recupererConfig(reponse);
 		initialisationAvecUneConfiguration(config);
 	}
 
