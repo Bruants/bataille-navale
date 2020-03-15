@@ -206,7 +206,7 @@ public class Partie implements Serializable{
 			enregistrerCoup(celluleTiree);
 			if (zoneVisee.estCoule()) {
 				nbBatiments--;
-				resultat = "coule" + zoneVisee.getObstacle();
+				resultat = "coule" + zoneVisee.getObstacle().getNom();
 			} else {
 				resultat = celluleTiree.getTouche() ? "touche" : "plouf";
 			}
