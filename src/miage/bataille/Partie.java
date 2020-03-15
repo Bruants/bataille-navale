@@ -9,7 +9,8 @@ import java.util.Random;
 
 /**
  * 
- * @author Damien Avetta
+ * @author 	Damien Avetta,
+ * 			alexis vivier
  *
  */
 public class Partie {
@@ -71,8 +72,11 @@ public class Partie {
 	 * @param aPLacer Batiment a placer sur la mer
 	 */
 	private boolean placementBatimentAuto(Batiment aPLacer) {
-		boolean valide = false;
-		boolean passer = true;
+		
+		final double CHANCE_RELANCE_ADJACENT = 0.2;
+		
+		boolean passer = false;
+		boolean relanceAdjacent = (Math.random() < CHANCE_RELANCE_ADJACENT);
 		boolean vertical = (Math.random() < 0.5);
 
 		int xAPlacer = (int)(Math.random() * (config.getLongueurCarte() - (!vertical?aPLacer.getTailleLgr()-1:0)));
@@ -96,20 +100,15 @@ public class Partie {
 			}
 		}
 		
-
-		
-		//TODO: Test que le batiment ne soit pas a cote d'un deja en jeu
-//    	for(int indiceZone = 0; indiceZone < compose.size() && valide; indiceZone++) {
-//    		if(compose.get(indiceZone).existe(xAPlacer, yAPLacer) ){
-//    			next = !placementBatimentAuto(aPLacer);
-//    		}
-//    	}
-		
-		System.out.print(" Longueur = " + aPLacer.getTailleLgr() 
-					+ "vertical:" + vertical + " Initial = " + xAPlacer + ";" + yAPLacer +  " ");
-		System.out.print(xAPlacerMax);
-		System.out.print(";");
-		System.out.println(yAPlacerMax);
+		//Test que le batiment ne soit pas a cote d'un deja en jeu selon l'etat de relanceAdgacent
+    	for(int i = 0; i < aPLacer.getTailleLgr() && !passer && relanceAdjacent; i++ ) {
+    		if( empietreUneCellule(xAPlacer + (!vertical?i:0) + 1, yAPLacer + (vertical?i:0)) 
+    				|| empietreUneCellule(xAPlacer + (!vertical?i:0) - 1, yAPLacer + (vertical?i:0))
+    				|| empietreUneCellule(xAPlacer + (!vertical?i:0), yAPLacer + (vertical?i:0) + 1)
+    				|| empietreUneCellule(xAPlacer + (!vertical?i:0), yAPLacer + (vertical?i:0) - 1)){
+    			passer = placementBatimentAuto(aPLacer);
+    		}
+    	}
 		
 		//Ajout de la zone correctement d�roul�
 		ajouterZoneContigue( new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 

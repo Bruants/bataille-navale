@@ -110,19 +110,22 @@ class PartieTest {
 	}
 	
 	/**
-	 * Test method for {@link miage.bataille.Partie#placementBatimentAuto()}
-	 * vérifie que les batiments ne sont pas placés hors de la mer
+	 * Test method for {@link miage.bataille.Partie#placementFlotteAuto()}
+	 * verifie que les batiments ne sont pas placee hors de la mer
 	 */
 	@Test
 	void testPlacementFlotteAuto() {
+		
 		// créer une carte de 12x12 avec une flotte constituée d'un seul bateau
 		Configuration cfg = new Configuration(12, 12, "cfgTest", new Batiment(3, "zoyzoy"));
 		ArrayList<Batiment> flotteAPlacer = cfg.getFlotte();
+		Partie partie = fixture[0];
+		
 		// utiliser cette nouvelle flotte pour le test
-		fixture[0].placementFlotteAuto(flotteAPlacer);
+		partie.placementFlotteAuto(flotteAPlacer);
 		
 		// récupérer les zones contigues de chaque batiment de la flotte placee
-		ArrayList<ZoneContigue> zonesFlottePlacee = fixture[0].getCompose();
+		ArrayList<ZoneContigue> zonesFlottePlacee = partie.getCompose();
 		
 		// pour chaque zone occupée par un batiment
 		for(ZoneContigue zone:zonesFlottePlacee) {
