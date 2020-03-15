@@ -27,6 +27,17 @@
                 {"taille": 1, "nom": "vedette"},
                 {"taille": 1, "nom": "vedette"}
             ]
+        },
+                {
+            "nom" : "Facile",
+            "carte" : { 
+                "longueurCarte":5,
+                "largeurCarte":5
+            },
+            "flotte" : [
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 1, "nom": "vedette"}
+            ]
         }
     ]
 }
