@@ -3,6 +3,11 @@
  */
 package miage.bataille.affichage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -18,16 +23,20 @@ import miage.bataille.Partie;
 public class DeroulementPartie {
 
 
-	private final static String MESSAGE_ERREUR_DE_SAISIE = "Les coordonnées "
+	private static final String MESSAGE_ERREUR_DE_SAISIE = "Les coordonnées "
 			+ "saisies sont incorrectes. Les coordonnées ne doivent pas "
 			+ "dépasser la surface délimitée par la carte.\n";
 
-	private final static String MESSAGE_INFORMATION_POUR_SAISIR_COORDONNEES = 
+	private static final String MESSAGE_INFORMATION_POUR_SAISIR_COORDONNEES = 
 			"Veuillez saisir des coordonnées du type LETTRE + CHIFFRE : "
 					+ "'A1' par exemple. \n";
 
-	private final static String MESSAGE_ERREUR_SAISIE_INITIALISATION_CONFIGURATION = "La"
+	private static final String MESSAGE_ERREUR_SAISIE_INITIALISATION_CONFIGURATION = "La"
 			+ "configuration choisie ne peut pas être null.";
+	
+	private static final String MESSAGE_ERREUR_SAUVEGARDE = "La sauvegarde n'a pas pu s'effectuer";
+	
+	private static final String MESSAGE_ANNULATION_SAUVEGARDE = "La sauvegarde ne s'est pas bien effectuée";
 
 
 	private static String coordonnee;
@@ -55,6 +64,9 @@ public class DeroulementPartie {
 
 	/** Hauteur de la carte */
 	private static int tailleHauteur;
+	
+	/** Permet de faire des saisies */
+	private static Scanner entree = new Scanner(System.in);
 
 	/**
 	 * Débute une partie par défaut : 
@@ -83,9 +95,9 @@ public class DeroulementPartie {
 			initialisationParDefaut();
 		} else {
 			System.out.println("Début du jeu\n");
-			partie = new Partie(configurationChoisie);
 			tailleHauteur = configurationChoisie.getHauteurCarte();
 			tailleLargeur = configurationChoisie.getLongueurCarte();
+			partie = new Partie(configurationChoisie);
 			creerNouvelleCarte();
 		}
 	}
@@ -211,9 +223,9 @@ public class DeroulementPartie {
 		try {
 
 			valide = coordonnee.charAt(0) >= 65 
-					&& coordonnee.charAt(0) < 65 + tailleHauteur
+					&& coordonnee.charAt(0) < 65 + tailleLargeur
 					&& Integer.parseInt(coordonnee.substring(1)) > 0 
-					&& Integer.parseInt(coordonnee.substring(1)) <= tailleLargeur;
+					&& Integer.parseInt(coordonnee.substring(1)) <= tailleHauteur;
 
 		} catch (NumberFormatException e) {
 			valide = false;
@@ -229,34 +241,36 @@ public class DeroulementPartie {
 	 * - Demande un nombre entier positif pour la ligne
 	 */
 	public static String saisieTir() {
-		Scanner entree = new Scanner(System.in);
-		String coordonnee = "";
+		String reponse;
+		boolean valide = false;
 
 		do {		
 
 			System.out.print("Saisir une coordonnée : ");
-			coordonnee = entree.next() + entree.nextLine();
+			reponse = entree.next() + entree.nextLine();
 
-			coordonnee = coordonnee.toUpperCase();
+			reponse = reponse.toUpperCase();
 
 			// Message d'erreur si les coordonnées sont non valides
-			if (!verifierSaisie(coordonnee)) {
-				System.out.println(MESSAGE_ERREUR_DE_SAISIE);
+			if (reponse.equals("S")) {
+				/* TODO appel sauvegarde */
+			} else {
+				valide = verifierSaisie(reponse);
+				if (!valide) {
+					System.out.println(MESSAGE_ERREUR_DE_SAISIE);
+				}
 			}
+		} while (!valide);
 
-		} while (!verifierSaisie(coordonnee));
-
-		return coordonnee;
+		return reponse;
 	}
-
 
 	/**
 	 * Lance une partie avec une nouvelle configuration
 	 * et initialise l'affichage de la partie. 
 	 * Fait dérouler la partie en faisant jouer l'utilisateur.
 	 */
-	//TODO: à remplacer si cela ne convient pas...
-	public static void LancerUnePartie() {
+	public static void lancerUnePartie() {
 
 		/* Phase 1 : initialisation de la partie */
 		Configuration config = new Configuration().recupererConfig("Config1");
@@ -265,7 +279,7 @@ public class DeroulementPartie {
 		afficherCarte();
 
 		/* Phase 2 : Déroulement d'un tour */
-		for (int nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
+		for (int nbTour = 0; partie.getNbBatiments() > 0; nbTour++) {
 			System.out.print("Coup " + nbTour + " => ");
 
 			// Récupération des coordonnées saisies
@@ -278,6 +292,8 @@ public class DeroulementPartie {
 			coordonneeY -= 65;
 
 			// Tir sur la carte
+			System.out.println("coordonnée X : " + coordonneeX);
+			System.out.println("coordonnée Y : " + coordonneeY);
 			resultat = partie.tirer(coordonneeX, coordonneeY);
 
 			if (resultat.equals("plouf")) {
@@ -289,11 +305,6 @@ public class DeroulementPartie {
 			afficherCarte();
 
 		}
-
-
-
-
-
 	}
 
 
@@ -304,7 +315,7 @@ public class DeroulementPartie {
 	 * 		  récupérée pour reprendre une partie.
 	 */
 	//TODO: à remplacer si cela ne convient pas...
-	public static void LancerUnePartie(Partie partieExistante) {
+	public static void lancerUnePartie(Partie partieExistante) {
 		//TODO: Compléter le corps de cette méthode à l'aide
 		/* de ce qui a été écrit dans le main et en le modifiant
 			    pour afficher la carte à l'aide des coups déjà tirés */
@@ -315,6 +326,7 @@ public class DeroulementPartie {
 
 		/* Phase 2 : Déroulement d'un tour */
 		for (int nbTour = 0; partie.getNbBatiments() > -1; nbTour++) {
+			System.out.println("/!\\ Saisissez S pour sauvegarder /!\\");
 			System.out.print("Coup " + nbTour + " => ");
 
 			// Récupération des coordonnées saisies
@@ -350,9 +362,8 @@ public class DeroulementPartie {
 	 */
 	public static void main(String[] args) {
 		
-		LancerUnePartie();
+		lancerUnePartie();
 		/* Phase 3 : Fin de la partie */
 		//TODO
 	}
-
 }
