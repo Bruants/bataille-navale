@@ -13,6 +13,7 @@ import miage.bataille.Partie;
 import miage.bataille.Sauvegarder;
 
 /**
+ * TODO
  * @author Audric POUZELGUES, Damien AVETTA-RAYMOND
  */
 public class DeroulementPartie {
@@ -234,7 +235,7 @@ public class DeroulementPartie {
 		
 		do {
 			/* Saisie du nom de la sauvegarde */
-			nomFichier = saisieNom("Quel nom voulez-vous donner à la sauvegarde ? : ");
+			nomFichier = saisieNom("Quel nom voulez-vous donner à la sauvegarde ? : ", false);
 			/* Valide que le fichier peut etre créé */
 			validationSauvegarde = sauvegardePeutEtreCree(nomFichier);
 			/* Demande de confirmation pour sauvegarder */
@@ -257,16 +258,18 @@ public class DeroulementPartie {
 	/**
 	 * Demande à l'utilisateur de saisir un nom.
 	 * Vérifie si le nom est correct dans le format d'un fichier (sans caractères spéciaux).
+	 * @param question La question a posée pour la saisie
+	 * @param autoriseSlash si true les caractères / sont autorisés sinon ils ne le sont pas.
 	 * @return le nom de la sauvegarde
 	 */
-	public static String saisieNom(String question) {
+	public static String saisieNom(String question, boolean autoriseSlash) {
 		boolean valide;
 		String nom;
 		
 		do {
 			System.out.print(question);
 			nom = entree.next() + entree.nextLine();
-			valide = nomFichierCorrect(nom);
+			valide = nomFichierCorrect(nom, autoriseSlash);
 			if (!valide) {
 				System.out.println(MESSAGE_ERREUR_NOM_FICHIER);
 			}
@@ -278,12 +281,17 @@ public class DeroulementPartie {
 	/**
 	 * Détermine si le nom du fichier est correcte en vérifiant qu'il n'y ait pas de caractères spéciaux
 	 * @param nomFichier le nom de la sauvegarde
+	 * @param autoriseSlash si true alors le caractère / est autorisée sinon il n'est pas autorisé
 	 * @return true si nomFichier ne contient aucun caractères spéciaux
 	 *         false sinon
 	 */
-	public static boolean nomFichierCorrect(String nomFichier) {
-		String caracteresSpeciaux = "/\\:*?\"<>|";
+	public static boolean nomFichierCorrect(String nomFichier, boolean autoriseSlash) {
+		String caracteresSpeciaux = "\\:*?\"<>|";
 		boolean valide = true;
+		
+		if (!autoriseSlash) {
+			caracteresSpeciaux += "/";
+		}
 		
 		for (int i = 0 ; i < caracteresSpeciaux.length() && valide ; i++) {
 			valide = !nomFichier.contains(Character.toString(caracteresSpeciaux.charAt(i)));
@@ -444,13 +452,13 @@ public class DeroulementPartie {
 		boolean fichierExiste;
 		
 		do {
-			nomFichier = saisieNom("Quelle partie vous souhaitez charger ? : ");
-			if (nomFichier.contains("sauvegarde/parties/")) {
+			nomFichier = saisieNom("Quelle partie vous souhaitez charger ? : ", true);
+			if (nomFichier.contains("sauvegarde/parties/") && nomFichier.contains(".data")) {
+				fichier = new File(nomFichier);
+			} else if (nomFichier.contains("sauvegarde/parties/")) {
 				fichier = new File(nomFichier + ".data");
 			} else if (nomFichier.contains(".data")) {
 				fichier = new File("sauvegarde/parties/" + nomFichier);
-			} else if (nomFichier.contains("sauvegarde/parties/") && nomFichier.contains(".data")) {
-				fichier = new File(nomFichier);
 			} else {
 				fichier = new File("sauvegarde/parties/" + nomFichier + ".data");
 			}
