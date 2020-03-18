@@ -19,7 +19,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * Correspond à une configuration de la partie
+ * Correspond ï¿½ une configuration de la partie
  * de bataille navale
  * 
  * @author alexis vivier
@@ -33,19 +33,19 @@ public class Configuration implements Serializable{
 	private static final long serialVersionUID = 973882853661990838L;
 
 	/**
-	 * Définit la longueur maximale de la mer
+	 * Dï¿½finit la longueur maximale de la mer
 	 */
-	private static final int LONGUEUR_MAX = 26;
+	public static final int LONGUEUR_MAX = 26;
 	
 	/**
 	 * Definit la hauteur maximale de la mer
 	 */
-	private static final int HAUTEUR_MAX = 26;
+	public static final int HAUTEUR_MAX = 26;
 	
-	/** Longueur maximale de la carte définit sur X */
+	/** Longueur maximale de la carte dï¿½finit sur X */
 	private int longueurCarte;
 
-	/** Hauteur de la carte définit */
+	/** Hauteur de la carte dï¿½finit */
 	private int hauteurCarte;
 
 	/** Stocke la flotte */
@@ -54,15 +54,15 @@ public class Configuration implements Serializable{
 	/** Le nom de la config */
 	private String nom;
 	
-	/** Toutes les configurations chargées */
+	/** Toutes les configurations chargï¿½es */
 	private static HashMap<String,Configuration> listeDeConfigs = chargerConfig("./src/configs.json");
 
 	/** 
-	 * Création d'une configuration de base
+	 * Crï¿½ation d'une configuration de base
 	 */
 	public Configuration() {
 
-		this(12, 12, "Défaut", new ArrayList<Batiment>());
+		this(12, 12, "Dï¿½faut", new ArrayList<Batiment>());
 
 		flotte.add(new Batiment(4, "porte-avion"));
 		flotte.add(new Batiment(3, "croiseur"));
@@ -73,12 +73,12 @@ public class Configuration implements Serializable{
 	}
 
 	/**
-	 * Crée une configuration definit par la longueur, la hauteur et 
+	 * Crï¿½e une configuration definit par la longueur, la hauteur et 
 	 * les batiments definissant les flottes 
 	 * @param longueurCarte longueur x de la carte
 	 * @param hauteurCarte hauteur y de la carte
 	 * @param nom Le nom de la configuration
-	 * @param batFlotte batiments à ajouter a la flotte sous forme de tableau
+	 * @param batFlotte batiments ï¿½ ajouter a la flotte sous forme de tableau
 	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur innatendu
 	 */
 	public Configuration(int longueurCarte, int hauteurCarte, String nom, Batiment...batFlotte) throws IllegalArgumentException{
@@ -86,18 +86,18 @@ public class Configuration implements Serializable{
 	}
 	
 	/**
-	 * Crée une configuration definit par la longueur, la hauteur et 
+	 * Crï¿½e une configuration definit par la longueur, la hauteur et 
 	 * les batiments definissant les flottes 
 	 * @param longueurCarte longueur x de la carte
 	 * @param hauteurCarte hauteur y de la carte
 	 * @param nom Le nom de la configuration
-	 * @param batFlotte batiments à ajouter a la flotte sous forme de liste
+	 * @param batFlotte batiments ï¿½ ajouter a la flotte sous forme de liste
 	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur innatendu
 	 */
 	public Configuration(int longueurCarte, int hauteurCarte, String nom, ArrayList<Batiment> batFlotte) throws IllegalArgumentException{
 		int tailleFlotte;
 		
-		/* Tests si les paramétres donnés sont dans les intervalles */
+		/* Tests si les paramï¿½tres donnï¿½s sont dans les intervalles */
 		if (longueurCarte > LONGUEUR_MAX || longueurCarte <= 0) {
 			throw new IllegalFormatWidthException(longueurCarte);
 		}
@@ -151,7 +151,7 @@ public class Configuration implements Serializable{
 	}
 
 	/**
-	 * @return renvois la flotte des équipes
+	 * @return renvois la flotte des ï¿½quipes
 	 */
 	public ArrayList<Batiment> getFlotte() {
 		return flotte;
@@ -166,8 +166,8 @@ public class Configuration implements Serializable{
 	}
 
 	/**
-	 * Récupère les configurations stockees dans le fichier chemin
-	 * Chaque configuration possède les informations suivantes :
+	 * Rï¿½cupï¿½re les configurations stockees dans le fichier chemin
+	 * Chaque configuration possï¿½de les informations suivantes :
 	 * 	- nom (String)
 	 *  - carte (Object)
 	 *  	- longueurCarte (int)
@@ -232,26 +232,26 @@ public class Configuration implements Serializable{
 			}
 			reader = new FileReader(fichierJson); // Lecture du fichier
 			jsonObject = (JSONObject) parser.parse(reader); // Parse en JSONObject
-			array = (JSONArray) jsonObject.get("config"); // On récupère les différentes configs
+			array = (JSONArray) jsonObject.get("config"); // On rï¿½cupï¿½re les diffï¿½rentes configs
 			reader.close(); // fermeture du fichier
 			// On parcourt toutes les configs
 			for (Object elt : array) {
 				config = (JSONObject) elt; // Parse en json
 				flotte = new ArrayList<Batiment>();
 				
-				// Récupère les informations
+				// Rï¿½cupï¿½re les informations
 				nom = (String)config.get("nom");
 				hauteurCarte = (long)((JSONObject)config.get("carte")).get("hauteurCarte");
 				longueurCarte = (long)((JSONObject)config.get("carte")).get("longueurCarte");
-				// On créee tous les bateaux
+				// On crï¿½ee tous les bateaux
 				for(Object bateau : (JSONArray)config.get("flotte")) {
 					JSONObject bateauJSON = (JSONObject) bateau; // Le JSON du bateau
-					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); // Ajout à la flotte
+					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); // Ajout ï¿½ la flotte
 				}
 				try {
 					aCharger.put(nom,new Configuration((int)longueurCarte,(int)hauteurCarte, nom, flotte));
 				} catch (IllegalFormatWidthException e) {
-					System.out.println("Probléme dans les tailles de la configuration " + e.getMessage());
+					System.out.println("Problï¿½me dans les tailles de la configuration " + e.getMessage());
 				} catch (IllegalArgumentException e) {
 					System.out.println(e.getMessage());
 				}
@@ -268,8 +268,8 @@ public class Configuration implements Serializable{
 	}
 	
     /**
-     * Recupère la config passée en paramètre
-     * @param config La config que l'on veut récupérer
+     * Recupï¿½re la config passï¿½e en paramï¿½tre
+     * @param config La config que l'on veut rï¿½cupï¿½rer
      * @return L'objet configuration que l'on veut
      */
     public static Configuration recupererConfig(String config) {
@@ -277,9 +277,9 @@ public class Configuration implements Serializable{
     }
     
     /**
-     * Recupère toutes les configs passées en paramètre
-     * @param config La config que l'on veut récupérer
-     * @return Toutes les configurations enregsitrées
+     * Recupï¿½re toutes les configs passï¿½es en paramï¿½tre
+     * @param config La config que l'on veut rï¿½cupï¿½rer
+     * @return Toutes les configurations enregsitrï¿½es
      */
     public static HashMap<String,Configuration> recupererToutesLesConfigs() {
     	return listeDeConfigs;
@@ -298,8 +298,8 @@ public class Configuration implements Serializable{
     }
 	
 	/**
-	 * Enregistre listeDeConfigs dans le path passé en paramètre 
-	 * Chaque configuration possède les informations suivantes :
+	 * Enregistre listeDeConfigs dans le path passï¿½ en paramï¿½tre 
+	 * Chaque configuration possï¿½de les informations suivantes :
 	 * 	- nom (String)
 	 *  - carte (Object)
 	 *  	- longueurCarte (int)
@@ -357,7 +357,7 @@ public class Configuration implements Serializable{
 				// Enregistre les batiments
 				JSONArray flotteArray = new JSONArray();
 				for(Batiment bateau : elt.flotte) {
-					// Crée l'objet bateau
+					// Crï¿½e l'objet bateau
 					JSONObject bateauObj = new JSONObject();
 					bateauObj.put("taille",bateau.tailleLgr);
 					bateauObj.put("nom",bateau.nom);
@@ -381,7 +381,7 @@ public class Configuration implements Serializable{
 	
 	/**
 	 * Ajoute la configuration aux liste de configuration
-	 * @param aAjouter La configuration qui sera ajoutée
+	 * @param aAjouter La configuration qui sera ajoutï¿½e
 	 */
 	public static void ajouterConfig(Configuration aAjouter) {
 		listeDeConfigs.put(aAjouter.nom,aAjouter);
@@ -389,8 +389,8 @@ public class Configuration implements Serializable{
 	
 	
 	/**
-	 * Parcours la liste listeDeConfigs et dit si la config est présente ou non
-	 * @param nom le nom de la config recherchée
+	 * Parcours la liste listeDeConfigs et dit si la config est prï¿½sente ou non
+	 * @param nom le nom de la config recherchï¿½e
 	 * @return true si la config existe
 	 *         false sinon
 	 */
