@@ -83,15 +83,15 @@ public class Partie implements Serializable{
 		boolean relanceAdjacent = (Math.random() < CHANCE_RELANCE_ADJACENT);
 		boolean vertical = (Math.random() < 0.5);
 
-		int xAPlacer = (int)(Math.random() * (config.getLongueurCarte() - (!vertical?aPLacer.getTailleLgr()-1:0)));
-		int yAPLacer = (int)(Math.random() * (config.getHauteurCarte() - (vertical?aPLacer.getTailleLgr()-1:0)));
+		int xAPlacer = (int)(Math.random() * (config.getHauteurCarte() - (!vertical?aPLacer.getTailleLgr()-1:0)));
+		int yAPLacer = (int)(Math.random() * (config.getLongueurCarte() - (vertical?aPLacer.getTailleLgr()-1:0)));
 
 		int xAPlacerMax = !vertical?( xAPlacer + (aPLacer.getTailleLgr() - 1 )):xAPlacer;
 		int yAPlacerMax = vertical?( yAPLacer + (aPLacer.getTailleLgr() - 1 )):yAPLacer;
 
 		//Tests si sa ne sort pas de la mer
-		if( xAPlacerMax > config.getLongueurCarte() - 1
-				|| yAPlacerMax > config.getHauteurCarte() - 1) {
+		if( xAPlacerMax > config.getHauteurCarte() - 1
+				|| yAPlacerMax > config.getLongueurCarte() - 1) {
 			//Hors de la mer: relance du placement
 			passer = placementBatimentAuto(aPLacer);
 		}   
