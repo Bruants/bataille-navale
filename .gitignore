@@ -27,5 +27,8 @@ hs_err_pid*
 .project
 .settings
 
+# fichier de sauvegarde
+.data
+
 # dossier .class
 /bin/
