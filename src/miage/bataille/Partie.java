@@ -113,13 +113,15 @@ public class Partie implements Serializable{
     			passer = placementBatimentAuto(aPLacer);
     		}
     	}
-		
-		//Ajout de la zone correctement d�roul�
-		ajouterZoneContigue( new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 
-				//Si horizontal alors ajouter la taille du batiment au x
-				xAPlacerMax, 	
-				//Si vertical alors ajoute la taille du batiment au y
-				yAPlacerMax));
+    	
+		if( !passer ) {
+			//Ajout de la zone correctement d�roul�
+			ajouterZoneContigue( new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 
+					//Si horizontal alors ajouter la taille du batiment au x
+					xAPlacerMax, 	
+					//Si vertical alors ajoute la taille du batiment au y
+					yAPlacerMax));
+		}
 		return true;
 	}
 
