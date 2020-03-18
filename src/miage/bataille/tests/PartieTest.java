@@ -67,23 +67,13 @@ class PartieTest {
 		assertFalse(tire);
 		
 	}
-	
-	/**
-	 * Test method for {@link miage.bataille.Partie#rechercherZone(int,int)}.
-	 */
-	@Test
-	void testRechercheZone() {
-		
-		//TODO: Attendre d'avoir terminï¿½ la classe ZoneContigue
-		fail("Not yey implemented");
-	}
-	
 
 	/**
 	 * Test method for {@link miage.bataille.Partie#getCellulesTirees()}.
+	 * @throws Exception 
 	 */
 	@Test
-	void testGetCellulesTirees() {
+	void testGetCellulesTirees() throws Exception {
 		
 		assertEquals(0, fixture[0].getCellulesTirees().size());
 		
@@ -105,6 +95,21 @@ class PartieTest {
 		for (Cellule cellule : fixture[0].getCellulesTirees()) {
 			assertTrue(cellule.getCoordX() >= 0);
 		}
+		
+		// Tire sur des batiments
+		Batiment croiseur = new Batiment(3, "Croiseur");
+		Batiment porteAvion = new Batiment(5, "Porte avion");
+		fixture[0].ajouterZoneContigue(new ZoneContigue(croiseur, 0, 3, 0, 5));
+		fixture[0].ajouterZoneContigue(new ZoneContigue(porteAvion, 2, 1, 2, 5));
+		
+		assertEquals("touche", fixture[0].tirer(0, 3));
+		assertTrue(fixture[0].getCellulesTirees().get(fixture[0].getCellulesTirees().size()-1).getTouche());
+		assertEquals("touche", fixture[0].tirer(0, 4));
+		assertTrue(fixture[0].getCellulesTirees().get(fixture[0].getCellulesTirees().size()-1).getTouche());
+		if (!fixture[0].tirer(0, 5).contains("coule")) {
+			throw new Exception("La bateau n'est pas coulé !");
+		}
+		assertTrue(fixture[0].getCellulesTirees().get(fixture[0].getCellulesTirees().size()-1).getTouche());
 		
 		//TODO: Tester les cas ou l'on dï¿½passe la taille de la carte
 	}
@@ -139,5 +144,24 @@ class PartieTest {
 				assertTrue(cellule.getCoordY() < cfg.getHauteurCarte() && cellule.getCoordY() >= 0);
 			}
 		}
+	}
+	
+	/**
+	 * Test method for {@link miage.bataille.Partie#getNbBatiment()}
+	 * verifie que les batiments ne sont pas placee hors de la mer
+	 */
+	@Test
+	void testGetNbBatiment() {
+		Batiment croiseur = new Batiment(3, "Croiseur");
+		Batiment porteAvion = new Batiment(5, "Porte avion");
+		assertEquals(0,fixture[0].getNbBatiments());
+		fixture[0].ajouterZoneContigue(new ZoneContigue(croiseur, 0, 0, 0, 2));
+		assertEquals(1,fixture[0].getNbBatiments());
+		fixture[0].ajouterZoneContigue(new ZoneContigue(croiseur, 0, 3, 0, 5));
+		assertEquals(2,fixture[0].getNbBatiments());
+		fixture[0].ajouterZoneContigue(new ZoneContigue(porteAvion, 2, 1, 2, 5));
+		assertEquals(3,fixture[0].getNbBatiments());
+		fixture[0].ajouterZoneContigue(new ZoneContigue(croiseur, 3, 3, 3, 5));
+		assertEquals(4,fixture[0].getNbBatiments());
 	}
 }

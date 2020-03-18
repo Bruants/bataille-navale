@@ -67,9 +67,6 @@ public class Partie implements Serializable{
 		for(Batiment bat:flotte) {
 			placementBatimentAuto(bat);
 		}
-		for(ZoneContigue zone: compose) {
-			System.out.println(zone.getPossede());
-		}
 	}
 
 	/**
