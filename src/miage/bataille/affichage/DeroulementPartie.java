@@ -42,7 +42,7 @@ public class DeroulementPartie {
 	private static Partie partie;
 
 	/** Largeur de la carte */
-	private static int tailleLargeur;
+	private static int tailleLongueur;
 
 	/** Hauteur de la carte */
 	private static int tailleHauteur;
@@ -67,7 +67,7 @@ public class DeroulementPartie {
 		partie = new Partie();
 		configurationDeLaPartie = partie.getConfiguration();
 		tailleHauteur = configurationDeLaPartie.getHauteurCarte();
-		tailleLargeur = configurationDeLaPartie.getLongueurCarte();
+		tailleLongueur = configurationDeLaPartie.getLongueurCarte();
 		creerNouvelleCarte();
 	}
 
@@ -84,7 +84,7 @@ public class DeroulementPartie {
 		} else {
 			System.out.println("Début du jeu\n");
 			tailleHauteur = configurationChoisie.getHauteurCarte();
-			tailleLargeur = configurationChoisie.getLongueurCarte();
+			tailleLongueur = configurationChoisie.getLongueurCarte();
 			partie = new Partie(configurationChoisie);
 			creerNouvelleCarte();
 		}
@@ -99,7 +99,7 @@ public class DeroulementPartie {
 		String cle;
 
 		System.out.print("   ");
-		for (int i = 1 ; i <= tailleHauteur ; i++) {
+		for (int i = 1 ; i <= tailleLongueur ; i++) {
 			if (i < 10) {
 				System.out.print("  " + i + "  ");
 			} else {
@@ -107,10 +107,10 @@ public class DeroulementPartie {
 			}
 		}
 
-		for (int i = 0 ; i < tailleLargeur ; i++, lettre++) {
+		for (int i = 0 ; i < tailleHauteur ; i++, lettre++) {
 			System.out.print("\n\n");
 			System.out.print(lettre + "  ");
-			for (int j = 1 ; j <= tailleHauteur ; j++) {
+			for (int j = 1 ; j <= tailleLongueur ; j++) {
 				cle = Character.toString(lettre) + j;
 				System.out.print(carte.get(cle));
 			}		
@@ -128,9 +128,9 @@ public class DeroulementPartie {
 		String celluleMap;
 
 		lettre = 'A';	
-		for (int i = 0 ; i < tailleLargeur ; i++, lettre++) {
+		for (int i = 0 ; i < tailleHauteur ; i++, lettre++) {
 
-			for (int j = 1 ; j <= tailleHauteur ; j++) {
+			for (int j = 1 ; j <= tailleLongueur ; j++) {
 				celluleMap = Character.toString(lettre) + j;
 				carte.put(celluleMap, "  -  ");
 			}
@@ -159,9 +159,9 @@ public class DeroulementPartie {
 		try {
 
 			valide = coordonnee.charAt(0) >= 65 
-					&& coordonnee.charAt(0) < 65 + tailleLargeur
+					&& coordonnee.charAt(0) < 65 + tailleHauteur
 					&& Integer.parseInt(coordonnee.substring(1)) > 0 
-					&& Integer.parseInt(coordonnee.substring(1)) <= tailleHauteur;
+					&& Integer.parseInt(coordonnee.substring(1)) <= tailleLongueur;
 
 		} catch (NumberFormatException e) {
 			valide = false;

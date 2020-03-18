@@ -4,7 +4,7 @@
             "nom" : "Config1",
             "carte" : { 
                 "longueurCarte":12,
-                "largeurCarte":8
+                "hauteurCarte":8
             },
 			"flotte" : [
                 {"taille": 4, "nom": "porte-avion"},
@@ -18,7 +18,7 @@
             "nom" : "Config2",
             "carte" : { 
                 "longueurCarte":26,
-                "largeurCarte":26
+                "hauteurCarte":26
             },
             "flotte" : [
                 {"taille": 9, "nom": "porte-croiseur"},
@@ -32,7 +32,7 @@
             "nom" : "Facile",
             "carte" : { 
                 "longueurCarte":5,
-                "largeurCarte":5
+                "hauteurCarte":5
             },
             "flotte" : [
                 {"taille": 3, "nom": "croiseur"},
@@ -43,7 +43,7 @@
             "nom" : "Test2",
             "carte" : { 
                 "longueurCarte":35,
-                "largeurCarte":35
+                "hauteurCarte":35
             },
             "flotte" : [
                 {"taille": 6, "nom": "croiseur"},

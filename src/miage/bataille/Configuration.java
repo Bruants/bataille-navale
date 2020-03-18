@@ -171,7 +171,7 @@ public class Configuration implements Serializable{
 	 * 	- nom (String)
 	 *  - carte (Object)
 	 *  	- longueurCarte (int)
-	 *  	- largeurCarte (int)
+	 *  	- hauteurCarte (int)
 	 *  - flotte (Array of Object)
 	 *  	- taille (int)
 	 *  	- nom (String)
@@ -182,7 +182,7 @@ public class Configuration implements Serializable{
 	 *	            "nom" : "Config1",
 	 *	            "carte" : { 
 	 *	                "longueurCarte":40,
-	 *	                "largeurCarte":30
+	 *	                "hauteurCarte":30
 	 *	            },
 	 *				"flotte" : [
 	 *	                {"taille": 4, "nom": "porte-avion"},
@@ -194,7 +194,7 @@ public class Configuration implements Serializable{
 	 *	            "nom" : "Config2",
 	 *	            "carte" : { 
 	 *	                "longueurCarte":10,
-	 *	                "largeurCarte":20
+	 *	                "hauteurCarte":20
 	 *	            },
 	 *	            "flotte" : [
 	 *	                {"taille": 9, "nom": "porte-croiseur"},
@@ -212,10 +212,15 @@ public class Configuration implements Serializable{
 		File fichierJson = new File(chemin);
 		FileReader reader;
 		FileWriter writer;
-		JSONObject jsonObject;
+		JSONObject jsonObject,
+		           config;
 		JSONArray array;
+		long hauteurCarte,
+		     longueurCarte;
+		String nom;
+		ArrayList<Batiment> flotte;
+		JSONParser parser = new JSONParser();;
 		
-		JSONParser parser = new JSONParser();
 		try {
 			if (!fichierJson.exists()) {
 				fichierJson.createNewFile();
@@ -226,20 +231,17 @@ public class Configuration implements Serializable{
 				writer.close();
 			}
 			reader = new FileReader(fichierJson); // Lecture du fichier
-			
 			jsonObject = (JSONObject) parser.parse(reader); // Parse en JSONObject
 			array = (JSONArray) jsonObject.get("config"); // On récupère les différentes configs
 			reader.close(); // fermeture du fichier
 			// On parcourt toutes les configs
 			for (Object elt : array) {
-				long largeurCarte;
-				long longueurCarte;
-				String nom;
-				ArrayList<Batiment> flotte = new ArrayList<Batiment>();
-				JSONObject config = (JSONObject) elt; // Parse en json
+				config = (JSONObject) elt; // Parse en json
+				flotte = new ArrayList<Batiment>();
+				
 				// Récupère les informations
 				nom = (String)config.get("nom");
-				largeurCarte = (long)((JSONObject)config.get("carte")).get("largeurCarte");
+				hauteurCarte = (long)((JSONObject)config.get("carte")).get("hauteurCarte");
 				longueurCarte = (long)((JSONObject)config.get("carte")).get("longueurCarte");
 				// On créee tous les bateaux
 				for(Object bateau : (JSONArray)config.get("flotte")) {
@@ -247,7 +249,7 @@ public class Configuration implements Serializable{
 					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); // Ajout à la flotte
 				}
 				try {
-					aCharger.put(nom,new Configuration((int)longueurCarte,(int)largeurCarte, nom, flotte));
+					aCharger.put(nom,new Configuration((int)longueurCarte,(int)hauteurCarte, nom, flotte));
 				} catch (IllegalFormatWidthException e) {
 					System.out.println("Probléme dans les tailles de la configuration " + e.getMessage());
 				} catch (IllegalArgumentException e) {
@@ -301,7 +303,7 @@ public class Configuration implements Serializable{
 	 * 	- nom (String)
 	 *  - carte (Object)
 	 *  	- longueurCarte (int)
-	 *  	- largeurCarte (int)
+	 *  	- hauteurCarte (int)
 	 *  - flotte (Array of Object)
 	 *  	- taille (int)
 	 *  	- nom (String)
@@ -312,7 +314,7 @@ public class Configuration implements Serializable{
 	 *	            "nom" : "Config1",
 	 *	            "carte" : { 
 	 *	                "longueurCarte":40,
-	 *	                "largeurCarte":30
+	 *	                "hauteurCarte":30
 	 *	            },
 	 *				"flotte" : [
 	 *	                {"taille": 4, "nom": "porte-avion"},
@@ -324,7 +326,7 @@ public class Configuration implements Serializable{
 	 *	            "nom" : "Config2",
 	 *	            "carte" : { 
 	 *	                "longueurCarte":10,
-	 *	                "largeurCarte":20
+	 *	                "hauteurCarte":20
 	 *	            },
 	 *	            "flotte" : [
 	 *	                {"taille": 9, "nom": "porte-croiseur"},
@@ -347,10 +349,10 @@ public class Configuration implements Serializable{
 				Configuration elt = listeDeConfigs.get(i.next());
 				
 				JSONObject config = new JSONObject(); // Contient la config en cours
-				// Enregistre les feuilles de premier niveau (nom, longueurCarte, largeurCarte)
+				// Enregistre les feuilles de premier niveau (nom, longueurCarte, hauteurCarte)
 				config.put("nom", elt.nom);
 				config.put("longueurCarte", elt.longueurCarte);
-				config.put("largeurCarte", elt.hauteurCarte);
+				config.put("hauteurCarte", elt.hauteurCarte);
 
 				// Enregistre les batiments
 				JSONArray flotteArray = new JSONArray();
@@ -398,6 +400,7 @@ public class Configuration implements Serializable{
 		
 		for (i = 0 ; i < listeDeConfigs.size() && !listeDeConfigs.get(keys[i]).nom.equals(nom) ; i++);
 		
-		return listeDeConfigs.size() > 0 && listeDeConfigs.get(keys[i]).nom.equals(nom);
+		return listeDeConfigs.size() > 0 && i != listeDeConfigs.size() 
+			   && listeDeConfigs.get(keys[i]).nom.equals(nom);
 	}
 }
