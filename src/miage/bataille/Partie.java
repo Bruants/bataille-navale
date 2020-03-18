@@ -58,7 +58,6 @@ public class Partie implements Serializable{
 
 		compose = new ArrayList<ZoneContigue>();
 		coups = new ArrayList<Cellule>();
-		placementFlotteAuto(config.getFlotte());
 		nbBatiments = compose.size();
 	}
 

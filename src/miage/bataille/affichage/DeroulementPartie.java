@@ -347,8 +347,10 @@ public class DeroulementPartie {
 		/* Phase 1 : initialisation de la partie */
 		if (nbTour == 0) {
 			choisirConfiguration();
+			partie.placementFlotteAuto(partie.getConfiguration().getFlotte());
 		}
 		afficherCarte();
+		
 
 		/* Phase 2 : Déroulement d'un tour */
 		for (; partie.getNbBatiments() > 0 && !finDePartieForcee; nbTour++) {
