@@ -6,7 +6,6 @@ package miage.bataille;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * 
@@ -156,8 +155,8 @@ public class Partie implements Serializable{
 	private boolean empietreUneCellule(int x, int y) {
 		boolean empietre = false;
 
-		for (int j = 0 ; j < compose.size() && empietre; j++) {
-			if (!compose.get(j).existe(x,y)){
+		for (int j = 0 ; j < compose.size() && !empietre; j++) {
+			if (compose.get(j).existe(x,y)){
 				empietre = true;
 			}
 		}
