@@ -406,9 +406,15 @@ public class DeroulementPartie {
 		System.out.println(Configuration.afficherConfig());
 		do {
 			System.out.print("Quelle configuration voulez-vous choisir ? : ");
+			System.out.print("Commannde pour créer une nouvelle configuration : Nouveau ");
 			reponse = entree.next() + entree.nextLine();
 			reponse = reponse.trim();
-			valide = Configuration.configEstPresente(reponse);
+			if(reponse.equals("Nouveau")) {
+				//TODO apelle a la methode nouvelleConfiguration()
+				valide = true;
+			} else {
+				valide = Configuration.configEstPresente(reponse);
+			}
 			if (!valide) {
 				System.out.println("La configuration que vous avez saisie n'existe pas");
 			}
