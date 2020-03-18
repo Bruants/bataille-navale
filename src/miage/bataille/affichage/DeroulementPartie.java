@@ -4,10 +4,14 @@
 package miage.bataille.affichage;
 
 import java.io.File;
+import java.io.ObjectInputFilter.Config;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IllegalFormatWidthException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import miage.bataille.Batiment;
 import miage.bataille.Configuration;
 import miage.bataille.Partie;
 import miage.bataille.Sauvegarder;
@@ -18,23 +22,23 @@ import miage.bataille.Sauvegarder;
  */
 public class DeroulementPartie {
 
-	private static final String MESSAGE_ERREUR_DE_SAISIE = "Les coordonnées "
-			+ "saisies sont incorrectes. Les coordonnées ne doivent pas "
-			+ "dépasser la surface délimitée par la carte.\n";
+	private static final String MESSAGE_ERREUR_DE_SAISIE = "Les coordonnï¿½es "
+			+ "saisies sont incorrectes. Les coordonnï¿½es ne doivent pas "
+			+ "dï¿½passer la surface dï¿½limitï¿½e par la carte.\n";
 	
 	private static final String MESSAGE_ERREUR_NOM_FICHIER = "Le nom du fichier est incorrect. Les "
-			                                                 + "caractères suivans sont interdits : "
+			                                                 + "caractï¿½res suivans sont interdits : "
 			                                                 + "/\\\\:*?\\\"<>|";
 	
-	private static final String MESSAGE_ERREUR_CHARGEMENT = "Erreur, le fichier que vous avez spécifié "
+	private static final String MESSAGE_ERREUR_CHARGEMENT = "Erreur, le fichier que vous avez spï¿½cifiï¿½ "
 			                                                + "n'existe pas.";
 	
 	private static final String MESSAGE_ERREUR_CONFIGURATION = "Aucune configuration existe.";
 	
 	/** 
-	 * Liste contenant la situation des différentes cellules 
+	 * Liste contenant la situation des diffï¿½rentes cellules 
 	 * - : pas de coup
-	 * * : touché
+	 * * : touchï¿½
 	 * o : plouf
 	 */
 	private static HashMap<String, String> carte = new HashMap<String, String>();
@@ -47,23 +51,23 @@ public class DeroulementPartie {
 	/** Hauteur de la carte */
 	private static int tailleHauteur;
 	
-	/** Nombre de tour (ou coup) réalisé pour la partie courante */
+	/** Nombre de tour (ou coup) rï¿½alisï¿½ pour la partie courante */
 	public static int nbTour = 0;
 	
 	/** Permet de faire des saisies */
 	private static Scanner entree = new Scanner(System.in);
 	
-	/** Liste des coups effectués */
+	/** Liste des coups effectuï¿½s */
 	private static ArrayList<String> coups = new ArrayList<String>();
 
 	/**
-	 * Débute une partie par défaut : 
-	 * 					   - initialisation des différentes zones sur la map
-	 *                     - placement des bâtiments par le joueur
+	 * Dï¿½bute une partie par dï¿½faut : 
+	 * 					   - initialisation des diffï¿½rentes zones sur la map
+	 *                     - placement des bï¿½timents par le joueur
 	 */
 	public static void initialisationParDefaut() {
 		Configuration configurationDeLaPartie;
-		System.out.println("Début du jeu\n");
+		System.out.println("Dï¿½but du jeu\n");
 		partie = new Partie();
 		configurationDeLaPartie = partie.getConfiguration();
 		tailleHauteur = configurationDeLaPartie.getHauteurCarte();
@@ -72,23 +76,26 @@ public class DeroulementPartie {
 	}
 
 	/**
-	 * Débute une partie avec une configuration choisie
-	 * 					   - initialisation des différentes zones sur la map
-	 *                     - placement des bâtiments par le joueur
+	 * Dï¿½bute une partie avec une configuration choisie
+	 * 					   - initialisation des diffï¿½rentes zones sur la map
+	 *                     - placement des bï¿½timents par le joueur
 	 * @param configurationChoisie
 	 */
 	public static void initialisationAvecUneConfiguration(Configuration configurationChoisie) {
 
-		if (configurationChoisie == null) {
-			initialisationParDefaut();
-		} else {
-			System.out.println("Début du jeu\n");
-			tailleHauteur = configurationChoisie.getHauteurCarte();
-			tailleLongueur = configurationChoisie.getLongueurCarte();
-			partie = new Partie(configurationChoisie);
-			creerNouvelleCarte();
-		}
-	}
+        if (configurationChoisie == null) {
+            initialisationParDefaut();
+        } else {
+            System.out.println("DÃ©but du jeu\n");
+            tailleHauteur = configurationChoisie.getHauteurCarte();
+            tailleLongueur = configurationChoisie.getLongueurCarte();
+            /* Si nbTour > 0, alors il s'agit d'un chargement de partie, aucune donnÃ©e Ã  crÃ©er */
+            if (nbTour == 0) {
+                partie = new Partie(configurationChoisie);
+                creerNouvelleCarte();
+            }
+        }
+    }
 
 	/**
 	 * Afficher la carte de la bataille navale
@@ -120,7 +127,7 @@ public class DeroulementPartie {
 	}
 
 	/**
-	 * Initialise la carte vide à afficher
+	 * Initialise la carte vide ï¿½ afficher
 	 */
 	public static void creerNouvelleCarte() {
 		char lettre;
@@ -138,24 +145,24 @@ public class DeroulementPartie {
 	}
 
 	/**
-	 * Vérifie la saisie de l'utilisateur pour tirer
+	 * Vï¿½rifie la saisie de l'utilisateur pour tirer
 	 * @return TRUE  -> Si : 
-	 * 					- la coordonnée en abcisses est un nombre compris entre
+	 * 					- la coordonnï¿½e en abcisses est un nombre compris entre
 	 * 					  0 et la largeur de la carte.
-	 * 				    - et que la coordonées en ordonnés est une lettre
+	 * 				    - et que la coordonï¿½es en ordonnï¿½s est une lettre
 	 * 				      de l'alphabet.
 	 * 		   FALSE -> Si : 
-	 * 					- la coordonnée en abcisses n'est pas comprise
+	 * 					- la coordonnï¿½e en abcisses n'est pas comprise
 	 * 					  entre 0 et la largeur de la carte
-	 * 					- la coordonnée en abcisses n'est pas un 
+	 * 					- la coordonnï¿½e en abcisses n'est pas un 
 	 * 					  nombre
-	 * 					- la coordonnée en ordonnés n'est pas
+	 * 					- la coordonnï¿½e en ordonnï¿½s n'est pas
 	 * 					  une lettre.
 	 */
 	public static boolean verifierSaisie(String coordonnee) {
 		boolean valide = false; 
 
-		// Vérification de la taille et du contenu de la chaine 
+		// Vï¿½rification de la taille et du contenu de la chaine 
 		try {
 
 			valide = coordonnee.charAt(0) >= 65 
@@ -175,7 +182,7 @@ public class DeroulementPartie {
 	 * Saisie lors d'un tour : sauvegarde / quitter la partie ou tir sur la carte :
 	 * - Demande une lettre pour la colonne
 	 * - Demande un nombre entier positif pour la ligne
-	 * @return la réponse saisie : une coordonnée ou "Q" si l'utilisateur quitte la partie
+	 * @return la rï¿½ponse saisie : une coordonnï¿½e ou "Q" si l'utilisateur quitte la partie
 	 */
 	public static String saisieTour() {
 		String reponse;
@@ -183,12 +190,12 @@ public class DeroulementPartie {
 
 		do {		
 
-			System.out.print("Saisir une coordonnée : ");
+			System.out.print("Saisir une coordonnï¿½e : ");
 			reponse = entree.next() + entree.nextLine();
 
 			reponse = reponse.toUpperCase().trim();
 
-			// Message d'erreur si les coordonnées sont non valides
+			// Message d'erreur si les coordonnï¿½es sont non valides
 			if (reponse.equals("S")) {
 				effectuerSauvegarde();
 			} else if (reponse.equals("Q")){
@@ -205,8 +212,8 @@ public class DeroulementPartie {
 	}
 	
 	/**
-	 * Détermine si l'utilisateur souhaite vraiment quitter la partie.
-	 * Si l'utilisateur quitte la partie, une sauvegarde lui est proposée.
+	 * Dï¿½termine si l'utilisateur souhaite vraiment quitter la partie.
+	 * Si l'utilisateur quitte la partie, une sauvegarde lui est proposï¿½e.
 	 * @return true si l'utilisateur quitte la partie
 	 *         false sinon
 	 */
@@ -226,8 +233,8 @@ public class DeroulementPartie {
 	
 	/**
 	 * Traitement de la sauvegarde :
-	 * 	- Saisie du nom de la sauvegarde, vérification et validation par l'utilisateur
-	 *  - Création de la sauvegarde
+	 * 	- Saisie du nom de la sauvegarde, vï¿½rification et validation par l'utilisateur
+	 *  - Crï¿½ation de la sauvegarde
 	 */
 	public static void effectuerSauvegarde() {
 		String nomFichier;
@@ -236,8 +243,8 @@ public class DeroulementPartie {
 		
 		do {
 			/* Saisie du nom de la sauvegarde */
-			nomFichier = saisieNom("Quel nom voulez-vous donner à la sauvegarde ? : ", false);
-			/* Valide que le fichier peut etre créé */
+			nomFichier = saisieNom("Quel nom voulez-vous donner ï¿½ la sauvegarde ? : ", false);
+			/* Valide que le fichier peut etre crï¿½ï¿½ */
 			validationSauvegarde = sauvegardePeutEtreCree(nomFichier);
 			/* Demande de confirmation pour sauvegarder */
 			if (validationSauvegarde) {
@@ -248,17 +255,17 @@ public class DeroulementPartie {
 			}
 		} while(!validationSauvegarde);
 		
-		/* Créé le fichier de sauvegarde si cette dernière est confirmée */
+		/* Crï¿½ï¿½ le fichier de sauvegarde si cette derniï¿½re est confirmï¿½e */
 		if (confirmationSauvegarde) {
 			Sauvegarder.sauverPartie(nomFichier, partie, carte, nbTour, coups);
 		}
 	}
 	
 	/**
-	 * Demande à l'utilisateur de saisir un nom.
-	 * Vérifie si le nom est correct dans le format d'un fichier (sans caractères spéciaux).
-	 * @param question La question a posée pour la saisie
-	 * @param autoriseSlash si true les caractères / sont autorisés sinon ils ne le sont pas.
+	 * Demande ï¿½ l'utilisateur de saisir un nom.
+	 * Vï¿½rifie si le nom est correct dans le format d'un fichier (sans caractï¿½res spï¿½ciaux).
+	 * @param question La question a posï¿½e pour la saisie
+	 * @param autoriseSlash si true les caractï¿½res / sont autorisï¿½s sinon ils ne le sont pas.
 	 * @return le nom de la sauvegarde
 	 */
 	public static String saisieNom(String question, boolean autoriseSlash) {
@@ -278,10 +285,10 @@ public class DeroulementPartie {
 	}
 	
 	/**
-	 * Détermine si le nom du fichier est correcte en vérifiant qu'il n'y ait pas de caractères spéciaux
+	 * Dï¿½termine si le nom du fichier est correcte en vï¿½rifiant qu'il n'y ait pas de caractï¿½res spï¿½ciaux
 	 * @param nomFichier le nom de la sauvegarde
-	 * @param autoriseSlash si true alors le caractère / est autorisée sinon il n'est pas autorisé
-	 * @return true si nomFichier ne contient aucun caractères spéciaux
+	 * @param autoriseSlash si true alors le caractï¿½re / est autorisï¿½e sinon il n'est pas autorisï¿½
+	 * @return true si nomFichier ne contient aucun caractï¿½res spï¿½ciaux
 	 *         false sinon
 	 */
 	public static boolean nomFichierCorrect(String nomFichier, boolean autoriseSlash) {
@@ -300,11 +307,11 @@ public class DeroulementPartie {
 	}
 	
 	/**
-	 * Détermine si le fichier existe ou non.
-	 * Si le fichier existe : demande à l'utilisateur s'il souhaite l'écraser ou non
+	 * Dï¿½termine si le fichier existe ou non.
+	 * Si le fichier existe : demande ï¿½ l'utilisateur s'il souhaite l'ï¿½craser ou non
 	 * @param nomFichier le nom du fichier
-	 * @return true si le fichier n'existe pas où si l'utilisateur souhaite écraser la sauvegarde existante
-	 *         false sinon (la sauvegarde ne peut pas être créée)
+	 * @return true si le fichier n'existe pas oï¿½ si l'utilisateur souhaite ï¿½craser la sauvegarde existante
+	 *         false sinon (la sauvegarde ne peut pas ï¿½tre crï¿½ï¿½e)
 	 */
 	public static boolean sauvegardePeutEtreCree(String nomFichier) {
 		File fichier = new File("sauvegarde/parties/" + nomFichier + ".data");
@@ -312,18 +319,18 @@ public class DeroulementPartie {
 		
 		peutEtreCree = !fichier.exists();
 		if (!peutEtreCree) {
-			peutEtreCree = reponseValide("Le fichier existe déjà. Souhaitez-vous l'écraser ?");
+			peutEtreCree = reponseValide("Le fichier existe dï¿½jï¿½. Souhaitez-vous l'ï¿½craser ?");
 		}
 
 		return peutEtreCree;
 	}
 	
 	/**
-	 * Demande à l'utilisateur une réponse : oui ou non et détermine laquelle a été répondue.
-	 * Une réponse si oui si il s'agit de "o" ou "O". 
+	 * Demande ï¿½ l'utilisateur une rï¿½ponse : oui ou non et dï¿½termine laquelle a ï¿½tï¿½ rï¿½pondue.
+	 * Une rï¿½ponse si oui si il s'agit de "o" ou "O". 
 	 * Sinon c'est non.
-	 * @param question La question posée à l'utilisateur auquel il doit répondre oui ou non
-	 * @return true si la réponse est oui
+	 * @param question La question posï¿½e ï¿½ l'utilisateur auquel il doit rï¿½pondre oui ou non
+	 * @return true si la rï¿½ponse est oui
 	 *         false sinon
 	 */
 	public static boolean reponseValide(String question) {
@@ -337,7 +344,7 @@ public class DeroulementPartie {
 	/**
 	 * Lance une partie avec une nouvelle configuration
 	 * et initialise l'affichage de la partie. 
-	 * Fait dérouler la partie en faisant jouer l'utilisateur.
+	 * Fait dï¿½rouler la partie en faisant jouer l'utilisateur.
 	 */
 	public static void lancerUnePartie() {
 		String reponse;
@@ -348,20 +355,22 @@ public class DeroulementPartie {
 		if (nbTour == 0) {
 			choisirConfiguration();
 			partie.placementFlotteAuto(partie.getConfiguration().getFlotte());
+		} else {
+			initialisationAvecUneConfiguration(partie.getConfiguration());
 		}
 		afficherCarte();
 		
 
-		/* Phase 2 : Déroulement d'un tour */
+		/* Phase 2 : Dï¿½roulement d'un tour */
 		for (; partie.getNbBatiments() > 0 && !finDePartieForcee; nbTour++) {
 			System.out.println("/!\\ Saisissez S pour Sauvegarder et Q pour quitter /!\\");
-			System.out.print("Coup " + nbTour + " => ");
-			// Récupération d'une réponse de saisie : coordonnées ou "Q" si l'utilisateur quitte la partie
+			System.out.print("Coup " + (nbTour+1) + " => ");
+			// Rï¿½cupï¿½ration d'une rï¿½ponse de saisie : coordonnï¿½es ou "Q" si l'utilisateur quitte la partie
 			reponse = saisieTour();	
 			finDePartieForcee = reponse.equals("Q");
 
 			if (!finDePartieForcee) {
-				// Conversion des coordonnées saisies pour pouvoir tirer
+				// Conversion des coordonnï¿½es saisies pour pouvoir tirer
 				resultat = partie.tirer(Integer.parseInt(reponse.substring(1)) - 1, reponse.charAt(0) - 65);
 				// Enregistrement des coups dans la liste
 				coups.add(reponse);
@@ -378,7 +387,7 @@ public class DeroulementPartie {
 		/* Phase 3 : Fin de la partie */
 		System.out.println("Fin de partie");
 		if (!finDePartieForcee) {
-			System.out.println("Résultat :\n"
+			System.out.println("Rï¿½sultat :\n"
 					           + "Nombre de coups : " + nbTour);
 			affichageListeCoups();
 		} else {
@@ -397,7 +406,7 @@ public class DeroulementPartie {
 	}
 	
 	/**
-	 * Demande à l'utilisateur de choisir une configuration parmi celles existantes.
+	 * Demande ï¿½ l'utilisateur de choisir une configuration parmi celles existantes.
 	 * Charge une configuration.
 	 */
 	public static void choisirConfiguration() {
@@ -414,13 +423,13 @@ public class DeroulementPartie {
 			System.out.println(MESSAGE_ERREUR_CONFIGURATION);
 		}
 		do {
-			System.out.println("/!\\ Commande pour utiliser la configuration par défaut : D /!\\");
-			System.out.println("/!\\ Commande pour créer une nouvelle configuration : N /!\\");
+			System.out.println("/!\\ Commande pour utiliser la configuration par dï¿½faut : D /!\\");
+			System.out.println("/!\\ Commande pour crï¿½er une nouvelle configuration : N /!\\");
 			System.out.print("Quelle configuration voulez-vous choisir ? : ");
 			reponse = entree.next() + entree.nextLine();
 			reponse = reponse.trim();
 			if (reponse.equals("N")) {
-				//TODO apelle a la methode nouvelleConfiguration()
+				reponse = nouvelleConfiguration();
 				valide = true;
 			} else if (reponse.equals("D")) {
 				config = new Configuration();
@@ -433,19 +442,157 @@ public class DeroulementPartie {
 					System.out.println("\nLa configuration que vous avez saisie n'existe pas\n");
 				} else {
 					System.out.println("\nAucune configuration existe, veuillez prendre la configuration par "
-					           + "défaut ou en créer une nouvelle.\n"); 
+					           + "dï¿½faut ou en crï¿½er une nouvelle.\n"); 
 				}
 			}
 		} while	(!valide);
 		config = Configuration.recupererConfig(reponse);
 		initialisationAvecUneConfiguration(config);
 	}
-
 	
 	/**
-	 * Demande à l'utilisateur le nom de la partie qu'il souhaite charger.
-	 * Récupération des données.
-	 * Lancement de la partie à l'instant où elle était arrêtée.
+	 * CrÃ©e une nouvelle configuration dans le fichier de sauvegarde
+	 * selon les donnÃ©es entrÃ©es par le configurateur
+	 */
+	private static String nouvelleConfiguration()
+	{
+		boolean valide = false;
+		int nbTypesBatiments = 0, 
+			nbBatiments = 0, 
+			tailleBatiment = 0, 
+			hauteurCarte = 0, 
+			longueurCarte = 0;
+		String nomConfig = "",
+			typeBatiment = "";
+		ArrayList<Batiment> flotte = new ArrayList<Batiment>();
+		
+		while(!valide) {
+			System.out.print("\nCrÃ©ation d'une nouvelle configuration de jeu.\n"
+					+ "Nom de la nouvelle configuration : ");
+			nomConfig = entree.next() + entree.nextLine();
+			
+			System.out.println("\nEntrez la taille de la carte.");
+			
+			// contrÃ´le de saisie de la hauteur de la carte
+			System.out.print("Nombre de lignes : ");
+			valide = false;
+			while(!valide) {
+				if(entree.hasNextInt()) {
+					hauteurCarte = entree.nextInt();
+					if(hauteurCarte > 0 && hauteurCarte <= 26) {
+						valide = true;
+					} else {
+						System.out.println("Veuillez entrer un entier entre 1 et 26.");
+					}
+				} else {
+					System.out.println("Veuillez entrer un entier.");
+				}
+				entree.nextLine();
+			}
+			
+			// contrÃ´le de saisie de la longueur de la carte
+			System.out.print("Nombre de colonnes : ");
+			valide = false;
+			while(!valide) {
+				if(entree.hasNextInt()) {
+					longueurCarte = entree.nextInt();
+					if(longueurCarte > 0 && longueurCarte <= 26) {
+						valide = true;
+					} else {
+						System.out.println("Veuillez entrer un entier entre 1 et 26.");
+					}
+				} else {
+					System.out.println("Veuillez entrer un entier.");
+				}
+				entree.nextLine();
+			}
+			
+			// contrÃ´le de saisie du nombre de types de bÃ¢timents
+			System.out.print("Combien y aura-t-il de types de bÃ¢timents ? ");
+			valide = false;
+			while(!valide) {
+				if(entree.hasNextInt()) {
+					nbTypesBatiments = entree.nextInt();
+					if(nbTypesBatiments > 0) {
+						valide = true;
+					} else {
+						System.out.println("Veuillez entrer un entier supÃ©rieur Ã  0.");
+					}
+				} else {
+					System.out.println("Veuillez entrer un entier.");
+				}
+				entree.nextLine();
+			}
+			
+			System.out.println("Pour chaque type de bÃ¢timent, indiquer le nom du "
+					+ "bÃ¢timent, sa taille et l'effectif de ce type de batiment:");
+			
+			for(int idType = 0; idType < nbTypesBatiments; idType++) {
+				
+				System.out.println("Type de bÃ¢timent 1:");
+				System.out.print("nom: ");
+				typeBatiment = entree.next() + entree.nextLine();
+				
+				// controle de saisie taille des batiments
+				System.out.print("taille: ");
+				valide = false;
+				while(!valide) {
+					if(entree.hasNextInt()) {
+						tailleBatiment = entree.nextInt();
+						if(tailleBatiment > 0) {
+							valide = true;
+						} else {
+							System.out.println("Veuillez entrer un entier supÃ©rieur Ã  0.");
+						}
+					} else {
+						System.out.println("Veuillez entrer un entier");
+					}
+					entree.nextLine();
+				}
+				
+				// controle de saisie effectif des batiments
+				System.out.print("effectif: ");
+				valide = false;
+				while(!valide) {
+					if(entree.hasNextInt()) {
+						nbBatiments = entree.nextInt();
+						if(nbBatiments > 0) {
+							valide = true;
+						} else {
+							System.out.println("Veuillez entrer un entier supÃ©rieur Ã  0.");
+						}
+					} else {
+						System.out.println("Veuillez entrer un entier.");
+					}
+					entree.nextLine();
+				}
+				
+				// crÃ©ation des bÃ¢timents un par un
+				for(int idBatiment = 0; idBatiment < nbBatiments; idBatiment++) {
+					flotte.add(new Batiment(tailleBatiment, (typeBatiment + " " + idBatiment)));
+				}
+			}
+			
+			valide = false;
+			try {
+				Configuration.ajouterConfig(new Configuration(longueurCarte, hauteurCarte, nomConfig, flotte));
+				Configuration.enregistrerConfig("./src/configs.json");
+				valide = true;
+			} catch(IllegalArgumentException e) {
+				System.out.println("Erreur: Format de la carte incorrect.");
+				System.out.println(e.getMessage());
+			}
+			if(!valide) {
+				System.out.println("Configuration invalide, veuillez recommencer la saisie.");
+			}
+		}
+		return nomConfig;
+	}
+	
+	/**
+	 * Demande ï¿½ l'utilisateur le nom de la partie qu'il souhaite charger.
+	 * Rï¿½cupï¿½ration des donnï¿½es.
+	 * Lancement de la partie ï¿½ l'instant oï¿½ elle ï¿½tait arrï¿½tï¿½e.
 	 */
 	public static void chargerUnePartie() {
 		File fichier;
@@ -459,18 +606,18 @@ public class DeroulementPartie {
 		carte = (HashMap<String, String>) chargement.get(1);
 		nbTour = (int) chargement.get(2);
 		coups = (ArrayList<String>) chargement.get(3);
-		System.out.println("Partie chargée !");
+		System.out.println("Partie chargï¿½e !");
 		lancerUnePartie();
 	}
 	
 	/**
-	 * Demande à l'utilisateur le fichier qu'il souhaite charger.
-	 * Vérifie si le fichier existe selon plusieurs options : 
-	 * - Pas de spécification particulière
-	 * - Spécification du répertoire
-	 * - Spécification de l'extension
-	 * - Spécification du chemin (répertoire + extension)
-	 * @return le fichier à charger.
+	 * Demande ï¿½ l'utilisateur le fichier qu'il souhaite charger.
+	 * Vï¿½rifie si le fichier existe selon plusieurs options : 
+	 * - Pas de spï¿½cification particuliï¿½re
+	 * - Spï¿½cification du rï¿½pertoire
+	 * - Spï¿½cification de l'extension
+	 * - Spï¿½cification du chemin (rï¿½pertoire + extension)
+	 * @return le fichier ï¿½ charger.
 	 */
 	public static File rechercheFichier() {
 		String nomFichier;
@@ -500,9 +647,9 @@ public class DeroulementPartie {
 	/**
 	 * Menu du jeu : 
 	 * - Lancer une partie (nouvelle partie)
-	 * - Charger une partie sauvegardée
+	 * - Charger une partie sauvegardï¿½e
 	 * - Quitter l'application
-	 * @param args non utilisé
+	 * @param args non utilisï¿½
 	 */
 	public static void main(String[] args) {
 		String reponse;
@@ -522,7 +669,7 @@ public class DeroulementPartie {
 				if (Sauvegarder.verifierNbPartiesACharger()) {
 					chargerUnePartie();
 				} else {
-					System.out.println("Il n'existe aucune partie à charger.");
+					System.out.println("Il n'existe aucune partie ï¿½ charger.");
 				}
 			} else if (!reponse.equals("Q")) {
 				System.out.println("Saisie incorrectez. Saisissez soit N, soit C, soit Q.");
