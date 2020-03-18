@@ -339,9 +339,10 @@ public class Configuration implements Serializable{
 	 * @param chemin Le path vers le fichier de configuration
 	 */
 	public static void enregistrerConfig(String chemin) {		
-		JSONArray configs = new JSONArray();
+		JSONObject configs = new JSONObject();
 		Set<String> cles = listeDeConfigs.keySet();
 		Iterator<String> i = cles.iterator();
+		JSONArray base = new JSONArray();
 
 		try {
 			// On parcourt toutes les configs
@@ -351,8 +352,10 @@ public class Configuration implements Serializable{
 				JSONObject config = new JSONObject(); // Contient la config en cours
 				// Enregistre les feuilles de premier niveau (nom, longueurCarte, hauteurCarte)
 				config.put("nom", elt.nom);
-				config.put("longueurCarte", elt.longueurCarte);
-				config.put("hauteurCarte", elt.hauteurCarte);
+				JSONObject carte = new JSONObject();
+				carte.put("longueurCarte", elt.longueurCarte);
+				carte.put("hauteurCarte", elt.hauteurCarte);
+				config.put("carte", carte);
 
 				// Enregistre les batiments
 				JSONArray flotteArray = new JSONArray();
@@ -364,10 +367,10 @@ public class Configuration implements Serializable{
 					flotteArray.add(bateauObj); // Enregistre le bateau
 				}
 				config.put("flotte", flotteArray);
-				
 				// Enregsitre la config
-				configs.add(config);
+				base.add(config);
 			}
+			configs.put("config",base);
 			// Ecriture de toutes les configs
 			FileWriter writer = new FileWriter(chemin);
 			writer.write(configs.toJSONString());
