@@ -29,6 +29,8 @@ public class DeroulementPartie {
 	private static final String MESSAGE_ERREUR_CHARGEMENT = "Erreur, le fichier que vous avez spécifié "
 			                                                + "n'existe pas.";
 	
+	private static final String MESSAGE_ERREUR_CONFIGURATION = "Aucune configuration existe.";
+	
 	/** 
 	 * Liste contenant la situation des différentes cellules 
 	 * - : pas de coup
@@ -211,11 +213,10 @@ public class DeroulementPartie {
 	public static boolean quitterPartie() {
 		boolean quitter;
 		
-		System.out.print("Voulez-vous vraiment quitter la partie ? (o/n) : ");
-		quitter = reponseValide();
+		quitter = reponseValide("Voulez-vous vraiment quitter la partie ?");
 		if (quitter) {
-			System.out.print("Souhaitez-vous sauvegarder avant de quitter la partie ? (o/n) : ");
-			if (reponseValide()) {
+			
+			if (reponseValide("Souhaitez-vous sauvegarder avant de quitter la partie ?")) {
 				effectuerSauvegarde();
 			}
 		}
@@ -240,11 +241,9 @@ public class DeroulementPartie {
 			validationSauvegarde = sauvegardePeutEtreCree(nomFichier);
 			/* Demande de confirmation pour sauvegarder */
 			if (validationSauvegarde) {
-				System.out.print("Confirmez-vous la sauvegarde ? (o/n) : ");
-				confirmationSauvegarde = reponseValide();
+				confirmationSauvegarde = reponseValide("Confirmez-vous la sauvegarde ?");
 			} else {
-				System.out.print("Souhaitez-vous toujours sauvegarder ? (o/n) : ");
-				validationSauvegarde = !reponseValide();
+				validationSauvegarde = !reponseValide("Souhaitez-vous toujours sauvegarder ?");
 				confirmationSauvegarde = !validationSauvegarde;
 			}
 		} while(!validationSauvegarde);
@@ -313,8 +312,7 @@ public class DeroulementPartie {
 		
 		peutEtreCree = !fichier.exists();
 		if (!peutEtreCree) {
-			System.out.print("Le fichier existe déjà. Souhaitez-vous l'écraser ? (o/n) : ");
-			peutEtreCree = reponseValide();
+			peutEtreCree = reponseValide("Le fichier existe déjà. Souhaitez-vous l'écraser ?");
 		}
 
 		return peutEtreCree;
@@ -324,12 +322,14 @@ public class DeroulementPartie {
 	 * Demande à l'utilisateur une réponse : oui ou non et détermine laquelle a été répondue.
 	 * Une réponse si oui si il s'agit de "o" ou "O". 
 	 * Sinon c'est non.
+	 * @param question La question posée à l'utilisateur auquel il doit répondre oui ou non
 	 * @return true si la réponse est oui
 	 *         false sinon
 	 */
-	public static boolean reponseValide() {
+	public static boolean reponseValide(String question) {
 		String reponse;
 		
+		System.out.println(question + " (o/n) : ");
 		reponse = entree.next() + entree.nextLine();
 		return reponse.toUpperCase().trim().equals("O");
 	}
@@ -381,6 +381,8 @@ public class DeroulementPartie {
 			System.out.println("Résultat :\n"
 					           + "Nombre de coups : " + nbTour);
 			affichageListeCoups();
+		} else {
+			nbTour = 0;
 		}
 	}
 	
@@ -400,23 +402,39 @@ public class DeroulementPartie {
 	 */
 	public static void choisirConfiguration() {
 		Configuration config;
-		String reponse;
+		String reponse,
+		       affichageConfig;
 		boolean valide;
 		
-		System.out.println(Configuration.afficherConfig());
+		affichageConfig = Configuration.afficherConfig();
+		if (affichageConfig != null && affichageConfig.length() > 0) {
+			System.out.println("Liste des configurations disponibles :");
+			System.out.println(affichageConfig);
+		} else {
+			System.out.println(MESSAGE_ERREUR_CONFIGURATION);
+		}
 		do {
+			System.out.println("/!\\ Commande pour utiliser la configuration par défaut : D /!\\");
+			System.out.println("/!\\ Commande pour créer une nouvelle configuration : N /!\\");
 			System.out.print("Quelle configuration voulez-vous choisir ? : ");
-			System.out.print("Commannde pour créer une nouvelle configuration : Nouveau ");
 			reponse = entree.next() + entree.nextLine();
 			reponse = reponse.trim();
-			if(reponse.equals("Nouveau")) {
+			if (reponse.equals("N")) {
 				//TODO apelle a la methode nouvelleConfiguration()
+				valide = true;
+			} else if (reponse.equals("D")) {
+				config = new Configuration();
 				valide = true;
 			} else {
 				valide = Configuration.configEstPresente(reponse);
 			}
 			if (!valide) {
-				System.out.println("La configuration que vous avez saisie n'existe pas");
+				if (affichageConfig != null && affichageConfig.length() > 0) {
+					System.out.println("\nLa configuration que vous avez saisie n'existe pas\n");
+				} else {
+					System.out.println("\nAucune configuration existe, veuillez prendre la configuration par "
+					           + "défaut ou en créer une nouvelle.\n"); 
+				}
 			}
 		} while	(!valide);
 		config = Configuration.recupererConfig(reponse);

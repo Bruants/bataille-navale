@@ -1,5 +1,6 @@
 package miage.bataille;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -208,12 +209,27 @@ public class Configuration implements Serializable{
 	 */
 	public static HashMap<String,Configuration> chargerConfig(String chemin) {
 		HashMap<String,Configuration> aCharger = new HashMap<String,Configuration>();
+		File fichierJson = new File(chemin);
+		FileReader reader;
+		FileWriter writer;
+		JSONObject jsonObject;
+		JSONArray array;
 		
 		JSONParser parser = new JSONParser();
 		try {
-			FileReader reader = new FileReader(chemin); // Lecture du fichier
-			JSONObject jsonObject = (JSONObject) parser.parse(reader); // Parse en JSONObject
-			JSONArray array = (JSONArray) jsonObject.get("config"); // On récupère les différentes configs
+			if (!fichierJson.exists()) {
+				fichierJson.createNewFile();
+				writer = new FileWriter(fichierJson);
+				writer.write("{\r\n" + 
+						     "    \"config\" : []\r\n" + 
+							 "}");
+				writer.close();
+			}
+			reader = new FileReader(fichierJson); // Lecture du fichier
+			
+			jsonObject = (JSONObject) parser.parse(reader); // Parse en JSONObject
+			array = (JSONArray) jsonObject.get("config"); // On récupère les différentes configs
+			reader.close(); // fermeture du fichier
 			// On parcourt toutes les configs
 			for (Object elt : array) {
 				long largeurCarte;
@@ -238,7 +254,6 @@ public class Configuration implements Serializable{
 					System.out.println(e.getMessage());
 				}
 			}
-
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -274,7 +289,6 @@ public class Configuration implements Serializable{
     public static String afficherConfig() {
     	StringBuilder aRenvoyer = new StringBuilder();
     	Object[] keys = listeDeConfigs.keySet().toArray();
-    	aRenvoyer.append("Liste des configurations disponibles :\n");
     	for (int i = 0 ; i < listeDeConfigs.size() ; i++) {
     		aRenvoyer.append(listeDeConfigs.get(keys[i]).nom + '\n');
     	}
@@ -384,6 +398,6 @@ public class Configuration implements Serializable{
 		
 		for (i = 0 ; i < listeDeConfigs.size() && !listeDeConfigs.get(keys[i]).nom.equals(nom) ; i++);
 		
-		return listeDeConfigs.get(keys[i]).nom.equals(nom);
+		return listeDeConfigs.size() > 0 && listeDeConfigs.get(keys[i]).nom.equals(nom);
 	}
 }
