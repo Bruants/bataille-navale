@@ -53,21 +53,23 @@ class ZoneContigueTest {
 	@Test
 	void testZoneContigue() {
 		try {
+			int nbBateauDepart = partie.getNbBatiments();
 			ZoneContigue premierBateau = zones[0];
 			partie.ajouterZoneContigue(premierBateau);
-			assertEquals(1, partie.getCompose().size());
+			assertEquals(nbBateauDepart + 1, partie.getCompose().size());
 			ZoneContigue deuxiemeBateau = zones[1];
 			partie.ajouterZoneContigue(deuxiemeBateau);
-			assertEquals(2, partie.getCompose().size());
+			assertEquals(nbBateauDepart + 2, partie.getCompose().size());
 			ZoneContigue troisiemeBateau = zones[2];
 			partie.ajouterZoneContigue(troisiemeBateau);
-			assertEquals(3, partie.getCompose().size());
+			assertEquals(nbBateauDepart +3, partie.getCompose().size());
 			try {
 				ZoneContigue bateauSurUnAutreBateau = zones[4];
 				partie.ajouterZoneContigue(bateauSurUnAutreBateau);
+				System.out.println(partie.getCompose());
 			} catch (Exception e) {
 			}
-			assertEquals(3, partie.getCompose().size());
+			assertEquals(nbBateauDepart + 3, partie.getCompose().size());
 
 
 		} catch (Exception e) {
