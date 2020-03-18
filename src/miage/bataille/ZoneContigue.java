@@ -33,8 +33,8 @@ public class ZoneContigue implements Serializable{
 
     public static ArrayList<Cellule> cellulesAAjouter(Obstacle type, int xDeb, int yDeb, int xFin, int yFin) {
     	ArrayList<Cellule> aAjouter = new ArrayList<Cellule> ();
-    	int parcoursEnLargeur = xFin - xDeb + 1; // Détermine le nombre de case à parcourir en largeur, dépend de l'orientation
-    	int parcoursEnHauteur = yFin - yDeb + 1; // Détermine le nombre de case à parcourir en longueur, dépend de l'orientation
+    	int parcoursEnLargeur = xFin - xDeb + 1; // Détermine le nombre de case à parcourir en largeur
+    	int parcoursEnHauteur = yFin - yDeb + 1; // Détermine le nombre de case à parcourir en longueur
 
     	// Création de toutes les cellules
     	for(int i = 0; i < parcoursEnLargeur ; i++) {
@@ -81,10 +81,6 @@ public class ZoneContigue implements Serializable{
     	if (xDeb < 0 || yDeb < 0 || xFin < 0 || yFin < 0) {
     		return false;
     	}
-//		TODO
-//    	if (xDeb > TAILLE_CARTE || yDeb > TAILLE_CARTE || xFin > TAILLE_CARTE || yFin > TAILLE_CARTE) {
-//    		return false;
-//    	}
     	// Coordonnees non alignées / ne correspondent pas aux caractéristiques de l'obstacle
     	if (!(xDeb + obstacle.tailleLgr - 1 == xFin && yDeb + obstacle.tailleHaut - 1 == yFin) // obstacle de gauche à droite
     			&& !(xDeb + obstacle.tailleHaut - 1 == xFin && yDeb + obstacle.tailleLgr - 1 == yFin)) { // obstacle de haut en bas

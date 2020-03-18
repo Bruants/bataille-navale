@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,8 +42,20 @@ class ZoneContigueTest {
 	 */
 	@Test
 	void testCellulesAAjouter() {
-		System.out.println(ZoneContigue.cellulesAAjouter(batiments[1], 2,3,4,3));
-		System.out.println(ZoneContigue.cellulesAAjouter(batiments[1], 2,3,2,5));
+		ArrayList<Cellule> aAjouter = ZoneContigue.cellulesAAjouter(batiments[1], 2,3,4,3);
+		assertEquals(2, aAjouter.get(0).getCoordX()); // Cellule 0
+		assertEquals(3, aAjouter.get(0).getCoordY());
+		assertEquals(3, aAjouter.get(1).getCoordX()); // Cellule 1
+		assertEquals(3, aAjouter.get(1).getCoordY());
+		assertEquals(4, aAjouter.get(2).getCoordX()); // Cellule 2
+		assertEquals(3, aAjouter.get(2).getCoordY());
+		aAjouter = ZoneContigue.cellulesAAjouter(batiments[1], 2,3,2,5);
+		assertEquals(2, aAjouter.get(0).getCoordX()); // Cellule 0
+		assertEquals(3, aAjouter.get(0).getCoordY());
+		assertEquals(2, aAjouter.get(1).getCoordX()); // Cellule 1
+		assertEquals(4, aAjouter.get(1).getCoordY());
+		assertEquals(2, aAjouter.get(2).getCoordX()); // Cellule 2
+		assertEquals(5, aAjouter.get(2).getCoordY());
 	}
 
 	/**
