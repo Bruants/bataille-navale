@@ -40,7 +40,12 @@ public class Configuration implements Serializable{
 	 */
 	public static final int HAUTEUR_MAX = 26;
 	
-	/** Longueur de la carte */
+	/**
+	 * Définit le PATH vers le fichier json de configuration
+	 */
+	public static final String CHEMIN_CONFIGS_JSON = "./src/configs.json";
+	
+	/** Longueur la carte définie sur X */
 	private int longueurCarte;
 
 	/** Hauteur de la carte */
@@ -53,7 +58,7 @@ public class Configuration implements Serializable{
 	private String nom;
 	
 	/** Toutes les configurations chargées */
-	private static HashMap<String,Configuration> listeDeConfigs = chargerConfig("./src/configs.json");
+	private static HashMap<String,Configuration> listeDeConfigs = chargerConfig(CHEMIN_CONFIGS_JSON);
 
 	/** 
 	 * Création d'une configuration de base
@@ -217,7 +222,7 @@ public class Configuration implements Serializable{
 		     longueurCarte;
 		String nom;
 		ArrayList<Batiment> flotte;
-		JSONParser parser = new JSONParser();;
+		JSONParser parser = new JSONParser();
 		
 		try {
 			if (!fichierJson.exists()) {
@@ -386,6 +391,14 @@ public class Configuration implements Serializable{
 	 */
 	public static void ajouterConfig(Configuration aAjouter) {
 		listeDeConfigs.put(aAjouter.nom,aAjouter);
+	}
+	
+	/**
+	 * Supprime la configuration aux liste de configuration
+	 * @param aSupprimer La configuration qui sera supprimée
+	 */
+	public static void supprimerConfig(String aSupprimer) {
+		listeDeConfigs.remove(aSupprimer);
 	}
 	
 	
