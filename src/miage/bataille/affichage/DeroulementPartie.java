@@ -659,7 +659,7 @@ public class DeroulementPartie {
 				entierASaisir = entree.nextInt();
 				valide = (inf > sup && entierASaisir >= inf) || (entierASaisir >= inf && entierASaisir <= sup);
 				if (!valide && inf > sup){
-					System.out.println("Veuillez entrer un entier superieur à " + inf + ".");
+					System.out.println("Veuillez entrer un entier superieur ou égal à " + inf + ".");
 				} else if (!valide) {
 					System.out.println("Veuillez entrer un entier compris entre " + inf + " et " + sup + ".");
 				}
