@@ -61,10 +61,16 @@ public class Partie implements Serializable{
 	/**
 	 * Permet de mettre en place la flotte d'un joueur
 	 */
-	public void placementFlotteAuto(ArrayList<Batiment> flotte) {
+	public boolean placementFlotteAuto(ArrayList<Batiment> flotte) {
 		for(Batiment bat:flotte) {
-			placementBatimentAuto(bat);
+			try {
+				placementBatimentAuto(bat);
+			} catch (StackOverflowError e) {
+				System.out.println("Placement automatique des bateaux impossible");
+				return false;
+			}
 		}
+		return true;
 	}
 
 	/**
