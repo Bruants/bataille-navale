@@ -4,11 +4,8 @@
 package miage.bataille.affichage;
 
 import java.io.File;
-import java.io.ObjectInputFilter.Config;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.IllegalFormatWidthException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import miage.bataille.Batiment;
@@ -16,6 +13,7 @@ import miage.bataille.Configuration;
 import miage.bataille.Partie;
 import miage.bataille.Sauvegarder;
 
+import static miage.bataille.Configuration.CHEMIN_CONFIGS_JSON;
 /**
  * TODO
  * @author Audric POUZELGUES, Damien AVETTA-RAYMOND
@@ -449,6 +447,67 @@ public class DeroulementPartie {
 		config = Configuration.recupererConfig(reponse);
 		initialisationAvecUneConfiguration(config);
 	}
+	/**
+	 * Menu qui permet de gérer les configurations
+	 */
+	public static void gestionConfiguration() {
+		String reponse;
+		boolean quitter = false;
+		
+		do {
+			System.out.println("\nQue voulez-vous faire ?\n"
+					           + "N : Créer une configuration\n"
+					           + "C : Supprimer une configuration\n"
+					           + "D : Afficher les configurations\n"
+					           + "Q : Quitter");
+			reponse = entree.next() + entree.nextLine();
+			reponse = reponse.toUpperCase().trim();
+			if (reponse.equals("N")) {
+				nouvelleConfiguration();
+			} else if (reponse.equals("C")) {
+				supprimerConfiguration();
+			} else if (reponse.equals("D")) {
+				System.out.println(Configuration.afficherConfig());
+			} else if (!reponse.equals("Q")) {
+				System.out.println("Saisie incorrectez. Saisissez soit N, soit C, soit D, soit Q.");
+			}
+			quitter = reponse.equals("Q");
+		} while (!quitter);
+	}
+	
+	/**
+	 * Demande ï¿½ l'utilisateur de choisir une configuration parmi celles existantes.
+	 * Supprime la configuration choisie
+	 */
+	public static void supprimerConfiguration() {
+		Configuration config;
+		String reponse,
+		       affichageConfig;
+		boolean valide;
+		
+		affichageConfig = Configuration.afficherConfig();
+		if (affichageConfig != null && affichageConfig.length() > 0) {
+			System.out.println("Liste des configurations disponibles :");
+			System.out.println(affichageConfig);
+		} else {
+			System.out.println(MESSAGE_ERREUR_CONFIGURATION);
+		}
+		do {
+			System.out.println("Entrez le nom de la configuration à supprimer (N pour annuler) : ");
+			reponse = entree.next() + entree.nextLine();
+			reponse = reponse.trim();
+			if (reponse.equals("N")) {
+				valide = true;
+			} else {
+				valide = Configuration.configEstPresente(reponse);
+				if(valide) {
+					Configuration.supprimerConfig(reponse);
+					Configuration.enregistrerConfig(CHEMIN_CONFIGS_JSON);
+					System.out.println("Configuration " + reponse + " supprimée.");
+				}
+			}
+		} while	(!valide);
+	}
 	
 	/**
 	 * CrÃ©e une nouvelle configuration dans le fichier de sauvegarde
@@ -576,7 +635,7 @@ public class DeroulementPartie {
 			valide = false;
 			try {
 				Configuration.ajouterConfig(new Configuration(longueurCarte, hauteurCarte, nomConfig, flotte));
-				Configuration.enregistrerConfig("./src/configs.json");
+				Configuration.enregistrerConfig(CHEMIN_CONFIGS_JSON);
 				valide = true;
 			} catch(IllegalArgumentException e) {
 				System.out.println("Erreur: Format de la carte incorrect.");
@@ -606,7 +665,7 @@ public class DeroulementPartie {
 		carte = (HashMap<String, String>) chargement.get(1);
 		nbTour = (int) chargement.get(2);
 		coups = (ArrayList<String>) chargement.get(3);
-		System.out.println("Partie chargï¿½e !");
+		System.out.println("Partie chargée !");
 		lancerUnePartie();
 	}
 	
@@ -660,6 +719,7 @@ public class DeroulementPartie {
 			System.out.println("\nQue voulez-vous faire ?\n"
 					           + "N : Lancer une nouvelle partie\n"
 					           + "C : Charger une nouvelle partie\n"
+					           + "D : Gérer les configurations\n"
 					           + "Q : Quitter");
 			reponse = entree.next() + entree.nextLine();
 			reponse = reponse.toUpperCase().trim();
@@ -671,8 +731,10 @@ public class DeroulementPartie {
 				} else {
 					System.out.println("Il n'existe aucune partie ï¿½ charger.");
 				}
+			} else if (reponse.equals("D")) {
+				gestionConfiguration();
 			} else if (!reponse.equals("Q")) {
-				System.out.println("Saisie incorrectez. Saisissez soit N, soit C, soit Q.");
+				System.out.println("Saisie incorrectez. Saisissez soit N, soit C, soit D, soit Q.");
 			}
 			quitter = reponse.equals("Q");
 		} while (!quitter);
