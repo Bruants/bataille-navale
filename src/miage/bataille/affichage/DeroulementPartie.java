@@ -540,7 +540,7 @@ public class DeroulementPartie {
 			hauteurCarte = 0, 
 			longueurCarte = 0;
 		String nomConfig = "",
-			typeBatiment = "";
+			   typeBatiment = "";
 		ArrayList<Batiment> flotte = new ArrayList<Batiment>();
 		
 		while(!valide) {
