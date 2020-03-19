@@ -51,6 +51,9 @@ public class DeroulementPartie {
 	private static final String MESSAGE_ERREUR_INIT_CONFIGURATION = "Erreur, veuillez choisir une nouvelle "
 			                                                        + "configuration";
 	
+	private static final String MESSAGE_ERREUR_CONFIG_EST_PRESENTE = "Erreur, une configuration a déjà ce "
+			                                                         + "nom";
+	
 	/** 
 	 * Liste contenant la situation des differentes cellules 
 	 * - : pas de coup
@@ -568,21 +571,27 @@ public class DeroulementPartie {
 		ArrayList<Batiment> flotte = new ArrayList<Batiment>();
 		
 		while (!valide) {
-			System.out.print("\nCreation d'une nouvelle configuration de jeu.\n"
-					+ "Nom de la nouvelle configuration : ");
-			nomConfig = entree.next() + entree.nextLine();
+			do {
+				System.out.print("\nCreation d'une nouvelle configuration de jeu.\n"
+						         + "Nom de la nouvelle configuration : ");
+				nomConfig = entree.next() + entree.nextLine();
+				valide = !Configuration.configEstPresente(nomConfig);
+				if (!valide) {
+					System.out.println(MESSAGE_ERREUR_CONFIG_EST_PRESENTE);
+				}
+			} while(!valide);
 			System.out.println("\nEntrez la taille de la carte.");
 			// controle de saisie de la hauteur de la carte
-			hauteurCarte = saisieEntierIntervalle("Nombre de lignes : ", 0, 26);
+			hauteurCarte = saisieEntierIntervalle("Nombre de lignes : ", 0, Configuration.HAUTEUR_MAX);
 			// controle de saisie de la longueur de la carte
-			longueurCarte = saisieEntierIntervalle("Nombre de colonnes : ", 0, 26);
+			longueurCarte = saisieEntierIntervalle("Nombre de colonnes : ", 0, Configuration.LONGUEUR_MAX);
 			// controle de saisie du nombre de types de batiments
 			nbTypesBatiments = saisieEntierNonNul("Combien y aura-t-il de types de batiments ? : ");
 			
 			System.out.println("Pour chaque type de batiment, indiquer le nom du "
 					           + "batiment, sa taille et l'effectif de ce type de batiment:");
 			
-			tailleMinBatiment = Math.min(tailleHauteur, tailleLongueur);
+			tailleMinBatiment = Math.min(hauteurCarte, longueurCarte);
 			
 			for (int idType = 0; idType < nbTypesBatiments; idType++) {
 				System.out.println("Type de batiment " + (idType+1) + " : ");
