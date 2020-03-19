@@ -50,6 +50,9 @@ public class DeroulementPartie {
 	
 	private static final String MESSAGE_ERREUR_NON_ENTIER = "Veuillez entrer un entier.";
 	
+	private static final String MESSAGE_ERREUR_INIT_CONFIGURATION = "Erreur, veuillez choisir une nouvelle "
+			                                                        + "configuration";
+	
 	/** 
 	 * Liste contenant la situation des differentes cellules 
 	 * - : pas de coup
@@ -378,12 +381,19 @@ public class DeroulementPartie {
 	public static void lancerUnePartie() {
 		String reponse;
 		String resultat;
+		boolean defautConfiguration;
 		boolean finDePartieForcee = false;
 		
 		/* Phase 1 : initialisation de la partie */
 		if (nbTour == 0) {
-			choisirConfiguration();
-			partie.placementFlotteAuto(partie.getConfiguration().getFlotte());
+			/* Redemande la configuration tant que le placement de la flotte n'arrive pas à se faire */
+			do {
+				choisirConfiguration();
+				defautConfiguration = !partie.placementFlotteAuto(partie.getConfiguration().getFlotte());
+				if (defautConfiguration) {
+					System.out.println(MESSAGE_ERREUR_INIT_CONFIGURATION);
+				}
+			} while (defautConfiguration);
 			nbTour++;
 		} else {
 			initialisationAvecUneConfiguration(partie.getConfiguration());
