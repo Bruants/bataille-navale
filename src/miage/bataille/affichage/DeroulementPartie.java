@@ -46,8 +46,6 @@ public class DeroulementPartie {
 	
 	private static final String MESSAGE_ERREUR_CONFIGURATION = "Aucune configuration existe.";
 	
-	private static final String MESSAGE_ERREUR_ENTIER_NUL = "Veuillez entrer un entier superieur a  0.";
-	
 	private static final String MESSAGE_ERREUR_NON_ENTIER = "Veuillez entrer un entier.";
 	
 	private static final String MESSAGE_ERREUR_INIT_CONFIGURATION = "Erreur, veuillez choisir une nouvelle "
@@ -498,14 +496,14 @@ public class DeroulementPartie {
 		do {
 			System.out.println("\nQue voulez-vous faire ?\n"
 					           + "N : Créer une configuration\n"
-					           + "C : Supprimer une configuration\n"
+					           + "S : Supprimer une configuration\n"
 					           + "D : Afficher les configurations\n"
 					           + "Q : Quitter");
 			reponse = entree.next() + entree.nextLine();
 			reponse = reponse.toUpperCase().trim();
 			if (reponse.equals("N")) {
 				nouvelleConfiguration();
-			} else if (reponse.equals("C")) {
+			} else if (reponse.equals("S")) {
 				supprimerConfiguration();
 			} else if (reponse.equals("D")) {
 				System.out.println(Configuration.afficherConfig());
@@ -560,6 +558,7 @@ public class DeroulementPartie {
 		int nbTypesBatiments = 0, 
 			nbBatiments = 0, 
 			tailleBatiment = 0, 
+			tailleMinBatiment,
 			hauteurCarte = 0, 
 			longueurCarte = 0,
 			effectif = 0,
@@ -572,84 +571,38 @@ public class DeroulementPartie {
 			System.out.print("\nCreation d'une nouvelle configuration de jeu.\n"
 					+ "Nom de la nouvelle configuration : ");
 			nomConfig = entree.next() + entree.nextLine();
-			
 			System.out.println("\nEntrez la taille de la carte.");
-			
 			// controle de saisie de la hauteur de la carte
-			System.out.print("Nombre de lignes : ");
-			do {
-				valide = entree.hasNextInt();
-				if (valide) {
-					hauteurCarte = entree.nextInt();
-					valide = hauteurCarte > 0 && hauteurCarte <= 26;
-					if (!valide) {
-						System.out.println("Veuillez entrer un entier entre 1 et 26.");
-					}
-				} else {
-					System.out.println("Veuillez entrer un entier.");
-				}
-				entree.nextLine();
-			} while (!valide);
-			
+			hauteurCarte = saisieEntierIntervalle("Nombre de lignes : ", 0, 26);
 			// controle de saisie de la longueur de la carte
-			do {
-				System.out.print("Nombre de colonnes : ");
-				valide = entree.hasNextInt();
-				if (valide) {
-					longueurCarte = entree.nextInt();
-					valide = longueurCarte > 0 && longueurCarte <= 26;
-					if (!valide) {
-						System.out.println("Veuillez entrer un entier entre 1 et 26.");
-					}
-				} else {
-					System.out.println("Veuillez entrer un entier.");
-				}
-				entree.nextLine();
-			} while (!valide);
-			
+			longueurCarte = saisieEntierIntervalle("Nombre de colonnes : ", 0, 26);
 			// controle de saisie du nombre de types de batiments
 			nbTypesBatiments = saisieEntierNonNul("Combien y aura-t-il de types de batiments ? : ");
-			
 			
 			System.out.println("Pour chaque type de batiment, indiquer le nom du "
 					           + "batiment, sa taille et l'effectif de ce type de batiment:");
 			
+			tailleMinBatiment = Math.min(tailleHauteur, tailleLongueur);
+			
 			for (int idType = 0; idType < nbTypesBatiments; idType++) {
-				
 				System.out.println("Type de batiment " + (idType+1) + " : ");
 				System.out.print("nom: ");
 				typeBatiment = entree.next() + entree.nextLine();
-				
 				// controle de saisie taille des batiments
-				tailleBatiment = saisieEntierNonNul("taille : ");
-				
+				tailleBatiment = saisieEntierIntervalle("taille : ", 0, tailleMinBatiment);
 				// controle de saisie effectif des batiments
-				System.out.print("effectif: ");
-				do {
-					valide = entree.hasNextInt();
-					if (valide) {
-						nbBatiments = entree.nextInt();
-						valide = nbBatiments > 0;
-						if (!valide) {
-							System.out.println("Veuillez entrer un entier superieur a  0.");
-						} else {
-							effectif += nbBatiments;
-						}
-					} else {
-						System.out.println("Veuillez entrer un entier.");
-					}
-					entree.nextLine();
-				} while(!valide);
-				
+				nbBatiments = saisieEntierNonNul("effectif : ");
+				effectif += nbBatiments;
 				// creation des batiments un par un
-				for(int idBatiment = 0; idBatiment < nbBatiments; idBatiment++) {
+				for (int idBatiment = 0; idBatiment < nbBatiments; idBatiment++) {
 					flotte.add(new Batiment(tailleBatiment, (typeBatiment + " " + idBatiment)));
 				}
 			}
 			
 			/* Vérifie que l'effectif est inférieur ou égale à la limite */
-			maxEffectif = Math.min(longueurCarte, hauteurCarte) / 2;
+			maxEffectif = tailleMinBatiment / 2 + 1;
 			valide = effectif <= maxEffectif;
+			
 			try {
 				Configuration.ajouterConfig(new Configuration(longueurCarte, hauteurCarte, nomConfig, flotte));
 				Configuration.enregistrerConfig(CHEMIN_CONFIGS_JSON);
@@ -659,8 +612,9 @@ public class DeroulementPartie {
 				System.out.println(e.getMessage());
 			}
 			if (!valide) {
-				System.out.println("Effectif total trop élevé. Pour cette configuration, il ne doit pas "
-						           + "Etre supérieur à : " + maxEffectif);
+				System.out.println("Effectif total trop élevé : " + effectif + ". Pour cette configuration, "
+						           + "il ne doit pas être supérieur à : " + maxEffectif);
+				effectif = 0;
 			}
 		}
 		return nomConfig;
@@ -672,6 +626,19 @@ public class DeroulementPartie {
 	 * @return un entier saisit par l'utilisateur
 	 */
 	public static int saisieEntierNonNul(String question) {
+		/* n > 0 <=> n appartient à [1; +infini[ */
+		return saisieEntierIntervalle(question, 1, -1);
+	}
+	
+	/**
+	 * Saisie d'un entier compris dans une intervalle [inf,sup]
+	 * Si sup < inf alors il n'existe pas de valeur maximale
+	 * @param question la question à poser à l'utilisateur avant la saisie
+	 * @param inf l'intervalle inférieur
+	 * @param sup l'intervalle supérieur
+	 * @return un entier valide saisit par l'utilisateur
+	 */
+	public static int saisieEntierIntervalle(String question, int inf, int sup) {
 		int entierASaisir = 0;
 		boolean valide;
 		
@@ -680,9 +647,11 @@ public class DeroulementPartie {
 			valide = entree.hasNextInt();
 			if (valide) {
 				entierASaisir = entree.nextInt();
-				valide = entierASaisir > 0;
-				if (!valide){
-					System.out.println(MESSAGE_ERREUR_ENTIER_NUL);
+				valide = (inf > sup && entierASaisir >= inf) || (entierASaisir >= inf && entierASaisir <= sup);
+				if (!valide && inf > sup){
+					System.out.println("Veuillez entrer un entier superieur à " + inf + ".");
+				} else if (!valide) {
+					System.out.println("Veuillez entrer un entier compris entre " + inf + " et " + sup + ".");
 				}
 			} else {
 				System.out.println(MESSAGE_ERREUR_NON_ENTIER);
