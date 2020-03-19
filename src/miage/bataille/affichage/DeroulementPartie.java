@@ -330,7 +330,7 @@ public class DeroulementPartie {
 	 *         false sinon (la sauvegarde ne peut pas etre creee)
 	 */
 	public static boolean sauvegardePeutEtreCree(String nomFichier) {
-		File fichier = new File("sauvegarde/parties/" + nomFichier + ".data");
+		File fichier = new File("donnees/sauvegarde/parties/" + nomFichier + ".data");
 		boolean peutEtreCree;
 		
 		peutEtreCree = !fichier.exists();
@@ -371,6 +371,7 @@ public class DeroulementPartie {
 		if (nbTour == 0) {
 			choisirConfiguration();
 			partie.placementFlotteAuto(partie.getConfiguration().getFlotte());
+			nbTour++;
 		} else {
 			initialisationAvecUneConfiguration(partie.getConfiguration());
 		}
@@ -380,7 +381,7 @@ public class DeroulementPartie {
 		/* Phase 2 : Deroulement d'un tour */
 		for (; partie.getNbBatiments() > 0 && !finDePartieForcee; nbTour++) {
 			System.out.println("/!\\ Saisissez S pour Sauvegarder et Q pour quitter /!\\");
-			System.out.print("Coup " + (nbTour+1) + " => ");
+			System.out.print("Coup " + nbTour + " => ");
 			// Recuperation d'une reponse de saisie : coordonnees ou "Q" si l'utilisateur quitte la partie
 			reponse = saisieTour();	
 			finDePartieForcee = reponse.equals("Q");
@@ -703,14 +704,14 @@ public class DeroulementPartie {
 		
 		do {
 			nomFichier = saisieNom("Quelle partie vous souhaitez charger ? : ", true);
-			if (nomFichier.contains("sauvegarde/parties/") && nomFichier.contains(".data")) {
+			if (nomFichier.contains("donnees/sauvegarde/parties/") && nomFichier.contains(".data")) {
 				fichier = new File(nomFichier);
-			} else if (nomFichier.contains("sauvegarde/parties/")) {
+			} else if (nomFichier.contains("donnees/sauvegarde/parties/")) {
 				fichier = new File(nomFichier + ".data");
 			} else if (nomFichier.contains(".data")) {
-				fichier = new File("sauvegarde/parties/" + nomFichier);
+				fichier = new File("donnees/sauvegarde/parties/" + nomFichier);
 			} else {
-				fichier = new File("sauvegarde/parties/" + nomFichier + ".data");
+				fichier = new File("donnees/sauvegarde/parties/" + nomFichier + ".data");
 			}
 			fichierExiste = fichier.exists();
 			if (!fichierExiste) {

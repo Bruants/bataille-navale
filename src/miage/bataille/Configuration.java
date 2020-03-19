@@ -213,6 +213,7 @@ public class Configuration implements Serializable{
 	public static HashMap<String,Configuration> chargerConfig(String chemin) {
 		HashMap<String,Configuration> aCharger = new HashMap<String,Configuration>();
 		File fichierJson = new File(chemin);
+		File directoryBataille = new File("donnees");
 		FileReader reader;
 		FileWriter writer;
 		JSONObject jsonObject,
@@ -226,6 +227,9 @@ public class Configuration implements Serializable{
 		
 		try {
 			if (!fichierJson.exists()) {
+				if (!directoryBataille.exists()) {
+					directoryBataille.mkdir();
+				}
 				fichierJson.createNewFile();
 				writer = new FileWriter(fichierJson);
 				writer.write("{\r\n" + 
