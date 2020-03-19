@@ -43,7 +43,7 @@ public class Configuration implements Serializable{
 	/**
 	 * Définit le PATH vers le fichier json de configuration
 	 */
-	public static final String CHEMIN_CONFIGS_JSON = "./src/configs.json";
+	public static final String CHEMIN_CONFIGS_JSON = ".configs.json";
 	
 	/** Longueur la carte définie sur X */
 	private int longueurCarte;
