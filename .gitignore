@@ -22,8 +22,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# classpath : editer personellement pour importer javadesigner.jar
+# fichier de configuration Eclipse
 .classpath
+.project
+.settings
+
+# fichier de sauvegarde
+*.data
 
 # dossier .class
 /bin/

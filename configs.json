@@ -1,0 +1,54 @@
+{
+    "config" : [
+        {
+            "nom" : "Config1",
+            "carte" : { 
+                "longueurCarte":12,
+                "hauteurCarte":8
+            },
+			"flotte" : [
+                {"taille": 4, "nom": "porte-avion"},
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 1, "nom": "vedette"},
+                {"taille": 1, "nom": "vedette"}
+            ]
+        },
+        {
+            "nom" : "Config2",
+            "carte" : { 
+                "longueurCarte":26,
+                "hauteurCarte":26
+            },
+            "flotte" : [
+                {"taille": 9, "nom": "porte-croiseur"},
+                {"taille": 9, "nom": "porte-croiseur"},
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 1, "nom": "vedette"},
+                {"taille": 1, "nom": "vedette"}
+            ]
+        },
+        {
+            "nom" : "Facile",
+            "carte" : { 
+                "longueurCarte":5,
+                "hauteurCarte":5
+            },
+            "flotte" : [
+                {"taille": 3, "nom": "croiseur"},
+                {"taille": 1, "nom": "vedette"}
+            ]
+        },
+        {
+            "nom" : "Test2",
+            "carte" : { 
+                "longueurCarte":35,
+                "hauteurCarte":35
+            },
+            "flotte" : [
+                {"taille": 6, "nom": "croiseur"},
+                {"taille": 1, "nom": "vedette"}
+            ]
+        }
+    ]
+}

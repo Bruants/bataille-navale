@@ -1,19 +1,60 @@
 package miage.bataille;
 
-import com.modeliosoft.modelio.javadesigner.annotations.objid;
 
 /**
- * Description d'une zone contigue, identifie par une taille et de sa touchabilite.
+ * Description d'une zone contigue, 
+ * identifie par une taille et sa touchabilité.
+ * @author L3 MIAGE Rodez
  */
-@objid ("51d60614-5c30-45a9-9d85-cced39152d6b")
 public abstract class Obstacle {
-    @objid ("3a532678-d9e1-4881-9921-5d34a4f99e40")
-    private int taille;
+	
+	/**
+	 * Nom du bâtiment courant
+	 */
+    public String nom;
+	
+	/**
+	 * Taille de l'obstacle en longueur
+	 */
+    protected int tailleLgr;
+    
+	/**
+	 * Taille de l'obstacle en hauteur
+	 */
+    protected int tailleHaut;
 
     /**
-     * Definit si l'obstacle sera touchable, puis coulable.
+     * @return la longueur en cellules de l'obstacle
      */
-    @objid ("afb441a8-5412-4ab1-8773-5e1cdb696159")
-    private boolean touchable;
+    public int getTailleLgr() {
+		return tailleLgr;
+	}
 
+    /**
+     * @return la hauteur en cellules de l'obstacle
+     */
+	public int getTailleHaut() {
+		return tailleHaut;
+	}
+
+	/**
+     * Définit si l'obstacle sera touchable, puis coulable.
+     */
+    protected boolean touchable;
+    
+    /**
+     * @return nom du batiment courant
+     */
+	public String getNom() {
+		return nom;
+	}
+
+    /* non-javadoc
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Obstacle de longueur : " + tailleLgr + '\n' + "largeur : " + tailleLgr;
+    }
+    
 }
