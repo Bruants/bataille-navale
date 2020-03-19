@@ -13,6 +13,7 @@ import miage.bataille.Batiment;
 import miage.bataille.Configuration;
 import miage.bataille.Partie;
 import miage.bataille.Sauvegarder;
+import miage.bataille.ZoneContigue;
 
 import static miage.bataille.Configuration.CHEMIN_CONFIGS_JSON;
 /**
@@ -44,6 +45,10 @@ public class DeroulementPartie {
 			                                                + "n'existe pas.";
 	
 	private static final String MESSAGE_ERREUR_CONFIGURATION = "Aucune configuration existe.";
+	
+	private static final String MESSAGE_ERREUR_ENTIER_NUL = "Veuillez entrer un entier superieur a  0.";
+	
+	private static final String MESSAGE_ERREUR_NON_ENTIER = "Veuillez entrer un entier.";
 	
 	/** 
 	 * Liste contenant la situation des differentes cellules 
@@ -211,6 +216,14 @@ public class DeroulementPartie {
 
 			reponse = reponse.toUpperCase().trim();
 
+			//MEGASTUCE ;)
+            if(reponse.equals("EMBERIZA")) {
+                System.out.println("Mode triche :");
+                for (ZoneContigue zone : partie.getCompose()) {
+                    System.out.println(zone.getPossede());
+                }
+            }
+            
 			// Message d'erreur si les coordonnees sont non valides
 			if (reponse.equals("S")) {
 				effectuerSauvegarde();
@@ -405,11 +418,10 @@ public class DeroulementPartie {
 		System.out.println("Fin de partie");
 		if (!finDePartieForcee) {
 			System.out.println("Resultat :\n"
-					           + "Nombre de coups : " + nbTour);
+					           + "Nombre de coups : " + (nbTour-1));
 			affichageListeCoups();
-		} else {
-			nbTour = 0;
 		}
+		nbTour = 0;
 	}
 	
 	/**
@@ -539,12 +551,14 @@ public class DeroulementPartie {
 			nbBatiments = 0, 
 			tailleBatiment = 0, 
 			hauteurCarte = 0, 
-			longueurCarte = 0;
+			longueurCarte = 0,
+			effectif = 0,
+			maxEffectif;
 		String nomConfig = "",
 			   typeBatiment = "";
 		ArrayList<Batiment> flotte = new ArrayList<Batiment>();
 		
-		while(!valide) {
+		while (!valide) {
 			System.out.print("\nCreation d'une nouvelle configuration de jeu.\n"
 					+ "Nom de la nouvelle configuration : ");
 			nomConfig = entree.next() + entree.nextLine();
@@ -553,97 +567,69 @@ public class DeroulementPartie {
 			
 			// controle de saisie de la hauteur de la carte
 			System.out.print("Nombre de lignes : ");
-			valide = false;
-			while(!valide) {
-				if(entree.hasNextInt()) {
+			do {
+				valide = entree.hasNextInt();
+				if (valide) {
 					hauteurCarte = entree.nextInt();
-					if(hauteurCarte > 0 && hauteurCarte <= 26) {
-						valide = true;
-					} else {
+					valide = hauteurCarte > 0 && hauteurCarte <= 26;
+					if (!valide) {
 						System.out.println("Veuillez entrer un entier entre 1 et 26.");
 					}
 				} else {
 					System.out.println("Veuillez entrer un entier.");
 				}
 				entree.nextLine();
-			}
+			} while (!valide);
 			
 			// controle de saisie de la longueur de la carte
-			System.out.print("Nombre de colonnes : ");
-			valide = false;
-			while(!valide) {
-				if(entree.hasNextInt()) {
+			do {
+				System.out.print("Nombre de colonnes : ");
+				valide = entree.hasNextInt();
+				if (valide) {
 					longueurCarte = entree.nextInt();
-					if(longueurCarte > 0 && longueurCarte <= 26) {
-						valide = true;
-					} else {
+					valide = longueurCarte > 0 && longueurCarte <= 26;
+					if (!valide) {
 						System.out.println("Veuillez entrer un entier entre 1 et 26.");
 					}
 				} else {
 					System.out.println("Veuillez entrer un entier.");
 				}
 				entree.nextLine();
-			}
+			} while (!valide);
 			
 			// controle de saisie du nombre de types de batiments
-			System.out.print("Combien y aura-t-il de types de batiments ? ");
-			valide = false;
-			while(!valide) {
-				if(entree.hasNextInt()) {
-					nbTypesBatiments = entree.nextInt();
-					if(nbTypesBatiments > 0) {
-						valide = true;
-					} else {
-						System.out.println("Veuillez entrer un entier suparieur a  0.");
-					}
-				} else {
-					System.out.println("Veuillez entrer un entier.");
-				}
-				entree.nextLine();
-			}
+			nbTypesBatiments = saisieEntierNonNul("Combien y aura-t-il de types de batiments ? : ");
+			
 			
 			System.out.println("Pour chaque type de batiment, indiquer le nom du "
 					           + "batiment, sa taille et l'effectif de ce type de batiment:");
 			
-			for(int idType = 0; idType < nbTypesBatiments; idType++) {
+			for (int idType = 0; idType < nbTypesBatiments; idType++) {
 				
-				System.out.println("Type de batiment 1:");
+				System.out.println("Type de batiment " + (idType+1) + " : ");
 				System.out.print("nom: ");
 				typeBatiment = entree.next() + entree.nextLine();
 				
 				// controle de saisie taille des batiments
-				System.out.print("taille: ");
-				valide = false;
-				while(!valide) {
-					if(entree.hasNextInt()) {
-						tailleBatiment = entree.nextInt();
-						if(tailleBatiment > 0) {
-							valide = true;
-						} else {
-							System.out.println("Veuillez entrer un entier superieur a  0.");
-						}
-					} else {
-						System.out.println("Veuillez entrer un entier");
-					}
-					entree.nextLine();
-				}
+				tailleBatiment = saisieEntierNonNul("taille : ");
 				
 				// controle de saisie effectif des batiments
 				System.out.print("effectif: ");
-				valide = false;
-				while(!valide) {
-					if(entree.hasNextInt()) {
+				do {
+					valide = entree.hasNextInt();
+					if (valide) {
 						nbBatiments = entree.nextInt();
-						if(nbBatiments > 0) {
-							valide = true;
-						} else {
+						valide = nbBatiments > 0;
+						if (!valide) {
 							System.out.println("Veuillez entrer un entier superieur a  0.");
+						} else {
+							effectif += nbBatiments;
 						}
 					} else {
 						System.out.println("Veuillez entrer un entier.");
 					}
 					entree.nextLine();
-				}
+				} while(!valide);
 				
 				// creation des batiments un par un
 				for(int idBatiment = 0; idBatiment < nbBatiments; idBatiment++) {
@@ -651,22 +637,52 @@ public class DeroulementPartie {
 				}
 			}
 			
-			valide = false;
+			/* Vérifie que l'effectif est inférieur ou égale à la limite */
+			maxEffectif = Math.min(longueurCarte, hauteurCarte) / 2;
+			valide = effectif <= maxEffectif;
 			try {
 				Configuration.ajouterConfig(new Configuration(longueurCarte, hauteurCarte, nomConfig, flotte));
 				Configuration.enregistrerConfig(CHEMIN_CONFIGS_JSON);
-				valide = true;
 			} catch(IllegalArgumentException e) {
+				System.out.println("Configuration invalide, veuillez recommencer la saisie.");
 				System.out.println("Erreur: Format de la carte incorrect.");
 				System.out.println(e.getMessage());
 			}
-			if(!valide) {
-				System.out.println("Configuration invalide, veuillez recommencer la saisie.");
+			if (!valide) {
+				System.out.println("Effectif total trop élevé. Pour cette configuration, il ne doit pas "
+						           + "Etre supérieur à : " + maxEffectif);
 			}
 		}
 		return nomConfig;
 	}
 	
+	/**
+	 * Saisie d'un entier non nul par l'utilisateur
+	 * @param question la question à poser à l'utilisateur avant la saisie
+	 * @return un entier saisit par l'utilisateur
+	 */
+	public static int saisieEntierNonNul(String question) {
+		int entierASaisir = 0;
+		boolean valide;
+		
+		do {
+			System.out.print(question);
+			valide = entree.hasNextInt();
+			if (valide) {
+				entierASaisir = entree.nextInt();
+				valide = entierASaisir > 0;
+				if (!valide){
+					System.out.println(MESSAGE_ERREUR_ENTIER_NUL);
+				}
+			} else {
+				System.out.println(MESSAGE_ERREUR_NON_ENTIER);
+			}
+			entree.nextLine();
+		} while (!valide);
+		
+		return entierASaisir;
+	}
+
 	/**
 	 * Demande a l'utilisateur le nom de la partie qu'il souhaite charger.
 	 * Recuperation des donnees.
