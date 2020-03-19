@@ -3,15 +3,15 @@ package miage.bataille;
 import java.io.Serializable;
 import java.util.ArrayList;
 /**
- * Represente une Zone Contigue
+ * Représente une Zone Contigue
  * Une Zone Contigue est definie par une Cellule de début et une Cellule de fin
  * Les cellules présentes entre les cellules de début/fin font parties de la Zone Contigue
  * Une zone contigue peut être coulée si toutes les cellules présentes sont touchées
  * Une cellule peut avoir deux orientations
- *  - Horizontale : 0 degré (de gauche à droite)
- *  - Verticale : 90 degré (de base en haut)
+ *  - Horizontale : 0 degrés (de gauche à droite)
+ *  - Verticale : 90 degrés (de base en haut)
  * Elle est definie par un type (Obstacle)
- * @author kevin.sannac
+ * @author L3 MIAGE Rodez
  * @version 0.1.0
  */
 public class ZoneContigue implements Serializable{
@@ -60,7 +60,7 @@ public class ZoneContigue implements Serializable{
     	if(!coordonneesValides(xDeb, yDeb, xFin, yFin)) {
     		throw new IllegalArgumentException("Coordonnees invalides");
     	}
-    	ArrayList<Cellule> aAjouter = cellulesAAjouter(type, xDeb, yDeb, xFin, yFin); // Toutes les cellules que l'on veut ajouer 
+    	ArrayList<Cellule> aAjouter = cellulesAAjouter(type, xDeb, yDeb, xFin, yFin); // Toutes les cellules que l'on veut ajouter 
 
     	possede = aAjouter;	
     }
@@ -91,7 +91,7 @@ public class ZoneContigue implements Serializable{
     }
 
     /** 
-     * Permet de recuperer la Cellule qui correspond aux coordonnées x y correspondants à la Zone Contigue this
+     * Permet de récuperer la Cellule qui correspond aux coordonnées x y correspondants à la Zone Contigue this
      * @param coordX La coordonnée x de la Cellule tirée
      * @param coordY La coordonnée x de la Cellule tirée
      * @return la cellule qui correspond aux coordonnées x y, si elle n'existe pas null
@@ -99,7 +99,7 @@ public class ZoneContigue implements Serializable{
     public Cellule getCellule(int coordX, int coordY) {
     	int placement;
     	
-    	/* Recherche la cellule en question parmis celles de la zone */
+    	/* Recherche la cellule en question parmi celles de la zone */
     	for (placement = 0 ; placement < possede.size() 
     			             && (possede.get(placement).getCoordX() != coordX
     			                 || possede.get(placement).getCoordY() != coordY); placement++);

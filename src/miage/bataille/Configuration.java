@@ -19,11 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * Correspond ï¿½ une configuration de la partie
+ * Correspond à une configuration de la partie
  * de bataille navale
- * 
- * @author alexis vivier
- *
+ * @author L3 MIAGE Rodez
  */
 public class Configuration implements Serializable{
 
@@ -33,19 +31,19 @@ public class Configuration implements Serializable{
 	private static final long serialVersionUID = 973882853661990838L;
 
 	/**
-	 * Dï¿½finit la longueur maximale de la mer
+	 * Définit la longueur maximale de la mer
 	 */
 	public static final int LONGUEUR_MAX = 26;
 	
 	/**
-	 * Definit la hauteur maximale de la mer
+	 * Définit la hauteur maximale de la mer
 	 */
 	public static final int HAUTEUR_MAX = 26;
 	
-	/** Longueur maximale de la carte dï¿½finit sur X */
+	/** Longueur de la carte */
 	private int longueurCarte;
 
-	/** Hauteur de la carte dï¿½finit */
+	/** Hauteur de la carte */
 	private int hauteurCarte;
 
 	/** Stocke la flotte */
@@ -54,15 +52,15 @@ public class Configuration implements Serializable{
 	/** Le nom de la config */
 	private String nom;
 	
-	/** Toutes les configurations chargï¿½es */
+	/** Toutes les configurations chargées */
 	private static HashMap<String,Configuration> listeDeConfigs = chargerConfig("./src/configs.json");
 
 	/** 
-	 * Crï¿½ation d'une configuration de base
+	 * Création d'une configuration de base
 	 */
 	public Configuration() {
 
-		this(12, 12, "Dï¿½faut", new ArrayList<Batiment>());
+		this(12, 12, "Défaut", new ArrayList<Batiment>());
 
 		flotte.add(new Batiment(4, "porte-avion"));
 		flotte.add(new Batiment(3, "croiseur"));
@@ -73,31 +71,31 @@ public class Configuration implements Serializable{
 	}
 
 	/**
-	 * Crï¿½e une configuration definit par la longueur, la hauteur et 
-	 * les batiments definissant les flottes 
+	 * Crée une configuration définie par la longueur, la hauteur et 
+	 * les bâtiments définissant les flottes 
 	 * @param longueurCarte longueur x de la carte
 	 * @param hauteurCarte hauteur y de la carte
 	 * @param nom Le nom de la configuration
-	 * @param batFlotte batiments ï¿½ ajouter a la flotte sous forme de tableau
-	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur innatendu
+	 * @param batFlotte bâtiments à ajouter à la flotte sous forme de tableau
+	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur inattendue
 	 */
 	public Configuration(int longueurCarte, int hauteurCarte, String nom, Batiment...batFlotte) throws IllegalArgumentException{
 		this( longueurCarte, hauteurCarte, nom, new ArrayList<Batiment>(Arrays.asList(batFlotte)) );	
 	}
 	
 	/**
-	 * Crï¿½e une configuration definit par la longueur, la hauteur et 
-	 * les batiments definissant les flottes 
+	 * Crée une configuration définie par la longueur, la hauteur et 
+	 * les bâtiments définissant les flottes 
 	 * @param longueurCarte longueur x de la carte
 	 * @param hauteurCarte hauteur y de la carte
 	 * @param nom Le nom de la configuration
-	 * @param batFlotte batiments ï¿½ ajouter a la flotte sous forme de liste
-	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur innatendu
+	 * @param batFlotte batiments à ajouter à la flotte sous forme de liste
+	 * @exception IllegalFormatWidthException Taille de la longueur ou hauteur inattendue
 	 */
 	public Configuration(int longueurCarte, int hauteurCarte, String nom, ArrayList<Batiment> batFlotte) throws IllegalArgumentException{
 		int tailleFlotte;
 		
-		/* Tests si les paramï¿½tres donnï¿½s sont dans les intervalles */
+		/* Tests si les paramètres donnés sont dans les intervalles */
 		if (longueurCarte > LONGUEUR_MAX || longueurCarte <= 0) {
 			throw new IllegalFormatWidthException(longueurCarte);
 		}
@@ -105,7 +103,7 @@ public class Configuration implements Serializable{
 			throw new IllegalFormatWidthException(hauteurCarte);
 		}
 		
-		/* Tests si les bateaux soient tous posable */
+		/* Tests que les bateaux soient tous posables */
 		tailleFlotte = 0;
 		for(Batiment bat:batFlotte) { tailleFlotte += bat.getTailleLgr(); }
 		
@@ -151,7 +149,7 @@ public class Configuration implements Serializable{
 	}
 
 	/**
-	 * @return renvois la flotte des ï¿½quipes
+	 * @return renvoie la flotte des équipes
 	 */
 	public ArrayList<Batiment> getFlotte() {
 		return flotte;
@@ -166,8 +164,8 @@ public class Configuration implements Serializable{
 	}
 
 	/**
-	 * Rï¿½cupï¿½re les configurations stockees dans le fichier chemin
-	 * Chaque configuration possï¿½de les informations suivantes :
+	 * Récupère les configurations stockées dans le fichier chemin
+	 * Chaque configuration possède les informations suivantes :
 	 * 	- nom (String)
 	 *  - carte (Object)
 	 *  	- longueurCarte (int)
@@ -232,32 +230,32 @@ public class Configuration implements Serializable{
 			}
 			reader = new FileReader(fichierJson); // Lecture du fichier
 			jsonObject = (JSONObject) parser.parse(reader); // Parse en JSONObject
-			array = (JSONArray) jsonObject.get("config"); // On rï¿½cupï¿½re les diffï¿½rentes configs
+			array = (JSONArray) jsonObject.get("config"); // On récupère les différentes configs
 			reader.close(); // fermeture du fichier
 			// On parcourt toutes les configs
 			for (Object elt : array) {
 				config = (JSONObject) elt; // Parse en json
 				flotte = new ArrayList<Batiment>();
 				
-				// Rï¿½cupï¿½re les informations
+				// Récupère les informations
 				nom = (String)config.get("nom");
 				hauteurCarte = (long)((JSONObject)config.get("carte")).get("hauteurCarte");
 				longueurCarte = (long)((JSONObject)config.get("carte")).get("longueurCarte");
-				// On crï¿½ee tous les bateaux
+				// On crée tous les bateaux
 				for(Object bateau : (JSONArray)config.get("flotte")) {
 					JSONObject bateauJSON = (JSONObject) bateau; // Le JSON du bateau
-					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); // Ajout ï¿½ la flotte
+					// Ajout à la flotte
+					flotte.add(new Batiment((int)(long)bateauJSON.get("taille"), (String)bateauJSON.get("nom"))); 
 				}
 				try {
 					aCharger.put(nom,new Configuration((int)longueurCarte,(int)hauteurCarte, nom, flotte));
 				} catch (IllegalFormatWidthException e) {
-					System.out.println("Problï¿½me dans les tailles de la configuration " + e.getMessage());
+					System.out.println("Problème dans les tailles de la configuration " + e.getMessage());
 				} catch (IllegalArgumentException e) {
 					System.out.println(e.getMessage());
 				}
 			}
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -268,8 +266,8 @@ public class Configuration implements Serializable{
 	}
 	
     /**
-     * Recupï¿½re la config passï¿½e en paramï¿½tre
-     * @param config La config que l'on veut rï¿½cupï¿½rer
+     * Recupère la config passée en paramètre
+     * @param config La config que l'on veut récupérer
      * @return L'objet configuration que l'on veut
      */
     public static Configuration recupererConfig(String config) {
@@ -277,9 +275,9 @@ public class Configuration implements Serializable{
     }
     
     /**
-     * Recupï¿½re toutes les configs passï¿½es en paramï¿½tre
-     * @param config La config que l'on veut rï¿½cupï¿½rer
-     * @return Toutes les configurations enregsitrï¿½es
+     * Recupère toutes les configs passées en paramètre
+     * @param config La config que l'on veut récupérer
+     * @return Toutes les configurations enregistrées
      */
     public static HashMap<String,Configuration> recupererToutesLesConfigs() {
     	return listeDeConfigs;
@@ -298,8 +296,8 @@ public class Configuration implements Serializable{
     }
 	
 	/**
-	 * Enregistre listeDeConfigs dans le path passï¿½ en paramï¿½tre 
-	 * Chaque configuration possï¿½de les informations suivantes :
+	 * Enregistre listeDeConfigs dans le path passé en paramètre 
+	 * Chaque configuration possède les informations suivantes :
 	 * 	- nom (String)
 	 *  - carte (Object)
 	 *  	- longueurCarte (int)
@@ -360,14 +358,14 @@ public class Configuration implements Serializable{
 				// Enregistre les batiments
 				JSONArray flotteArray = new JSONArray();
 				for(Batiment bateau : elt.flotte) {
-					// Crï¿½e l'objet bateau
+					// Crée l'objet bateau
 					JSONObject bateauObj = new JSONObject();
 					bateauObj.put("taille",bateau.tailleLgr);
 					bateauObj.put("nom",bateau.nom);
 					flotteArray.add(bateauObj); // Enregistre le bateau
 				}
 				config.put("flotte", flotteArray);
-				// Enregsitre la config
+				// Enregistre la config
 				base.add(config);
 			}
 			configs.put("config",base);
@@ -384,7 +382,7 @@ public class Configuration implements Serializable{
 	
 	/**
 	 * Ajoute la configuration aux liste de configuration
-	 * @param aAjouter La configuration qui sera ajoutï¿½e
+	 * @param aAjouter La configuration qui sera ajoutée
 	 */
 	public static void ajouterConfig(Configuration aAjouter) {
 		listeDeConfigs.put(aAjouter.nom,aAjouter);
@@ -392,8 +390,8 @@ public class Configuration implements Serializable{
 	
 	
 	/**
-	 * Parcours la liste listeDeConfigs et dit si la config est prï¿½sente ou non
-	 * @param nom le nom de la config recherchï¿½e
+	 * Parcours la liste listeDeConfigs et dit si la config est présente ou non
+	 * @param nom le nom de la config recherchée
 	 * @return true si la config existe
 	 *         false sinon
 	 */

@@ -16,13 +16,13 @@ import java.util.HashMap;
 
 /**
  * Sauvegarde les parties
- * @author k.sannac
+ * @author L3 MIAGE Rodez
  */
 public class Sauvegarder {
 	
 	private static final String MESSAGE_ERREUR_CREATION_DIR = "Impossible de créer les répertoires de sauvegarde.";
 	
-	private static final String MESSAGE_ERREUR_SAUVEGARDE = "La sauvegarde c'est mal effectuée";
+	private static final String MESSAGE_ERREUR_SAUVEGARDE = "La sauvegarde s'est mal effectuée";
 
     /**
      * Sauvegarde une partie dans le dossier suivant : 
@@ -107,7 +107,7 @@ public class Sauvegarder {
     }
 
     /**
-     * Liste toutes les parties sauvegardÃ©es dans le dossier sauvegarde/parties/
+     * Liste toutes les parties sauvegardées dans le dossier sauvegarde/parties/
      * @return Toutes les parties contenues dans le dossier
      */
     public static void listerParties() {

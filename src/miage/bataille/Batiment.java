@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Batiment touchable, a deposer dans la mer.
+ * @author L3 MIAGE Rodez
  */
 public class Batiment extends Obstacle implements Serializable {
 	
@@ -13,8 +14,8 @@ public class Batiment extends Obstacle implements Serializable {
 	private static final long serialVersionUID = -25306178857876905L;
 
     /**
-     * Definit un batiment de hauteur (ou largeur) 1, 
-     * de longueur définit ainsi qu'un nom
+     * Définit un batiment de hauteur (ou largeur) 1, 
+     * de longueur définie ainsi qu'un nom
      * 
      * @param tailleLgr longueur du batiment
      * @param nom nom du batiment

@@ -2,12 +2,14 @@ package miage.bataille;
 
 
 /**
- * Description d'une zone contigue, identifie par une taille et de sa touchabilite.
+ * Description d'une zone contigue, 
+ * identifie par une taille et sa touchabilité.
+ * @author L3 MIAGE Rodez
  */
 public abstract class Obstacle {
 	
 	/**
-	 * Nom du batiment courant
+	 * Nom du bâtiment courant
 	 */
     public String nom;
 	
@@ -36,7 +38,7 @@ public abstract class Obstacle {
 	}
 
 	/**
-     * Definit si l'obstacle sera touchable, puis coulable.
+     * Définit si l'obstacle sera touchable, puis coulable.
      */
     protected boolean touchable;
     

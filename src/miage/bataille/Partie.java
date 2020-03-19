@@ -8,10 +8,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * 
- * @author 	Damien Avetta,
- * 			alexis vivier
- *
+ * Centralise toutes les informations relatives à une partie
+ * @author L3 MIAGE Rodez
  */
 public class Partie implements Serializable{
 
@@ -26,23 +24,23 @@ public class Partie implements Serializable{
 	private Configuration config;
 
 	/**
-	 * Nombre de batiments non coulï¿½s
+	 * Nombre de bâtiments non coulés
 	 */
 	private int nbBatiments;
 
 	/**
-	 * Zones contigues reprï¿½sentant la flotte de la partie
+	 * Zones contigües représentant la flotte de la partie
 	 */
 	private ArrayList<ZoneContigue> compose;
 
 	/**
-	 * Liste des coups rï¿½alisï¿½s durant la partie
+	 * Liste des coups réalisés durant la partie
 	 */
 	public ArrayList<Cellule> coups;
 
 
 	/**
-	 * Initialise une nouvelle partie par dï¿½faut.
+	 * Initialise une nouvelle partie par défaut.
 	 */
 	public Partie() {	
 		this(new Configuration());
@@ -70,10 +68,10 @@ public class Partie implements Serializable{
 	}
 
 	/**
-	 * Permet de placer un batiment sur la mer de maniere pseudo-aleatoire
-	 * et minimiser les chances que les batiments soient cote a cote avec
-	 * un autre batiment
-	 * @param aPLacer Batiment a placer sur la mer
+	 * Permet de placer un batiment sur la mer de manière pseudo-aléatoire
+	 * et minimiser les chances que les bâtiments soient côte a côte avec
+	 * un autre bâtiment
+	 * @param aPLacer Batiment à placer sur la mer
 	 */
 	private boolean placementBatimentAuto(Batiment aPLacer) {
 		
@@ -89,53 +87,53 @@ public class Partie implements Serializable{
 		int xAPlacerMax = !vertical?( xAPlacer + (aPLacer.getTailleLgr() - 1 )):xAPlacer;
 		int yAPlacerMax = vertical?( yAPLacer + (aPLacer.getTailleLgr() - 1 )):yAPLacer;
 
-		//Tests si sa ne sort pas de la mer
+		// Teste si ca ne sort pas de la mer
 		if( xAPlacerMax > config.getLongueurCarte() - 1
 				|| yAPlacerMax > config.getHauteurCarte() - 1) {
-			//Hors de la mer: relance du placement
+			// Hors de la mer: relance du placement
 			passer = placementBatimentAuto(aPLacer);
 		}   
 
 		// Test si la zone n'empiete pas sur une autre
 		for(int i = 0; i < aPLacer.getTailleLgr() && !passer; i++ ) {
-			if (empietreUneCellule(!vertical?(xAPlacer+i):xAPlacer, 
+			if (empieteUneCellule(!vertical?(xAPlacer+i):xAPlacer, 
 					vertical?(yAPLacer+i):yAPLacer)) {
 				passer = placementBatimentAuto(aPLacer);
 			}
 		}
 		
-		//Test que le batiment ne soit pas a cote d'un deja en jeu selon l'etat de relanceAdgacent
+		// Teste que le batiment ne soit pas à côté d'un déjà en jeu selon l'état de relanceAdgacent
     	for(int i = 0; i < aPLacer.getTailleLgr() && !passer && relanceAdjacent; i++ ) {
-    		if( empietreUneCellule(xAPlacer + (!vertical?i:0) + 1, yAPLacer + (vertical?i:0)) 
-    				|| empietreUneCellule(xAPlacer + (!vertical?i:0) - 1, yAPLacer + (vertical?i:0))
-    				|| empietreUneCellule(xAPlacer + (!vertical?i:0), yAPLacer + (vertical?i:0) + 1)
-    				|| empietreUneCellule(xAPlacer + (!vertical?i:0), yAPLacer + (vertical?i:0) - 1)){
+    		if( empieteUneCellule(xAPlacer + (!vertical?i:0) + 1, yAPLacer + (vertical?i:0)) 
+    				|| empieteUneCellule(xAPlacer + (!vertical?i:0) - 1, yAPLacer + (vertical?i:0))
+    				|| empieteUneCellule(xAPlacer + (!vertical?i:0), yAPLacer + (vertical?i:0) + 1)
+    				|| empieteUneCellule(xAPlacer + (!vertical?i:0), yAPLacer + (vertical?i:0) - 1)){
     			passer = placementBatimentAuto(aPLacer);
     		}
     	}
     	
 		if( !passer ) {
-			//Ajout de la zone correctement dï¿½roulï¿½
+			// L'ajout de la zone s'est correctement déroulé
 			ajouterZoneContigue( new ZoneContigue( aPLacer, xAPlacer, yAPLacer, 
-					//Si horizontal alors ajouter la taille du batiment au x
+					// Si horizontal alors ajouter la taille du batiment au x
 					xAPlacerMax, 	
-					//Si vertical alors ajoute la taille du batiment au y
+					// Si vertical alors ajouter la taille du batiment au y
 					yAPlacerMax));
 		}
 		return true;
 	}
 
 	/**
-	 * Ajoute la zone contigue ï¿½ la partie si elle n'empiete sur aucune autre zone
+	 * Ajoute la zone contigue à la partie si elle n'empiete sur aucune autre zone
 	 * @param aAjouter
-	 * @throws IllegalArgumentException La zone contigue empietre sur une cellule dï¿½ja utilisï¿½
+	 * @throws IllegalArgumentException La zone contigue empiete sur une cellule déjà utilisée
 	 */
 	public void ajouterZoneContigue(ZoneContigue aAjouter) throws IllegalArgumentException {
 		boolean valide = true;
 		/* Parcours des cellules de la zone en paramï¿½tre */
 		for (int i = 0 ; i < aAjouter.getPossede().size() && valide; i++) {
 			/* Verifie si la cellule est disponible */
-			if (empietreUneCellule(aAjouter.getPossede().get(i).getCoordX(), aAjouter.getPossede().get(i).getCoordY())){
+			if (empieteUneCellule(aAjouter.getPossede().get(i).getCoordX(), aAjouter.getPossede().get(i).getCoordY())){
 				throw new IllegalArgumentException("La cellule " + (i+1) + " empiete une deja existante");
 			}
 		}
@@ -147,27 +145,27 @@ public class Partie implements Serializable{
 
 	/**
 	 * Permet de savoir si une futur cellule de coordonée
-	 * definit en paramétre, empietre une cellule déja existante 
+	 * definit en paramétre, empiete une cellule déja existante 
 	 * dans la mer
 	 * @param x coordonee de la horizontal
 	 * @param y coordonee de la vertical
-	 * @return	true si coordonee n'empietre pas
-	 * 			false si coordonnee empietre
+	 * @return	true si coordonee n'empiete pas
+	 * 			false si coordonnee empiete
 	 */
-	private boolean empietreUneCellule(int x, int y) {
-		boolean empietre = false;
+	private boolean empieteUneCellule(int x, int y) {
+		boolean empiete = false;
 
-		for (int j = 0 ; j < compose.size() && !empietre; j++) {
+		for (int j = 0 ; j < compose.size() && !empiete; j++) {
 			if (compose.get(j).existe(x,y)){
-				empietre = true;
+				empiete = true;
 			}
 		}
-		return empietre;
+		return empiete;
 	}
 
 	/**
 	 * Initialise une nouvelle partie
-	 * @param listeBatiments -> Liste des bï¿½timents ï¿½ placer
+	 * @param listeBatiments -> Liste des bâtiments à placer
 	 * 							dans la partie.
 	 */
 	public Partie(ArrayList<ZoneContigue> listeBatiments) {
@@ -176,30 +174,30 @@ public class Partie implements Serializable{
 	}
 
 	/**
-	 * Tire sur une cellule aux coordonnï¿½es x et y
-	 * Vï¿½rifie si une zone contigue contenant des bateaux a ï¿½tï¿½ touchï¿½
-	 * Sauvegarde le coup tirï¿½
-	 * @param x -> Coordonnï¿½e en abcisses de la cellule tirï¿½e
-	 * @param y -> Coordonnï¿½e en ordonnï¿½e de la cellule tirï¿½e
-	 * @return le rï¿½sultat du tir : Coup ï¿½ l'eau / touchï¿½ ou coulï¿½
+	 * Tire sur une cellule aux coordonnées x et y
+	 * Vérifie si une zone contigüe contenant des bateaux a été touchée
+	 * Sauvegarde le coup tiré
+	 * @param x -> Coordonnée en abcisses de la cellule tirée
+	 * @param y -> Coordonnée en ordonnées de la cellule tirée
+	 * @return le résultat du tir : Coup à l'eau / touché ou coulé
 	 */
 	public String tirer(int x, int y) throws IllegalArgumentException { 
-		String resultat; // Rï¿½sultat du tir si un batiment est touchï¿½ (et coulï¿½) ou non
+		String resultat; // Résultat du tir si un batiment est touché (et coulé) ou non
 		ZoneContigue zoneVisee;
-		Cellule celluleTiree; // Cellule tirï¿½e
+		Cellule celluleTiree; // Cellule tirée
 
 		if(x < 0 || y < 0 ) {
 			throw new IllegalArgumentException("Coordonée négatixe x:" + x + " y:" + y);
 		}
 
-		// Vï¿½rifie si la cellule choisie ï¿½ touchï¿½ un batiment ou non
+		// Vérifie si la cellule choisie a touché un batiment ou non
 		if ((zoneVisee = rechercheZone(x, y)) == null) {	
 			// Bï¿½timent non trouvï¿½
 			celluleTiree = new Cellule(x, y);
 			resultat = "plouf";
 			enregistrerCoup(celluleTiree);
 		} else {
-			// Bï¿½timent trouvï¿½
+			// Bâtiment trouvé
 			celluleTiree = zoneVisee.getCellule(x, y);
 			celluleTiree.aEteTouche();	 
 			// Enregistrement du coup dans la liste des coups
@@ -211,19 +209,19 @@ public class Partie implements Serializable{
 				resultat = celluleTiree.getTouche() ? "touche" : "plouf";
 			}
 		}
-		return resultat;  //TODO: renvoyer un autre type que string.
+		return resultat;
 	}
 
 
 	/**
-	 * Recherche ï¿½ quelle zone appartient une cellule. Renvoie null si la cellule spï¿½cifiï¿½e
-	 * par les coordonnï¿½es n'appartient ï¿½ aucune zone
-	 * @return ZoneContigue - renvois la zone contiguï¿½ oï¿½ se trouve la cellule
-	 *                      - si aucune zone existe, renvoie null
+	 * Recherche à quelle zone appartient une cellule. Renvoie null si la cellule spécifiée
+	 * par les coordonnées n'appartient à aucune zone
+	 * @return ZoneContigue - renvoie la zone contigüe où se trouve la cellule
+	 *                      - si aucune zone n'existe, renvoie null
 	 */
 	private ZoneContigue rechercheZone(int x, int y) {
 
-		ZoneContigue trouve = null; // Cellule trouve dans une zone contigue
+		ZoneContigue trouve = null; // Cellule trouve dans une zone contigüe
 
 		// Parcours de toutes les zones de la mer
 		for (int indiceRecherche = 0; indiceRecherche < compose.size() && trouve == null ; 
@@ -238,16 +236,16 @@ public class Partie implements Serializable{
 	}
 
 	/**
-	 * Enregistre le coup pour la posterite
-	 * Ajoute la cellule tirï¿½e ï¿½ la liste des coups
-	 * @param celulle tirï¿½e
+	 * Enregistre le coup pour la postérité
+	 * Ajoute la cellule tirée à la liste des coups
+	 * @param cellule tirée
 	 */
 	private void enregistrerCoup(Cellule celluleTiree) {
 		coups.add(celluleTiree);
 	}
 
 	/**
-	 * @return La liste de toutes les cellules tirï¿½es
+	 * @return La liste de toutes les cellules tirées
 	 */
 	public ArrayList<Cellule> getCellulesTirees() {
 		return coups;
@@ -258,7 +256,7 @@ public class Partie implements Serializable{
 	}
 
 	/**
-	 * @return le nombre de bï¿½timents encore en jeu
+	 * @return le nombre de bâtiments encore en jeu
 	 */
 	public int getNbBatiments() {
 		return nbBatiments;

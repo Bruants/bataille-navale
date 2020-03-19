@@ -7,10 +7,10 @@ package miage.bataille;
 import java.io.Serializable;
 
 /**
- * Represente une cellule de la mer de taille 1*1
- * Elle est presente dans les Zone Contigue et peut appartenir à un Obstacle
+ * Représente une cellule de la mer de taille 1*1
+ * Elle est présente dans les ZoneContigue et peut appartenir à un Obstacle
  * Zone de taille 1*1 du plan
- * @author Damien Avetta-Raymond
+ * @author L3 MIAGE Rodez
  */
 public class Cellule implements Serializable{
 	
@@ -29,16 +29,16 @@ public class Cellule implements Serializable{
      * <p>Etat de la Cellule</p>
      * 
      * <ul>
-     * 	<li>true : Cellule touchee comportant une partie de batiment</li>
+     * 	<li>true : Cellule touchée comportant une partie de bâtiment</li>
      * 	<li>false : Cellule pas touchée, à l'eau</li>
      * </ul>
      */
     private boolean touche;
 
     /**
-     * Initialise une celulle avec ses coordonnées
-     * @param coordX La coordonee x de la Cellule
-     * @param coordY La coordonee x de la Cellule
+     * Initialise une cellule avec ses coordonnées
+     * @param coordX La coordonée x de la Cellule
+     * @param coordY La coordonée x de la Cellule
      */
     public Cellule(int coordX, int coordY) {
     	this.coordX = coordX;
@@ -47,7 +47,7 @@ public class Cellule implements Serializable{
     }
 
     /**
-     * Change l'etat de touche à  true, qui correspond à un tir touche sur un batiment.
+     * Change l'état de touche à true, qui correspond à un tir touché sur un bâtiment.
      */
     public void aEteTouche() {
     	touche = true;
@@ -83,7 +83,7 @@ public class Cellule implements Serializable{
      */
     @Override
     public String toString() {
-    	return "[" + coordX + ";" + coordY + "]" + (touche ? " touché" : " non touché");
+    	return "[" + coordX + ";" + coordY + "]" + (touche ? " touche" : " non touche");
     }
     
     @Override
@@ -96,12 +96,10 @@ public class Cellule implements Serializable{
             return false; 
         }
         
-        // Si ils ont les mêmes coordonnées
+        // S'ils ont les mêmes coordonnées
         if ((((Cellule) o).getCoordX() != this.getCoordX()) || ((Cellule) o).getCoordY() != this.getCoordY()) {
         	return false;
         }
-        
-        // else
     	return true;
     }
 }
