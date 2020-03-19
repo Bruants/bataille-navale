@@ -33,8 +33,8 @@ public class Sauvegarder {
      */
     public static void sauverPartie(String nomSauvegarde, Object... aSauvegarder) {
 
-        File fichier = new File("sauvegarde/parties/" + nomSauvegarde + ".data");
-        File directory = new File("sauvegarde/parties");
+        File fichier = new File("donnees/sauvegarde/parties/" + nomSauvegarde + ".data");
+        File directory = new File("donnees/sauvegarde/parties");
         ObjectOutputStream save;
         boolean repertoireExistant;
         
@@ -95,11 +95,11 @@ public class Sauvegarder {
      *         false sinon
      */
     public static boolean verifierNbPartiesACharger() {
-    	File directory = new File("sauvegarde/parties/");
+    	File directory = new File("donnees/sauvegarde/parties/");
     	
     	try {
 			return directory.exists() 
-				   && Files.list(Paths.get("sauvegarde/parties/")).filter(Files::isRegularFile).count() > 0;
+				   && Files.list(Paths.get("donnees/sauvegarde/parties/")).filter(Files::isRegularFile).count() > 0;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -114,7 +114,7 @@ public class Sauvegarder {
         /* Permet de lister toutes les parties sauvegardées */
     	System.out.println("Liste des parties :");
         try {
-            Files.list(Paths.get("sauvegarde/parties/")).filter(Files::isRegularFile)
+            Files.list(Paths.get("donnees/sauvegarde/parties/")).filter(Files::isRegularFile)
             .forEach(elt -> {
                 System.out.println(elt.getFileName().toString());
             });
