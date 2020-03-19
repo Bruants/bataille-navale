@@ -509,6 +509,7 @@ public class DeroulementPartie {
 			} else if (reponse.equals("S")) {
 				supprimerConfiguration();
 			} else if (reponse.equals("D")) {
+				System.out.println("Liste des configurations disponibles :");
 				System.out.println(Configuration.afficherConfig());
 			} else if (!reponse.equals("Q")) {
 				System.out.println("Saisie incorrectez. Saisissez soit N, soit C, soit D, soit Q.");
